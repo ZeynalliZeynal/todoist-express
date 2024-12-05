@@ -6,7 +6,6 @@ import AppError from "./utils/app-error";
 import { errorHandler } from "./middleware/error-handler";
 import authRouter from "./router/auth.router";
 import userRouter from "./router/user.router";
-import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
@@ -29,21 +28,21 @@ app.use(mongoSanitize());
 app.use(hpp());
 app.use(morgan("dev"));
 
-const limiter = rateLimit({
-  limit: 100,
-  windowMs: 15 * 60 * 1000,
-  message: "Too many requests from this IP. Please try again in an hour!",
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.use("/api", limiter);
-
-app.use(
-  express.json({
-    limit: "10mb",
-  }),
-);
+// const limiter = rateLimit({
+//   limit: 100,
+//   windowMs: 15 * 60 * 1000,
+//   message: "Too many requests from this IP. Please try again in an hour!",
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
+//
+// app.use("/api", limiter);
+//
+// app.use(
+//   express.json({
+//     limit: "10mb",
+//   }),
+// );
 
 app.use(express.urlencoded({ extended: true }));
 
