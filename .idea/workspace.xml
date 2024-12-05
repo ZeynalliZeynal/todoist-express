@@ -6,7 +6,115 @@
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vercel.json" beforeDir="false" afterPath="$PROJECT_DIR$/vercel.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/constants/env.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/constants/error-codes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/constants/verificationCodeType.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/controller/auth.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/controller/profile.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/controller/session.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/controller/task.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/controller/template.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/controller/user.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/lib/mongo.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/middleware/auth.middleware.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/middleware/error-handler.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/model/session.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/model/task.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/model/template.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/model/user.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/router/auth.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/router/profile.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/router/session.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/router/task.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/router/template.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/router/user.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/service/auth.service.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/api-features.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/app-assert.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/app-error.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/catch-errors.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/constants.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/cookies.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/email-templates.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/email.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/utils/jwt.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/api/validator/auth.schema.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/constants/env.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/constants/error-codes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/constants/verificationCodeType.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/auth.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/profile.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/session.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/task.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/template.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/user.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/lib/mongo.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/middleware/auth.middleware.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/middleware/error-handler.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/model/session.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/model/task.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/model/template.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/model/user.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/auth.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/profile.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/session.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/task.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/template.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/user.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/service/auth.service.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/constants/env.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/constants/error-codes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/constants/verificationCodeType.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controller/auth.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controller/profile.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controller/session.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controller/task.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controller/template.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controller/user.controller.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/lib/mongo.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/middleware/auth.middleware.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/middleware/error-handler.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/model/session.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/model/task.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/model/template.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/model/user.model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/router/auth.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/router/profile.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/router/session.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/router/task.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/router/template.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/router/user.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/service/auth.service.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/api-features.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/app-assert.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/app-error.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/catch-errors.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/constants.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/cookies.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/email-templates.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/email.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utils/jwt.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/validator/auth.schema.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/api-features.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/app-assert.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/app-error.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/catch-errors.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/constants.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/cookies.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/email-templates.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/email.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/jwt.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/validator/auth.schema.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vercel.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,28 +155,28 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "code.cleanup.on.save": "true",
-    "git-widget-placeholder": "main",
-    "ignore_missing_gitignore": "true",
-    "js.last.introduce.type": "CONST",
-    "last_opened_file_path": "C:/Users/asus/Desktop/education/projects/todoist/client",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "pnpm",
-    "npm.dev.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier",
-    "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "actions.on.save",
-    "ts.external.directory.path": "C:\\Users\\asus\\Desktop\\education\\projects\\todoist\\server\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore_missing_gitignore&quot;: &quot;true&quot;,
+    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/asus/Desktop/education/projects/todoist/client&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\asus\\Desktop\\education\\projects\\todoist\\server\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\asus\Desktop\education\projects\todoist\server\src\router" />
@@ -152,6 +260,7 @@
       <workItem from="1733336849234" duration="12366000" />
       <workItem from="1733422047405" duration="4526000" />
       <workItem from="1733427932466" duration="4064000" />
+      <workItem from="1733432384461" duration="1212000" />
     </task>
     <servers />
   </component>
