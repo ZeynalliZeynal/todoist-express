@@ -41,7 +41,10 @@ export const authenticate: RequestHandler = catchErrors(
 
     if (!currentSession)
       return next(
-        new AppError("You are not logged in.", StatusCodes.UNAUTHORIZED),
+        new AppError(
+          "Your session has been expired or deleted. Please log in again.",
+          StatusCodes.UNAUTHORIZED,
+        ),
       );
 
     if (!currentUser.isVerified())
