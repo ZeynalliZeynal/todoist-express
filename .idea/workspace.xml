@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ZeynalliZeynal&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ZeynalliZeynal/todoistnext-server.git&quot;,
+    &quot;accountId&quot;: &quot;917778e7-fe10-4d1a-840b-04be09692621&quot;
+  }
+}</component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2nedk24U5fOgMTR3CjBBibKkVSH" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortKey" value="BY_TIME_DESCENDING" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore_missing_gitignore&quot;: &quot;true&quot;,
+    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/asus/Desktop/education/projects/todoist/client&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\asus\\Desktop\\education\\projects\\todoist\\server\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server\src\router" />
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server\src" />
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server" />
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server\src" />
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server\src\utils" />
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server\src\validator" />
+      <recent name="C:\Users\asus\Desktop\education\projects\todoist\server\src\middleware" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="npm run dev" />
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-WS-243.21565.180" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="" />
+      <created>1729337616128</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729337616128</updated>
+      <workItem from="1729337618136" duration="1336000" />
+      <workItem from="1729361701261" duration="14027000" />
+      <workItem from="1729603911243" duration="4000" />
+      <workItem from="1729604224416" duration="11187000" />
+      <workItem from="1729683532377" duration="34000" />
+      <workItem from="1729683572784" duration="5470000" />
+      <workItem from="1729869755872" duration="5000" />
+      <workItem from="1729870663937" duration="1000" />
+      <workItem from="1732008769026" duration="10159000" />
+      <workItem from="1732033974746" duration="5536000" />
+      <workItem from="1732039569363" duration="6505000" />
+      <workItem from="1732097909892" duration="2000" />
+      <workItem from="1732178285696" duration="21232000" />
+      <workItem from="1732210897064" duration="574000" />
+      <workItem from="1732215042177" duration="1656000" />
+      <workItem from="1732216721079" duration="13435000" />
+      <workItem from="1732262152770" duration="6391000" />
+      <workItem from="1732295001759" duration="16727000" />
+      <workItem from="1732382779791" duration="303000" />
+      <workItem from="1732383090684" duration="15289000" />
+      <workItem from="1732437865907" duration="1087000" />
+      <workItem from="1732440813564" duration="16000" />
+      <workItem from="1732457965996" duration="1612000" />
+      <workItem from="1732551060622" duration="6541000" />
+      <workItem from="1732636806603" duration="259000" />
+      <workItem from="1732643509236" duration="5708000" />
+      <workItem from="1733065211673" duration="21628000" />
+      <workItem from="1733179947831" duration="12978000" />
+      <workItem from="1733245353779" duration="8869000" />
+      <workItem from="1733336849234" duration="12366000" />
+      <workItem from="1733422047405" duration="4526000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
