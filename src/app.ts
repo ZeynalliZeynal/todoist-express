@@ -6,11 +6,12 @@ import AppError from "./utils/app-error";
 import { errorHandler } from "./middleware/error-handler";
 import authRouter from "./router/auth.router";
 import userRouter from "./router/user.router";
+import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import cors from "cors";
-import { client_dev_origin, node_env } from "./constants/env";
+import { client_dev_origin } from "./constants/env";
 import cookieParser from "cookie-parser";
 import { StatusCodes } from "http-status-codes";
 import profileRouter from "./router/profile.router";
@@ -19,30 +20,34 @@ import sessionRouter from "./router/session.router";
 const app = express();
 
 // Trust the proxy for vercel
-if (node_env === "production") {
-  app.set("trust proxy", 1);
-}
+app.set("trust proxy", 1);
 
 app.use(helmet());
 app.use(mongoSanitize());
 app.use(hpp());
 app.use(morgan("dev"));
 
-// const limiter = rateLimit({
-//   limit: 100,
-//   windowMs: 15 * 60 * 1000,
-//   message: "Too many requests from this IP. Please try again in an hour!",
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-//
-// app.use("/api", limiter);
-//
-// app.use(
-//   express.json({
-//     limit: "10mb",
-//   }),
-// );
+const limiter = rateLimit({
+  limit: 100,
+  windowMs: 15 * 60 * 1000,
+  message: "Too many requests from this IP. Please try again in an hour!",
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: {
+    trustProxy: true,
+  },
+});
+
+console.log("Node ENV:", process.env.NODE_ENV);
+console.log("Trust Proxy Setting:", app.get("trust proxy"));
+
+app.use("/api", limiter);
+
+app.use(
+  express.json({
+    limit: "10mb",
+  }),
+);
 
 app.use(express.urlencoded({ extended: true }));
 
