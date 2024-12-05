@@ -33,7 +33,7 @@ const limiter = rateLimit({
   message: "Too many requests from this IP. Please try again in an hour!",
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: true },
+  validate: { xForwardedForHeader: true, trustProxy: true },
 });
 
 console.log("Node ENV:", process.env.NODE_ENV);
