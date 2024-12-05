@@ -20,7 +20,7 @@ import sessionRouter from "./router/session.router";
 const app = express();
 
 // Trust the proxy for vercel
-app.set("trust proxy", 1);
+app.set("trust proxy", "loopback, linklocal, uniquelocal");
 
 app.use(helmet());
 app.use(mongoSanitize());
