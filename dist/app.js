@@ -22,8 +22,6 @@ const http_status_codes_1 = require("http-status-codes");
 const profile_router_1 = __importDefault(require("./router/profile.router"));
 const session_router_1 = __importDefault(require("./router/session.router"));
 const app = (0, express_1.default)();
-// Trust the proxy for vercel
-app.set("trust proxy", "loopback, linklocal, uniquelocal");
 app.use((0, helmet_1.default)());
 app.use((0, express_mongo_sanitize_1.default)());
 app.use((0, hpp_1.default)());
@@ -34,10 +32,7 @@ const limiter = (0, express_rate_limit_1.default)({
     message: "Too many requests from this IP. Please try again in an hour!",
     standardHeaders: true,
     legacyHeaders: false,
-    validate: { xForwardedForHeader: true, trustProxy: true },
 });
-console.log("Node ENV:", process.env.NODE_ENV);
-console.log("Trust Proxy Setting:", app.get("trust proxy"));
 app.use("/api", limiter);
 app.use(express_1.default.json({
     limit: "10mb",

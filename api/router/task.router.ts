@@ -11,11 +11,6 @@ import { authenticate } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.param("id", (req, res, next, value, name) => {
-  console.log(value);
-  next();
-});
-
 router
   .route("/")
   .get(authenticate, getTasks)

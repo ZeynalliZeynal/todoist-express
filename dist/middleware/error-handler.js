@@ -34,7 +34,6 @@ const handleDuplicateValueError = (res, error) => {
     });
 };
 const handleValidationError = (res, error) => {
-    console.log(Object.values(error.errors));
     const message = Object.values(error.errors).map((value) => ({
         message: value.message,
         path: value.path,

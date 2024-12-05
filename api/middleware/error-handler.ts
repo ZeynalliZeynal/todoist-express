@@ -37,7 +37,6 @@ const handleDuplicateValueError = (res: Response, error: MongoServerError) => {
 };
 
 const handleValidationError = (res: Response, error: MongoServerError) => {
-  console.log(Object.values(error.errors));
   const message = Object.values(error.errors).map((value: any) => ({
     message: value.message,
     path: value.path,
