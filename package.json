@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "concurrently \"nodemon dist/index.js\" \"tsc -w\"",
     "prod": "cross-env NODE_ENV=production node dist/index.js",
-    "start": "cross-env NODE_ENV=production node dist/index.js"
+    "start": "NODE_ENV=production node dist/index.js"
   },
   "keywords": [],
   "author": "zeynal",
