@@ -38,6 +38,7 @@ export const signup = catchErrors(async (req, res, next) => {
     .json({
       status: "success",
       message: "Verification email sent. Please verify your email to continue.",
+      tokens: { accessToken, refreshToken },
     });
 });
 
@@ -54,6 +55,7 @@ export const login = catchErrors(async (req, res, next) => {
     .json({
       status: "success",
       message: "Login successful",
+      tokens: { accessToken, refreshToken },
     });
 });
 

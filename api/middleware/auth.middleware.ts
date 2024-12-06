@@ -8,7 +8,12 @@ import Session from "../model/session.model";
 
 export const authenticate: RequestHandler = catchErrors(
   async (req, res, next) => {
-    const accessToken: string | undefined = req.cookies.accessToken;
+    const accessTokenFromCookies: string | undefined = req.cookies.accessToken;
+    const accessTokenFromHeaders: string | undefined = req.headers.authorization
+      ?.split("Bearer ")[1]
+      .trim();
+
+    const accessToken = accessTokenFromHeaders || accessTokenFromCookies;
 
     if (!accessToken)
       return next(

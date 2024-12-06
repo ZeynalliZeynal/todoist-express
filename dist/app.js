@@ -30,8 +30,6 @@ const limiter = (0, express_rate_limit_1.default)({
     limit: 100,
     windowMs: 15 * 60 * 1000,
     message: "Too many requests from this IP. Please try again in an hour!",
-    standardHeaders: true,
-    legacyHeaders: false,
 });
 app.use("/api", limiter);
 app.use(express_1.default.json({
@@ -42,6 +40,7 @@ app.use((0, cors_1.default)({
     origin: env_1.client_dev_origin,
     credentials: true,
 }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
 app.use("/api/v1/tasks", task_router_1.default);
 app.use("/api/v1/templates", template_router_1.default);

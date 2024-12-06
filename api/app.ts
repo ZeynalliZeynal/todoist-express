@@ -28,8 +28,6 @@ const limiter = rateLimit({
   limit: 100,
   windowMs: 15 * 60 * 1000,
   message: "Too many requests from this IP. Please try again in an hour!",
-  standardHeaders: true,
-  legacyHeaders: false,
 });
 
 app.use("/api", limiter);
@@ -48,6 +46,7 @@ app.use(
   }),
 );
 
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/v1/tasks", taskRouter);

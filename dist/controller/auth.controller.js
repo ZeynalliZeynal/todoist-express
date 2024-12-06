@@ -36,6 +36,7 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
         .json({
         status: "success",
         message: "Verification email sent. Please verify your email to continue.",
+        tokens: { accessToken, refreshToken },
     });
 }));
 exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,6 +47,7 @@ exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0
         .json({
         status: "success",
         message: "Login successful",
+        tokens: { accessToken, refreshToken },
     });
 }));
 exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
