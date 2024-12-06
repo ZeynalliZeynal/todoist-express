@@ -41,7 +41,6 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
   cors({
     origin: client_dev_origin,
