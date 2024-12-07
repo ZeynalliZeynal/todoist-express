@@ -39,6 +39,7 @@ export const signup = catchErrors(async (req, res, next) => {
       status: "success",
       message: "Verification email sent. Please verify your email to continue.",
       tokens: { accessToken, refreshToken },
+      data: { user },
     });
 });
 
@@ -60,10 +61,17 @@ export const login = catchErrors(async (req, res, next) => {
 });
 
 export const logout = catchErrors(async (req, res, next) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken =
+    req.headers.authorization?.split("Bearer ")[1].trim() ||
+    req.cookies.accessToken;
   const { payload } = verifyToken(accessToken);
 
-  if (payload) await Session.findByIdAndDelete(payload.sessionId);
+  if (!payload || !payload.sessionId)
+    return next(
+      new AppError("You are not logged in.", StatusCodes.BAD_REQUEST),
+    );
+
+  await Session.findByIdAndDelete(payload.sessionId);
 
   return clearAuthCookies(res).status(StatusCodes.OK).json({
     status: "success",

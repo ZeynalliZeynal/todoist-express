@@ -37,6 +37,7 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
         status: "success",
         message: "Verification email sent. Please verify your email to continue.",
         tokens: { accessToken, refreshToken },
+        data: { user },
     });
 }));
 exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,10 +52,13 @@ exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0
     });
 }));
 exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const accessToken = req.cookies.accessToken;
+    var _a;
+    const accessToken = ((_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split("Bearer ")[1].trim()) ||
+        req.cookies.accessToken;
     const { payload } = (0, jwt_1.verifyToken)(accessToken);
-    if (payload)
-        yield session_model_1.default.findByIdAndDelete(payload.sessionId);
+    if (!payload || !payload.sessionId)
+        return next(new app_error_1.default("You are not logged in.", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    yield session_model_1.default.findByIdAndDelete(payload.sessionId);
     return (0, cookies_1.clearAuthCookies)(res).status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "Logout successful",

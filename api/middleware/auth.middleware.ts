@@ -9,11 +9,12 @@ import Session from "../model/session.model";
 export const authenticate: RequestHandler = catchErrors(
   async (req, res, next) => {
     const accessTokenFromCookies: string | undefined = req.cookies.accessToken;
-    const accessTokenFromHeaders: string | undefined = req.headers.authorization
-      ?.split("Bearer ")[1]
-      .trim();
+    const accessTokenFromHeaders: string | undefined =
+      req.headers.authorization;
 
-    const accessToken = accessTokenFromHeaders || accessTokenFromCookies;
+    const accessToken =
+      accessTokenFromHeaders?.split("Bearer ")[1].trim() ||
+      accessTokenFromCookies;
 
     if (!accessToken)
       return next(
