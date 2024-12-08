@@ -20,20 +20,9 @@ const schema = new mongoose_1.default.Schema({
         type: Number,
         required: true,
     },
-    featureIds: [
-        {
-            type: mongoose_1.default.Schema.Types.ObjectId,
-            ref: "PlanFeature",
-        },
-    ],
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
     timestamps: true,
-});
-schema.virtual("features", {
-    ref: "PlanFeature",
-    localField: "featureIds",
-    foreignField: "_id",
 });
 exports.default = mongoose_1.default.model("Plan", schema);

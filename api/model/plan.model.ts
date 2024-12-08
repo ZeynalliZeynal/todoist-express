@@ -4,7 +4,6 @@ export interface PlanDocument extends mongoose.Document {
   name: string;
   description: string;
   price: number;
-  featureIds: mongoose.Types.ObjectId[];
 }
 
 const schema = new mongoose.Schema<PlanDocument>(
@@ -24,12 +23,6 @@ const schema = new mongoose.Schema<PlanDocument>(
       type: Number,
       required: true,
     },
-    featureIds: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "PlanFeature",
-      },
-    ],
   },
   {
     toJSON: { virtuals: true },
@@ -37,11 +30,5 @@ const schema = new mongoose.Schema<PlanDocument>(
     timestamps: true,
   },
 );
-
-schema.virtual("features", {
-  ref: "PlanFeature",
-  localField: "featureIds",
-  foreignField: "_id",
-});
 
 export default mongoose.model("Plan", schema);
