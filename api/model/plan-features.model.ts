@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 export interface PlanFeaturesDocument extends mongoose.Document {
   title: string;
@@ -50,6 +50,11 @@ schema.virtual("allPlans", {
   ref: "Plan",
   localField: "plans.planId",
   foreignField: "_id",
+});
+
+schema.pre(/^find/, function (this: Query<any, any>, next) {
+  this.select("-__v");
+  next();
 });
 
 export default mongoose.model("PlanFeature", schema);

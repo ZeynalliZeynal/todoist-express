@@ -1,9 +1,10 @@
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 export interface PlanDocument extends mongoose.Document {
   name: string;
   description: string;
   price: number;
+  featureIds: mongoose.Types.ObjectId[];
 }
 
 const schema = new mongoose.Schema<PlanDocument>(
@@ -23,6 +24,12 @@ const schema = new mongoose.Schema<PlanDocument>(
       type: Number,
       required: true,
     },
+    featureIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "PlanFeature",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -30,5 +37,20 @@ const schema = new mongoose.Schema<PlanDocument>(
     timestamps: true,
   },
 );
+
+schema.virtual("allFeatures", {
+  ref: "PlanFeature",
+  localField: "featureIds",
+  foreignField: "_id",
+});
+
+schema.pre(/^find/, function (this: Query<any, any>, next) {
+  this.select("-__v");
+  this.populate({
+    path: "allFeatures",
+    select: "-__v",
+  });
+  next();
+});
 
 export default mongoose.model("Plan", schema);

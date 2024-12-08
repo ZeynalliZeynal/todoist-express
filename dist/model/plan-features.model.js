@@ -41,4 +41,8 @@ schema.virtual("allPlans", {
     localField: "plans.planId",
     foreignField: "_id",
 });
+schema.pre(/^find/, function (next) {
+    this.select("-__v");
+    next();
+});
 exports.default = mongoose_1.default.model("PlanFeature", schema);

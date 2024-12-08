@@ -141,4 +141,8 @@ schema.method("createVerificationToken", function () {
 schema.method("isVerified", function () {
     return this.verified;
 });
+schema.pre(/^find/, function (next) {
+    this.select("-__v");
+    next();
+});
 exports.default = mongoose_1.default.model("User", schema);

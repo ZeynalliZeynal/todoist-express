@@ -20,9 +20,28 @@ const schema = new mongoose_1.default.Schema({
         type: Number,
         required: true,
     },
+    featureIds: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "PlanFeature",
+        },
+    ],
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
     timestamps: true,
+});
+schema.virtual("allFeatures", {
+    ref: "PlanFeature",
+    localField: "featureIds",
+    foreignField: "_id",
+});
+schema.pre(/^find/, function (next) {
+    this.select("-__v");
+    this.populate({
+        path: "allFeatures",
+        select: "-__v",
+    });
+    next();
 });
 exports.default = mongoose_1.default.model("Plan", schema);

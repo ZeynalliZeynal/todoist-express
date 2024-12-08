@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import PlanFeature from "../model/plan-features.model";
 
 export const getPlans: RequestHandler = catchErrors(async (req, res, next) => {
-  const plans = await Plan.find();
+  const plans = await Plan.find().populate("allFeatures");
 
   return res.status(StatusCodes.OK).json({
     status: "success",
@@ -15,12 +15,13 @@ export const getPlans: RequestHandler = catchErrors(async (req, res, next) => {
 
 export const createPlan: RequestHandler = catchErrors(
   async (req, res, next) => {
-    const { name, description, price } = req.body;
+    const { name, description, price, features } = req.body;
 
     const plan = await Plan.create({
       name,
       description,
       price,
+      features,
     });
 
     return res.status(StatusCodes.OK).json({

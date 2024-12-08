@@ -186,4 +186,9 @@ schema.method("isVerified", function () {
   return this.verified;
 });
 
+schema.pre(/^find/, function (this: Query<any, any>, next) {
+  this.select("-__v");
+  next();
+});
+
 export default mongoose.model<UserDocument>("User", schema);
