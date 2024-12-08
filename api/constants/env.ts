@@ -26,3 +26,5 @@ export const jwt_verify_secret = getEnv("JWT_VERIFY_SECRET");
 export const jwt_refresh_expires_in = getEnv("JWT_REFRESH_EXPIRES_IN");
 export const jwt_verify_expires_in = getEnv("JWT_VERIFY_EXPIRES_IN");
 export const jwt_expires_in = getEnv("JWT_EXPIRES_IN");
+
+export const apiip_accessKey = getEnv("APIIP_ACCESS_KEY");

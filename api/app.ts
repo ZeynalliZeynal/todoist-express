@@ -24,9 +24,13 @@ app.use(mongoSanitize());
 app.use(hpp());
 app.use(morgan("dev"));
 
+app.set("trust proxy", ["loopback", "127.0.0.1", "::1"]);
+
 const limiter = rateLimit({
   limit: 100,
   windowMs: 15 * 60 * 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: "Too many requests from this IP. Please try again in an hour!",
 });
 

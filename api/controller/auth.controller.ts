@@ -24,16 +24,37 @@ import Session from "../model/session.model";
 import appAssert from "../utils/app-assert";
 import { verifyEmailTemplate } from "../utils/email-templates";
 import { sendMail } from "../utils/email";
-import { client_dev_origin } from "../constants/env";
+import { apiip_accessKey, client_dev_origin } from "../constants/env";
 import { OTPPurpose } from "../model/otp.model";
+import axios from "axios";
+import requestIp from "request-ip";
 
 export const signup = catchErrors(async (req, res, next) => {
+  const ip = requestIp.getClientIp(req);
+
+  let location = {};
+  try {
+    const res = await axios.get(
+      `https://apiip.net/api/check?ip=${ip}&accessKey=${apiip_accessKey}`,
+    );
+    location = {
+      city: res.data.city,
+      country: res.data.countryName,
+      continent: res.data.continentName,
+    };
+  } catch (err) {
+    console.log("IP is invalid");
+  }
+
   const request = signupSchema.parse({
     ...req.body,
     userAgent: req.headers["user-agent"],
   });
 
-  const { refreshToken, accessToken, user } = await createAccount(request);
+  const { refreshToken, accessToken, user } = await createAccount({
+    ...request,
+    ...location,
+  });
 
   return setAuthCookies({ res, refreshToken, accessToken })
     .status(StatusCodes.OK)

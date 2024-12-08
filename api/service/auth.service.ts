@@ -29,6 +29,9 @@ export interface CreateAccountParams {
   password: string;
   confirmPassword: string;
   userAgent?: string;
+  city?: string;
+  country?: string;
+  continent?: string;
 }
 
 export interface LoginParams {
@@ -108,18 +111,21 @@ export const createAccount = async (data: CreateAccountParams) => {
     email: data.email,
     password: data.password,
     confirmPassword: data.confirmPassword,
+    city: data.city,
+    country: data.country,
+    continent: data.continent,
     role: admin_email === data.email ? "admin" : "user",
   });
 
   /*
-                        // create verification code
-                        const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
-                          expiresIn: jwt_verify_expires_in,
-                        });
-                      
-                        // send verification email
-                        const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
-                         */
+                          // create verification code
+                          const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
+                            expiresIn: jwt_verify_expires_in,
+                          });
+                        
+                          // send verification email
+                          const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
+                           */
 
   await sendOTPEmailVerification(user.email);
 

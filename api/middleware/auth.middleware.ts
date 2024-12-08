@@ -5,10 +5,19 @@ import { StatusCodes } from "http-status-codes";
 import { verifyToken } from "../utils/jwt";
 import User from "../model/user.model";
 import Session from "../model/session.model";
+import axios from "axios";
+import { apiip_accessKey } from "../constants/env";
 
 export const authenticate: RequestHandler = catchErrors(
   async (req, res, next) => {
-    console.log(req.headers["x-forwarded-for"]);
+    try {
+      const res = await axios.get(
+        `https://apiip.net/api/check?ip=${`94.20.125.55`}&accessKey=${apiip_accessKey}`,
+      );
+      console.log(res);
+    } catch (err) {
+      console.log("ip is not valid");
+    }
     const accessTokenFromCookies: string | undefined = req.cookies.accessToken;
     const accessTokenFromHeaders: string | undefined =
       req.headers.authorization;

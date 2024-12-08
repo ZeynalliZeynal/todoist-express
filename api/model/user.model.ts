@@ -23,6 +23,9 @@ export interface UserDocument extends mongoose.Document {
   verifiedAt?: Date;
   verified?: boolean;
   verificationToken?: string;
+  city: string;
+  country: string;
+  continent: string;
 
   comparePasswords(
     candidatePassword: string,
@@ -83,6 +86,9 @@ const schema = new mongoose.Schema<UserDocument>(
     verifiedAt: Date,
     verified: Boolean,
     verificationToken: String,
+    city: String,
+    country: String,
+    continent: String,
     isActive: {
       type: Boolean,
       default: true,

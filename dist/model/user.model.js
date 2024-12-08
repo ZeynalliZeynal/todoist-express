@@ -62,6 +62,9 @@ const schema = new mongoose_1.default.Schema({
     verifiedAt: Date,
     verified: Boolean,
     verificationToken: String,
+    city: String,
+    country: String,
+    continent: String,
     isActive: {
         type: Boolean,
         default: true,

@@ -29,9 +29,24 @@ const email_templates_1 = require("../utils/email-templates");
 const email_1 = require("../utils/email");
 const env_1 = require("../constants/env");
 const otp_model_1 = require("../model/otp.model");
+const axios_1 = __importDefault(require("axios"));
+const request_ip_1 = __importDefault(require("request-ip"));
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const ip = request_ip_1.default.getClientIp(req);
+    let location = {};
+    try {
+        const res = yield axios_1.default.get(`https://apiip.net/api/check?ip=${ip}&accessKey=${env_1.apiip_accessKey}`);
+        location = {
+            city: res.data.city,
+            country: res.data.countryName,
+            continent: res.data.continentName,
+        };
+    }
+    catch (err) {
+        console.log("IP is invalid");
+    }
     const request = auth_schema_1.signupSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent: req.headers["user-agent"] }));
-    const { refreshToken, accessToken, user } = yield (0, auth_service_1.createAccount)(request);
+    const { refreshToken, accessToken, user } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), location));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({

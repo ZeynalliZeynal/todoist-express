@@ -26,9 +26,12 @@ app.use((0, helmet_1.default)());
 app.use((0, express_mongo_sanitize_1.default)());
 app.use((0, hpp_1.default)());
 app.use((0, morgan_1.default)("dev"));
+app.set("trust proxy", ["loopback", "127.0.0.1", "::1"]);
 const limiter = (0, express_rate_limit_1.default)({
     limit: 100,
     windowMs: 15 * 60 * 1000,
+    standardHeaders: true,
+    legacyHeaders: false,
     message: "Too many requests from this IP. Please try again in an hour!",
 });
 app.use("/api", limiter);
