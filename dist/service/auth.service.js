@@ -113,14 +113,14 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
         role: env_1.admin_email === data.email ? "admin" : "user",
     });
     /*
-                            // create verification code
-                            const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
-                              expiresIn: jwt_verify_expires_in,
-                            });
-                          
-                            // send verification email
-                            const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
-                             */
+                              // create verification code
+                              const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
+                                expiresIn: jwt_verify_expires_in,
+                              });
+                            
+                              // send verification email
+                              const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
+                               */
     yield (0, exports.sendOTPEmailVerification)(user.email);
     // create session
     const session = yield session_model_1.default.create({
@@ -133,7 +133,6 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = (0, jwt_1.signToken)(sessionInfo, jwt_1.refreshTokenSignOptions);
     const accessToken = (0, jwt_1.signToken)(Object.assign({ userId: user._id }, sessionInfo));
     return {
-        user: { name: user.name, email: user.email },
         accessToken,
         refreshToken,
     };

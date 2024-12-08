@@ -118,14 +118,14 @@ export const createAccount = async (data: CreateAccountParams) => {
   });
 
   /*
-                          // create verification code
-                          const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
-                            expiresIn: jwt_verify_expires_in,
-                          });
-                        
-                          // send verification email
-                          const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
-                           */
+                            // create verification code
+                            const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
+                              expiresIn: jwt_verify_expires_in,
+                            });
+                          
+                            // send verification email
+                            const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
+                             */
 
   await sendOTPEmailVerification(user.email);
 
@@ -147,7 +147,6 @@ export const createAccount = async (data: CreateAccountParams) => {
   });
 
   return {
-    user: { name: user.name, email: user.email },
     accessToken,
     refreshToken,
   };

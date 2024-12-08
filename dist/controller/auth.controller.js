@@ -31,8 +31,10 @@ const env_1 = require("../constants/env");
 const otp_model_1 = require("../model/otp.model");
 const axios_1 = __importDefault(require("axios"));
 const request_ip_1 = __importDefault(require("request-ip"));
+const useragent_1 = __importDefault(require("useragent"));
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const ip = request_ip_1.default.getClientIp(req);
+    const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
     let location = {};
     try {
         const res = yield axios_1.default.get(`https://apiip.net/api/check?ip=${ip}&accessKey=${env_1.apiip_accessKey}`);
@@ -45,19 +47,19 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     catch (err) {
         console.log("IP is invalid");
     }
-    const request = auth_schema_1.signupSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent: req.headers["user-agent"] }));
-    const { refreshToken, accessToken, user } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), location));
+    const request = auth_schema_1.signupSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent }));
+    const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), location));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({
         status: "success",
         message: "Verification email sent. Please verify your email to continue.",
         tokens: { accessToken, refreshToken },
-        data: { user },
     });
 }));
 exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const request = auth_schema_1.loginSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent: req.headers["user-agent"] }));
+    const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
+    const request = auth_schema_1.loginSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent }));
     const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(request);
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)

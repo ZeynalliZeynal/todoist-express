@@ -28,9 +28,11 @@ import { apiip_accessKey, client_dev_origin } from "../constants/env";
 import { OTPPurpose } from "../model/otp.model";
 import axios from "axios";
 import requestIp from "request-ip";
+import useragent from "useragent";
 
 export const signup = catchErrors(async (req, res, next) => {
   const ip = requestIp.getClientIp(req);
+  const userAgent = useragent.parse(req.headers["user-agent"]);
 
   let location = {};
   try {
@@ -48,10 +50,10 @@ export const signup = catchErrors(async (req, res, next) => {
 
   const request = signupSchema.parse({
     ...req.body,
-    userAgent: req.headers["user-agent"],
+    userAgent,
   });
 
-  const { refreshToken, accessToken, user } = await createAccount({
+  const { refreshToken, accessToken } = await createAccount({
     ...request,
     ...location,
   });
@@ -62,14 +64,14 @@ export const signup = catchErrors(async (req, res, next) => {
       status: "success",
       message: "Verification email sent. Please verify your email to continue.",
       tokens: { accessToken, refreshToken },
-      data: { user },
     });
 });
 
 export const login = catchErrors(async (req, res, next) => {
+  const userAgent = useragent.parse(req.headers["user-agent"]);
   const request = loginSchema.parse({
     ...req.body,
-    userAgent: req.headers["user-agent"],
+    userAgent,
   });
 
   const { accessToken, refreshToken } = await loginUser(request);

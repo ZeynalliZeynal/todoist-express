@@ -19,16 +19,7 @@ const http_status_codes_1 = require("http-status-codes");
 const jwt_1 = require("../utils/jwt");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const session_model_1 = __importDefault(require("../model/session.model"));
-const axios_1 = __importDefault(require("axios"));
-const env_1 = require("../constants/env");
 exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const res = yield axios_1.default.get(`https://apiip.net/api/check?ip=${`94.20.125.55`}&accessKey=${env_1.apiip_accessKey}`);
-        console.log(res);
-    }
-    catch (err) {
-        console.log("ip is not valid");
-    }
     const accessTokenFromCookies = req.cookies.accessToken;
     const accessTokenFromHeaders = req.headers.authorization;
     const accessToken = (accessTokenFromHeaders === null || accessTokenFromHeaders === void 0 ? void 0 : accessTokenFromHeaders.split("Bearer ")[1].trim()) ||
