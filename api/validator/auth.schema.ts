@@ -6,7 +6,6 @@ export const passwordSchema = z.string().min(8).max(255);
 export const loginSchema = z.object({
   email: emailSchema,
   password: z.string().min(1),
-  userAgent: z.string().optional(),
 });
 
 export const signupSchema = loginSchema

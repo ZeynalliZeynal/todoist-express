@@ -7,7 +7,6 @@ exports.passwordSchema = zod_1.z.string().min(8).max(255);
 exports.loginSchema = zod_1.z.object({
     email: exports.emailSchema,
     password: zod_1.z.string().min(1),
-    userAgent: zod_1.z.string().optional(),
 });
 exports.signupSchema = exports.loginSchema
     .extend({

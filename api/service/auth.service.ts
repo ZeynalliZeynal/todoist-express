@@ -1,11 +1,11 @@
-import User from "../model/user.model";
+import User, { UserDocument } from "../model/user.model";
 import {
   admin_email,
   client_dev_origin,
   jwt_refresh_secret,
   jwt_verify_secret,
 } from "../constants/env";
-import Session from "../model/session.model";
+import Session, { SessionDocument } from "../model/session.model";
 import appAssert from "../utils/app-assert";
 import { StatusCodes } from "http-status-codes";
 import {
@@ -28,16 +28,15 @@ export interface CreateAccountParams {
   email: string;
   password: string;
   confirmPassword: string;
-  userAgent?: string;
-  city?: string;
-  country?: string;
-  continent?: string;
+  userAgent?: SessionDocument["userAgent"];
+  location?: UserDocument["location"];
+  planId: UserDocument["planId"];
 }
 
 export interface LoginParams {
   email: string;
   password: string;
-  userAgent?: string;
+  userAgent?: SessionDocument["userAgent"];
 }
 
 export const createEmailVerificationOTP = async (
@@ -111,21 +110,19 @@ export const createAccount = async (data: CreateAccountParams) => {
     email: data.email,
     password: data.password,
     confirmPassword: data.confirmPassword,
-    city: data.city,
-    country: data.country,
-    continent: data.continent,
+    location: data.location,
     role: admin_email === data.email ? "admin" : "user",
   });
 
   /*
-                            // create verification code
-                            const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
-                              expiresIn: jwt_verify_expires_in,
-                            });
-                          
-                            // send verification email
-                            const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
-                             */
+                                      // create verification code
+                                      const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
+                                        expiresIn: jwt_verify_expires_in,
+                                      });
+                                    
+                                      // send verification email
+                                      const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
+                                       */
 
   await sendOTPEmailVerification(user.email);
 

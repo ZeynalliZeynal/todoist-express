@@ -13,13 +13,11 @@ const schema = new mongoose_1.default.Schema({
         index: true,
     },
     userAgent: {
-        type: String,
+        type: Object,
     },
     expiresAt: {
         type: Date,
         default: (0, date_fns_1.addDays)(new Date(), 30),
     },
-}, {
-    timestamps: true,
-});
+}, { timestamps: true });
 exports.default = mongoose_1.default.model("Session", schema);

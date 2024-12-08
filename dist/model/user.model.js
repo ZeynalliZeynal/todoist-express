@@ -62,13 +62,19 @@ const schema = new mongoose_1.default.Schema({
     verifiedAt: Date,
     verified: Boolean,
     verificationToken: String,
-    city: { type: String, select: false },
-    country: { type: String, select: false },
-    continent: { type: String, select: false },
+    location: {
+        type: Object,
+    },
     isActive: {
         type: Boolean,
         default: true,
         select: false,
+    },
+    planId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "Plan",
+        index: true,
+        required: true,
     },
 }, {
     toJSON: {
@@ -81,7 +87,7 @@ const schema = new mongoose_1.default.Schema({
 });
 schema.virtual("tasks", {
     ref: "Task",
-    foreignField: "user", // foreign key
+    foreignField: "userId", // foreign key
     localField: "_id", // primary key
 });
 schema.pre("save", function (next) {

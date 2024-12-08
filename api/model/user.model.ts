@@ -23,9 +23,12 @@ export interface UserDocument extends mongoose.Document {
   verifiedAt?: Date;
   verified?: boolean;
   verificationToken?: string;
-  city: string;
-  country: string;
-  continent: string;
+  location?: {
+    city: string;
+    country: string;
+    continent: string;
+  };
+  planId: mongoose.Types.ObjectId;
 
   comparePasswords(
     candidatePassword: string,
@@ -86,13 +89,19 @@ const schema = new mongoose.Schema<UserDocument>(
     verifiedAt: Date,
     verified: Boolean,
     verificationToken: String,
-    city: { type: String, select: false },
-    country: { type: String, select: false },
-    continent: { type: String, select: false },
+    location: {
+      type: Object,
+    },
     isActive: {
       type: Boolean,
       default: true,
       select: false,
+    },
+    planId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Plan",
+      index: true,
+      required: true,
     },
   },
   {
@@ -108,7 +117,7 @@ const schema = new mongoose.Schema<UserDocument>(
 
 schema.virtual("tasks", {
   ref: "Task",
-  foreignField: "user", // foreign key
+  foreignField: "userId", // foreign key
   localField: "_id", // primary key
 });
 

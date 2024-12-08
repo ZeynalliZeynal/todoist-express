@@ -34,7 +34,13 @@ export const signup = catchErrors(async (req, res, next) => {
   const ip = requestIp.getClientIp(req);
   const userAgent = useragent.parse(req.headers["user-agent"]);
 
-  let location = {};
+  const userAgentObj = {
+    browser: userAgent.toAgent(),
+    os: userAgent.os.toString(),
+    device: userAgent.device.toString(),
+  };
+
+  let location;
   try {
     const res = await axios.get(
       `https://apiip.net/api/check?ip=${ip}&accessKey=${apiip_accessKey}`,
@@ -50,12 +56,13 @@ export const signup = catchErrors(async (req, res, next) => {
 
   const request = signupSchema.parse({
     ...req.body,
-    userAgent,
+    userAgentObj,
   });
 
   const { refreshToken, accessToken } = await createAccount({
     ...request,
-    ...location,
+    location,
+    planId: req.body.planId,
   });
 
   return setAuthCookies({ res, refreshToken, accessToken })
@@ -69,12 +76,20 @@ export const signup = catchErrors(async (req, res, next) => {
 
 export const login = catchErrors(async (req, res, next) => {
   const userAgent = useragent.parse(req.headers["user-agent"]);
+  const userAgentObj = {
+    browser: userAgent.toAgent(),
+    os: userAgent.os.toString(),
+    device: userAgent.device.toString(),
+  };
+
   const request = loginSchema.parse({
     ...req.body,
-    userAgent,
   });
 
-  const { accessToken, refreshToken } = await loginUser(request);
+  const { accessToken, refreshToken } = await loginUser({
+    ...request,
+    userAgent: userAgentObj,
+  });
 
   return setAuthCookies({ res, refreshToken, accessToken })
     .status(StatusCodes.OK)

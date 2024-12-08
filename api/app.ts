@@ -16,6 +16,7 @@ import cookieParser from "cookie-parser";
 import { StatusCodes } from "http-status-codes";
 import profileRouter from "./router/profile.router";
 import sessionRouter from "./router/session.router";
+import planRouter from "./router/plan.router";
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/profile/sessions", sessionRouter);
+app.use("/api/v1/plans", planRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
   next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
