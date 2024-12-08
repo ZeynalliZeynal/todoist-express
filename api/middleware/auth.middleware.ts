@@ -8,6 +8,7 @@ import Session from "../model/session.model";
 
 export const authenticate: RequestHandler = catchErrors(
   async (req, res, next) => {
+    console.log(req.headers["x-forwarded-for"]);
     const accessTokenFromCookies: string | undefined = req.cookies.accessToken;
     const accessTokenFromHeaders: string | undefined =
       req.headers.authorization;

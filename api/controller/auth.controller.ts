@@ -9,7 +9,8 @@ import {
   createAccount,
   loginUser,
   refreshUserAccessToken,
-  verifyEmail,
+  sendOTPEmailVerification,
+  verifyOTP,
 } from "../service/auth.service";
 import { StatusCodes } from "http-status-codes";
 import {
@@ -24,6 +25,7 @@ import appAssert from "../utils/app-assert";
 import { verifyEmailTemplate } from "../utils/email-templates";
 import { sendMail } from "../utils/email";
 import { client_dev_origin } from "../constants/env";
+import { OTPPurpose } from "../model/otp.model";
 
 export const signup = catchErrors(async (req, res, next) => {
   const request = signupSchema.parse({
@@ -80,12 +82,26 @@ export const logout = catchErrors(async (req, res, next) => {
 });
 
 export const verifyEmailController = catchErrors(async (req, res, next) => {
-  await verifyEmail(req.params.token);
+  // await verifyEmail(req.params.token);
+
+  await verifyOTP(req.body.otp, req.body.email, OTPPurpose.EMAIL_VERIFICATION);
 
   return res.status(StatusCodes.OK).json({
+    status: "success",
     message: "Email was successfully verified",
   });
 });
+
+export const resendVerifyEmailController = catchErrors(
+  async (req, res, next) => {
+    await sendOTPEmailVerification(req.body.email);
+
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      message: "Verification email sent.",
+    });
+  },
+);
 
 export const refreshToken = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {

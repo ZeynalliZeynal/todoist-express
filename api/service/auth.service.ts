@@ -3,7 +3,6 @@ import {
   admin_email,
   client_dev_origin,
   jwt_refresh_secret,
-  jwt_verify_expires_in,
   jwt_verify_secret,
 } from "../constants/env";
 import Session from "../model/session.model";
@@ -17,10 +16,12 @@ import {
 } from "../utils/jwt";
 import AppError from "../utils/app-error";
 import { sendMail } from "../utils/email";
-import { verifyEmailTemplate } from "../utils/email-templates";
-import { addDays } from "date-fns";
+import { otpVerificationEmail } from "../utils/email-templates";
+import { addDays, addMinutes } from "date-fns";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import mongoose from "mongoose";
+import OTP, { OTPPurpose } from "../model/otp.model";
+import crypto from "crypto";
 
 export interface CreateAccountParams {
   name: string;
@@ -35,6 +36,63 @@ export interface LoginParams {
   password: string;
   userAgent?: string;
 }
+
+export const createEmailVerificationOTP = async (
+  email: string,
+  otp: string,
+  purpose: OTPPurpose,
+) => {
+  const user = await User.exists({ email, verified: false });
+  if (!user)
+    throw new AppError("The user is already verified", StatusCodes.NOT_FOUND);
+
+  const existingOTP = await OTP.exists({ email });
+
+  if (existingOTP)
+    throw new AppError(
+      "You cannot create a new request while one already existed.",
+      StatusCodes.BAD_REQUEST,
+    );
+
+  const newOtp = await OTP.create({
+    email,
+    otp,
+    purpose,
+    expiresAt: addMinutes(Date.now(), 5),
+  });
+
+  return newOtp;
+};
+
+export const sendOTPEmailVerification = async (email: string) => {
+  const existingUser = await User.findOne({ email });
+
+  if (!existingUser)
+    throw new AppError("Email is incorrect", StatusCodes.NOT_FOUND);
+
+  const otp = crypto.randomInt(100000, 999999).toString();
+
+  const url = `${client_dev_origin}/auth/login/email`;
+
+  await createEmailVerificationOTP(email, otp, OTPPurpose.EMAIL_VERIFICATION);
+
+  try {
+    await sendMail({
+      to: [email],
+      ...otpVerificationEmail({
+        otp,
+        url,
+        auth: "sign up",
+        username: existingUser.name,
+      }),
+    });
+  } catch (err) {
+    throw new AppError(
+      "Error occurred sending an email",
+      StatusCodes.INTERNAL_SERVER_ERROR,
+    );
+  }
+};
 
 export const createAccount = async (data: CreateAccountParams) => {
   //   verify that user doesn't exist
@@ -53,24 +111,17 @@ export const createAccount = async (data: CreateAccountParams) => {
     role: admin_email === data.email ? "admin" : "user",
   });
 
-  // create verification code
-  const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
-    expiresIn: jwt_verify_expires_in,
-  });
+  /*
+                        // create verification code
+                        const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
+                          expiresIn: jwt_verify_expires_in,
+                        });
+                      
+                        // send verification email
+                        const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
+                         */
 
-  // send verification email
-  const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
-  try {
-    await sendMail({
-      to: [user.email],
-      ...verifyEmailTemplate(url),
-    });
-  } catch (err) {
-    throw new AppError(
-      "Error occurred sending an email",
-      StatusCodes.INTERNAL_SERVER_ERROR,
-    );
-  }
+  await sendOTPEmailVerification(user.email);
 
   // create session
   const session = await Session.create({
@@ -90,7 +141,7 @@ export const createAccount = async (data: CreateAccountParams) => {
   });
 
   return {
-    user,
+    user: { name: user.name, email: user.email },
     accessToken,
     refreshToken,
   };
@@ -180,6 +231,44 @@ export const refreshUserAccessToken = async (token: string) => {
   };
 };
 
+export const verifyOTP = async (
+  otp: string,
+  email: string,
+  purpose: OTPPurpose,
+) => {
+  const findUser = await User.findOne({ email });
+
+  if (!findUser)
+    throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
+
+  const findOTP = await OTP.findOne({
+    email,
+    purpose,
+    expiresAt: { $gte: Date.now() },
+    isUsed: false,
+  });
+
+  if (!findOTP)
+    throw new AppError("OTP has expired.", StatusCodes.UNAUTHORIZED);
+
+  const isMatch = await findOTP.compareOTPs(otp, findOTP.otp);
+
+  if (!isMatch)
+    throw new AppError(
+      "OTP is incorrect. Please try again.",
+      StatusCodes.UNAUTHORIZED,
+    );
+
+  findUser.verifiedAt = new Date();
+  findUser.verified = true;
+
+  findOTP.isUsed = true;
+
+  await findUser.save({
+    validateBeforeSave: false,
+  });
+  await findOTP.save();
+};
 export const verifyEmail = async (token: string) => {
   const decoded = jwt.verify(token, jwt_verify_secret);
 

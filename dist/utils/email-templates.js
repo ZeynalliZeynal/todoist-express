@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPasswordEmailTemplate = exports.verifyEmailTemplate = void 0;
+exports.otpVerificationEmail = exports.resetPasswordEmailTemplate = exports.verifyEmailTemplate = void 0;
 const verifyEmailTemplate = (url) => ({
     subject: "Verify Email",
     text: "Click to verify email",
@@ -505,3 +505,56 @@ text-decoration: none
 </html>`,
 });
 exports.resetPasswordEmailTemplate = resetPasswordEmailTemplate;
+const otpVerificationEmail = ({ username, otp, url, auth, }) => ({
+    subject: `${otp} - Todoist NEXT ${auth === "log in" ? "Login" : "Signup"} Verification`,
+    text: "OTP code for email verification",
+    html: `
+  <body><table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%!important">
+  <tbody>
+    <tr>
+      <td align="center">
+        <table style="border:1px solid #eaeaea;border-radius:5px;margin:40px 0;max-width:600px" border="0" cellspacing="0" cellpadding="40">
+          <tbody>
+            <tr>
+              <td align="center">
+                <div style="font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;text-align:left;">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%!important">
+                    <tbody>
+                      <tr>
+                        <td align="center">
+                          <div><img src="http://img.mailinblue.com/8035722/images/675583c82b3de_1733657544.png" alt="Todoist" data-bit="iit"></div>
+                          <h1 style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:24px;font-weight:normal;margin:30px 0;padding:0">Verify your email to ${auth} to <strong style="color:#000;font-weight:bold">Todoist</strong></h1>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px">Hello <strong style="color:#000;font-weight:bold">${username}</strong>,</p>
+                  <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px">We have received a ${auth} attempt from <strong style="color:#000;font-weight:bold">{location}</strong>.</p>
+                  <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px">To complete the ${auth} process; enter the 6-digit code in the original window, or enter it in a new one by going to the link below:</p>
+                  <br>
+
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%!important">
+                    <tbody>
+                      <tr>
+                        <td align="center" bgcolor="#f6f6f6" valign="middle" height="40" style="font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:16px;font-weight:bold">${otp}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <br>
+                  <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px"><a href=${url} style="color:#067df7;text-decoration:none" target="_blank">${url}</a></p>
+                  <br>
+                  <hr style="border:none;border-top:1px solid #eaeaea;margin:26px 0;width:100%">
+                  <p style="color:#666666;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:12px;line-height:24px">If you didn't attempt to ${auth} but received this email, or if the location doesn't match, please ignore this email. Don't share or forward the 6-digit code with anyone. Our customer service will never ask for it. Do not read this code out loud. Be cautious of phishing attempts and always verify the sender and domain (<a href=${url} target="_blank">${url}</a>) before acting. If you are concerned about your account's safety, please visit our <a href="${url}/help" style="color:#067df7;text-decoration:none" target="_blank">Help page</a> to get in touch with us.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table></body>`,
+});
+exports.otpVerificationEmail = otpVerificationEmail;

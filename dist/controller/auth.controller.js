@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.updatePassword = exports.authorizeTo = exports.refreshToken = exports.verifyEmailController = exports.logout = exports.login = exports.signup = void 0;
+exports.resetPassword = exports.forgotPassword = exports.updatePassword = exports.authorizeTo = exports.refreshToken = exports.resendVerifyEmailController = exports.verifyEmailController = exports.logout = exports.login = exports.signup = void 0;
 const user_model_1 = __importDefault(require("../model/user.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const catch_errors_2 = __importDefault(require("../utils/catch-errors"));
@@ -28,6 +28,7 @@ const app_assert_1 = __importDefault(require("../utils/app-assert"));
 const email_templates_1 = require("../utils/email-templates");
 const email_1 = require("../utils/email");
 const env_1 = require("../constants/env");
+const otp_model_1 = require("../model/otp.model");
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const request = auth_schema_1.signupSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent: req.headers["user-agent"] }));
     const { refreshToken, accessToken, user } = yield (0, auth_service_1.createAccount)(request);
@@ -65,9 +66,18 @@ exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     });
 }));
 exports.verifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_service_1.verifyEmail)(req.params.token);
+    // await verifyEmail(req.params.token);
+    yield (0, auth_service_1.verifyOTP)(req.body.otp, req.body.email, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
     return res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success",
         message: "Email was successfully verified",
+    });
+}));
+exports.resendVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, auth_service_1.sendOTPEmailVerification)(req.body.email);
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success",
+        message: "Verification email sent.",
     });
 }));
 exports.refreshToken = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

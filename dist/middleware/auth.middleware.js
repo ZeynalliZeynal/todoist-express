@@ -20,6 +20,7 @@ const jwt_1 = require("../utils/jwt");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const session_model_1 = __importDefault(require("../model/session.model"));
 exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.headers["x-forwarded-for"]);
     const accessTokenFromCookies = req.cookies.accessToken;
     const accessTokenFromHeaders = req.headers.authorization;
     const accessToken = (accessTokenFromHeaders === null || accessTokenFromHeaders === void 0 ? void 0 : accessTokenFromHeaders.split("Bearer ")[1].trim()) ||
