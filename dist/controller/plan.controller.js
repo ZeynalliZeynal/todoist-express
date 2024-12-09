@@ -28,12 +28,13 @@ exports.getPlans = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     });
 }));
 exports.createPlan = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, description, price, features } = req.body;
+    const { name, description, price, features, status } = req.body;
     const plan = yield plan_model_1.default.create({
         name,
         description,
         price,
         features,
+        status,
     });
     return res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",

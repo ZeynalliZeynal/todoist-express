@@ -15,8 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const validator_1 = __importDefault(require("validator"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const crypto_1 = __importDefault(require("crypto"));
-const date_fns_1 = require("date-fns");
 const ROLES = ["admin", "user"];
 const schema = new mongoose_1.default.Schema({
     name: {
@@ -32,24 +30,24 @@ const schema = new mongoose_1.default.Schema({
         lowercase: true,
         validate: [validator_1.default.isEmail, "Your email is not a valid"],
     },
-    password: {
-        type: String,
-        required: [true, "Password is required"],
-        minlength: [8, "Password must be at least 8 characters"],
-        select: false,
-    },
-    confirmPassword: {
-        type: String,
-        required: [true, "Please confirm your password"],
-        validate: {
-            // * works only on save
-            validator: function (value) {
-                return value === this.password;
-            },
-            message: "Passwords must match",
-        },
-    },
-    passwordChangedAt: Date,
+    // password: {
+    //   type: String,
+    //   required: [true, "Password is required"],
+    //   minlength: [8, "Password must be at least 8 characters"],
+    //   select: false,
+    // },
+    // confirmPassword: {
+    //   type: String,
+    //   required: [true, "Please confirm your password"],
+    //   validate: {
+    //     // * works only on save
+    //     validator: function (value) {
+    //       return value === this.password;
+    //     },
+    //     message: "Passwords must match",
+    //   },
+    // },
+    // passwordChangedAt: Date,
     role: {
         type: String,
         enum: ["admin", "user"],
@@ -90,21 +88,20 @@ schema.virtual("tasks", {
     foreignField: "userId", // foreign key
     localField: "_id", // primary key
 });
-schema.pre("save", function (next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!this.isModified("password"))
-            return next();
-        this.password = yield bcryptjs_1.default.hash(this.password, 12);
-        this.confirmPassword = undefined;
-        next();
-    });
-});
-schema.pre("save", function (next) {
-    if (!this.isModified("password") || this.isNew)
-        return next();
-    this.passwordChangedAt = Date.now() - 1000;
-    next();
-});
+// schema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+//
+//   this.password = await bcrypt.hash(this.password as string, 12);
+//   this.confirmPassword = undefined;
+//
+//   next();
+// });
+// schema.pre("save", function (next) {
+//   if (!this.isModified("password") || this.isNew) return next();
+//
+//   this.passwordChangedAt = Date.now() - 1000;
+//   next();
+// });
 schema.pre(/^find/, function (next) {
     this.find({ active: { $ne: false } });
     next();
@@ -114,30 +111,36 @@ schema.method("comparePasswords", function (candidatePassword, userPassword) {
         return yield bcryptjs_1.default.compare(candidatePassword, userPassword);
     });
 });
-schema.method("isPasswordChangedAfter", function (JWTTimestamp) {
-    if (this.passwordChangedAt) {
-        const changedTimestamp = parseInt(String(new Date(this.passwordChangedAt).getTime() / 1000), 10);
-        return JWTTimestamp < changedTimestamp;
-    }
-    return false;
-});
-schema.method("createResetPasswordToken", function () {
-    const resetToken = crypto_1.default.randomBytes(32).toString("hex");
-    this.resetPasswordToken = crypto_1.default
-        .createHash("sha256")
-        .update(resetToken)
-        .digest("hex");
-    this.resetPasswordExpires = (0, date_fns_1.addMinutes)(Date.now(), 5).getTime();
-    return resetToken;
-});
-schema.method("createVerificationToken", function () {
-    const verificationToken = crypto_1.default.randomBytes(32).toString("hex");
-    this.resetPasswordToken = crypto_1.default
-        .createHash("sha256")
-        .update(verificationToken)
-        .digest("hex");
-    return verificationToken;
-});
+// schema.method("isPasswordChangedAfter", function (JWTTimestamp) {
+//   if (this.passwordChangedAt) {
+//     const changedTimestamp = parseInt(
+//       String(new Date(this.passwordChangedAt).getTime() / 1000),
+//       10,
+//     );
+//
+//     return JWTTimestamp < changedTimestamp;
+//   }
+//   return false;
+// });
+// schema.method("createResetPasswordToken", function () {
+//   const resetToken = crypto.randomBytes(32).toString("hex");
+//   this.resetPasswordToken = crypto
+//     .createHash("sha256")
+//     .update(resetToken)
+//     .digest("hex");
+//   this.resetPasswordExpires = addMinutes(Date.now(), 5).getTime();
+//
+//   return resetToken;
+// });
+// schema.method("createVerificationToken", function () {
+//   const verificationToken = crypto.randomBytes(32).toString("hex");
+//   this.resetPasswordToken = crypto
+//     .createHash("sha256")
+//     .update(verificationToken)
+//     .digest("hex");
+//
+//   return verificationToken;
+// });
 schema.method("isVerified", function () {
     return this.verified;
 });

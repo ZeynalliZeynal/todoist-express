@@ -6,7 +6,6 @@ import {
   jwt_verify_secret,
 } from "../constants/env";
 import Session, { SessionDocument } from "../model/session.model";
-import appAssert from "../utils/app-assert";
 import { StatusCodes } from "http-status-codes";
 import {
   RefreshTokenPayload,
@@ -26,8 +25,8 @@ import crypto from "crypto";
 export interface CreateAccountParams {
   name: string;
   email: string;
-  password: string;
-  confirmPassword: string;
+  // password: string;
+  // confirmPassword: string;
   userAgent?: SessionDocument["userAgent"];
   location?: UserDocument["location"];
   planId: UserDocument["planId"];
@@ -35,7 +34,7 @@ export interface CreateAccountParams {
 
 export interface LoginParams {
   email: string;
-  password: string;
+  // password: string;
   userAgent?: SessionDocument["userAgent"];
 }
 
@@ -66,7 +65,10 @@ export const createEmailVerificationOTP = async (
   return newOtp;
 };
 
-export const sendOTPEmailVerification = async (email: string) => {
+export const sendOTPEmailVerification = async (
+  email: string,
+  auth: "sign up" | "log in",
+) => {
   const existingUser = await User.findOne({ email });
 
   if (!existingUser)
@@ -84,7 +86,7 @@ export const sendOTPEmailVerification = async (email: string) => {
       ...otpVerificationEmail({
         otp,
         url,
-        auth: "sign up",
+        auth,
         username: existingUser.name,
       }),
     });
@@ -102,29 +104,18 @@ export const createAccount = async (data: CreateAccountParams) => {
     email: data.email,
   });
 
-  appAssert(!existingUser, "Email already in use", StatusCodes.CONFLICT);
+  if (!existingUser)
+    throw new AppError("Email already exists", StatusCodes.CONFLICT);
 
   // create new user
   const user = await User.create({
     name: data.name,
     email: data.email,
-    password: data.password,
-    confirmPassword: data.confirmPassword,
     location: data.location,
     role: admin_email === data.email ? "admin" : "user",
   });
 
-  /*
-                                      // create verification code
-                                      const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
-                                        expiresIn: jwt_verify_expires_in,
-                                      });
-                                    
-                                      // send verification email
-                                      const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
-                                       */
-
-  await sendOTPEmailVerification(user.email);
+  await sendOTPEmailVerification(user.email, "sign up");
 
   // create session
   const session = await Session.create({
@@ -149,27 +140,24 @@ export const createAccount = async (data: CreateAccountParams) => {
   };
 };
 
-export const loginUser = async ({
-  email,
-  password,
-  userAgent,
-}: LoginParams) => {
+export const loginUser = async ({ email, userAgent }: LoginParams) => {
   // get user by email
-  const user = await User.findOne({ email }).select("+password");
-  appAssert(user, "Email or password is incorrect", StatusCodes.UNAUTHORIZED);
+  const user = await User.findOne({ email });
+  if (!user) throw new AppError("Email is incorrect", StatusCodes.NOT_FOUND);
 
   // validate password
-  const isPasswordValid = await user!.comparePasswords(
-    password,
-    user!.password,
-  );
-  appAssert(
-    isPasswordValid,
-    "Invalid email or password",
-    StatusCodes.UNAUTHORIZED,
-  );
+  // const isPasswordValid = await user!.comparePasswords(
+  //   password,
+  //   user!.password,
+  // );
+  // appAssert(
+  //   isPasswordValid,
+  //   "Invalid email or password",
+  //   StatusCodes.UNAUTHORIZED,
+  // );
 
-  const userId = user!.id;
+  await sendOTPEmailVerification(user.email, "log in");
+  const userId = user._id;
 
   // create a session
   const session = await Session.create({
@@ -251,13 +239,16 @@ export const verifyOTP = async (
   });
 
   if (!findOTP)
-    throw new AppError("OTP has expired.", StatusCodes.UNAUTHORIZED);
+    throw new AppError(
+      "The code has expired. Request a new one.",
+      StatusCodes.UNAUTHORIZED,
+    );
 
   const isMatch = await findOTP.compareOTPs(otp, findOTP.otp);
 
   if (!isMatch)
     throw new AppError(
-      "OTP is incorrect. Please try again.",
+      "The entered code is incorrect. Please try again and check for typos.",
       StatusCodes.UNAUTHORIZED,
     );
 

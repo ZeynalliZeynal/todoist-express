@@ -49,7 +49,6 @@ exports.verifyEmail = exports.verifyOTP = exports.refreshUserAccessToken = expor
 const user_model_1 = __importDefault(require("../model/user.model"));
 const env_1 = require("../constants/env");
 const session_model_1 = __importDefault(require("../model/session.model"));
-const app_assert_1 = __importDefault(require("../utils/app-assert"));
 const http_status_codes_1 = require("http-status-codes");
 const jwt_1 = require("../utils/jwt");
 const app_error_1 = __importDefault(require("../utils/app-error"));
@@ -75,7 +74,7 @@ const createEmailVerificationOTP = (email, otp, purpose) => __awaiter(void 0, vo
     return newOtp;
 });
 exports.createEmailVerificationOTP = createEmailVerificationOTP;
-const sendOTPEmailVerification = (email) => __awaiter(void 0, void 0, void 0, function* () {
+const sendOTPEmailVerification = (email, auth) => __awaiter(void 0, void 0, void 0, function* () {
     const existingUser = yield user_model_1.default.findOne({ email });
     if (!existingUser)
         throw new app_error_1.default("Email is incorrect", http_status_codes_1.StatusCodes.NOT_FOUND);
@@ -86,7 +85,7 @@ const sendOTPEmailVerification = (email) => __awaiter(void 0, void 0, void 0, fu
         yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
             otp,
             url,
-            auth: "sign up",
+            auth,
             username: existingUser.name,
         })));
     }
@@ -100,26 +99,16 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const existingUser = yield user_model_1.default.exists({
         email: data.email,
     });
-    (0, app_assert_1.default)(!existingUser, "Email already in use", http_status_codes_1.StatusCodes.CONFLICT);
+    if (!existingUser)
+        throw new app_error_1.default("Email already exists", http_status_codes_1.StatusCodes.CONFLICT);
     // create new user
     const user = yield user_model_1.default.create({
         name: data.name,
         email: data.email,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
         location: data.location,
         role: env_1.admin_email === data.email ? "admin" : "user",
     });
-    /*
-                                        // create verification code
-                                        const verificationToken = jwt.sign({ userId: user._id }, jwt_verify_secret, {
-                                          expiresIn: jwt_verify_expires_in,
-                                        });
-                                      
-                                        // send verification email
-                                        const url = `${client_dev_origin}/auth/email/verify/${verificationToken}`;
-                                         */
-    yield (0, exports.sendOTPEmailVerification)(user.email);
+    yield (0, exports.sendOTPEmailVerification)(user.email, "sign up");
     // create session
     const session = yield session_model_1.default.create({
         userId: user._id,
@@ -136,14 +125,23 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 exports.createAccount = createAccount;
-const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, password, userAgent, }) {
+const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, userAgent }) {
     // get user by email
-    const user = yield user_model_1.default.findOne({ email }).select("+password");
-    (0, app_assert_1.default)(user, "Email or password is incorrect", http_status_codes_1.StatusCodes.UNAUTHORIZED);
+    const user = yield user_model_1.default.findOne({ email });
+    if (!user)
+        throw new app_error_1.default("Email is incorrect", http_status_codes_1.StatusCodes.NOT_FOUND);
     // validate password
-    const isPasswordValid = yield user.comparePasswords(password, user.password);
-    (0, app_assert_1.default)(isPasswordValid, "Invalid email or password", http_status_codes_1.StatusCodes.UNAUTHORIZED);
-    const userId = user.id;
+    // const isPasswordValid = await user!.comparePasswords(
+    //   password,
+    //   user!.password,
+    // );
+    // appAssert(
+    //   isPasswordValid,
+    //   "Invalid email or password",
+    //   StatusCodes.UNAUTHORIZED,
+    // );
+    yield (0, exports.sendOTPEmailVerification)(user.email, "log in");
+    const userId = user._id;
     // create a session
     const session = yield session_model_1.default.create({
         userId,
@@ -203,10 +201,10 @@ const verifyOTP = (otp, email, purpose) => __awaiter(void 0, void 0, void 0, fun
         isUsed: false,
     });
     if (!findOTP)
-        throw new app_error_1.default("OTP has expired.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
+        throw new app_error_1.default("The code has expired. Request a new one.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
     const isMatch = yield findOTP.compareOTPs(otp, findOTP.otp);
     if (!isMatch)
-        throw new app_error_1.default("OTP is incorrect. Please try again.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
+        throw new app_error_1.default("The entered code is incorrect. Please try again and check for typos.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
     findUser.verifiedAt = new Date();
     findUser.verified = true;
     findOTP.isUsed = true;

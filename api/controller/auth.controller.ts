@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import User, { Roles } from "../model/user.model";
+import User, { RoleProps } from "../model/user.model";
 import catchAsync from "../utils/catch-errors";
 import catchErrors from "../utils/catch-errors";
 import AppError from "../utils/app-error";
-import crypto from "crypto";
 import { loginSchema, signupSchema } from "../validator/auth.schema";
 import {
   createAccount,
@@ -19,12 +18,10 @@ import {
   getRefreshTokenCookieOptions,
   setAuthCookies,
 } from "../utils/cookies";
-import { refreshTokenSignOptions, signToken, verifyToken } from "../utils/jwt";
+import { verifyToken } from "../utils/jwt";
 import Session from "../model/session.model";
 import appAssert from "../utils/app-assert";
-import { verifyEmailTemplate } from "../utils/email-templates";
-import { sendMail } from "../utils/email";
-import { apiip_accessKey, client_dev_origin } from "../constants/env";
+import { apiip_accessKey } from "../constants/env";
 import { OTPPurpose } from "../model/otp.model";
 import axios from "axios";
 import requestIp from "request-ip";
@@ -70,7 +67,6 @@ export const signup = catchErrors(async (req, res, next) => {
     .json({
       status: "success",
       message: "Verification email sent. Please verify your email to continue.",
-      tokens: { accessToken, refreshToken },
     });
 });
 
@@ -95,8 +91,7 @@ export const login = catchErrors(async (req, res, next) => {
     .status(StatusCodes.OK)
     .json({
       status: "success",
-      message: "Login successful",
-      tokens: { accessToken, refreshToken },
+      message: "Verification email sent. Please verify your email to continue",
     });
 });
 
@@ -167,7 +162,7 @@ export const refreshToken = catchErrors(
   },
 );
 
-export const authorizeTo = (roles: Roles) =>
+export const authorizeTo = (roles: RoleProps) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findById(req.userId).select("+role");
     if (!user || !roles.includes(user.role)) {
@@ -182,6 +177,7 @@ export const authorizeTo = (roles: Roles) =>
     next();
   });
 
+/*
 export const updatePassword = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findById(req.userId).select("+password");
@@ -305,3 +301,4 @@ export const resetPassword = catchErrors(
     });
   },
 );
+*/

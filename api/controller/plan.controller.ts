@@ -20,13 +20,14 @@ export const getPlans: RequestHandler = catchErrors(async (req, res, next) => {
 
 export const createPlan: RequestHandler = catchErrors(
   async (req, res, next) => {
-    const { name, description, price, features } = req.body;
+    const { name, description, price, features, status } = req.body;
 
     const plan = await Plan.create({
       name,
       description,
       price,
       features,
+      status,
     });
 
     return res.status(StatusCodes.OK).json({
