@@ -18,7 +18,10 @@ const plan_model_1 = __importDefault(require("../model/plan.model"));
 const http_status_codes_1 = require("http-status-codes");
 const plan_features_model_1 = __importDefault(require("../model/plan-features.model"));
 exports.getPlans = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const plans = yield plan_model_1.default.find().populate("allFeatures");
+    let query = plan_model_1.default.find();
+    if (req.query.features && req.query.features === "enable")
+        query = query.select("+featureIds").populate("allFeatures");
+    const plans = yield query;
     return res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: { plans },

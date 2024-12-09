@@ -24,6 +24,7 @@ const schema = new mongoose_1.default.Schema({
         {
             type: mongoose_1.default.Schema.Types.ObjectId,
             ref: "PlanFeature",
+            select: false,
         },
     ],
 }, {
@@ -38,10 +39,6 @@ schema.virtual("allFeatures", {
 });
 schema.pre(/^find/, function (next) {
     this.select("-__v");
-    this.populate({
-        path: "allFeatures",
-        select: "-__v",
-    });
     next();
 });
 exports.default = mongoose_1.default.model("Plan", schema);

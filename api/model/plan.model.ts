@@ -28,6 +28,7 @@ const schema = new mongoose.Schema<PlanDocument>(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "PlanFeature",
+        select: false,
       },
     ],
   },
@@ -46,10 +47,6 @@ schema.virtual("allFeatures", {
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {
   this.select("-__v");
-  this.populate({
-    path: "allFeatures",
-    select: "-__v",
-  });
   next();
 });
 

@@ -5,7 +5,12 @@ import { StatusCodes } from "http-status-codes";
 import PlanFeature from "../model/plan-features.model";
 
 export const getPlans: RequestHandler = catchErrors(async (req, res, next) => {
-  const plans = await Plan.find().populate("allFeatures");
+  let query = Plan.find();
+
+  if (req.query.features && req.query.features === "enable")
+    query = query.select("+featureIds").populate("allFeatures");
+
+  const plans = await query;
 
   return res.status(StatusCodes.OK).json({
     status: "success",
