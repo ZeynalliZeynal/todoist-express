@@ -98,6 +98,7 @@ export const sendLoginEmailVerification = async ({
         url,
         auth: "log in",
         username: existingUser.name,
+        location: existingUser.location,
       }),
     });
 
@@ -109,13 +110,16 @@ export const sendLoginEmailVerification = async ({
     );
   }
 };
-export const sendSignupEmailVerification = async ({
-  name,
-  email,
-}: {
-  email: string;
-  name: string;
-}) => {
+export const sendSignupEmailVerification = async (
+  {
+    name,
+    email,
+  }: {
+    email: string;
+    name: string;
+  },
+  location: UserDocument["location"],
+) => {
   const otp = crypto.randomInt(100000, 999999).toString();
   const token = await createEmailVerificationOTP(
     {
@@ -139,6 +143,7 @@ export const sendSignupEmailVerification = async ({
         url,
         auth: "sign up",
         username: name,
+        location,
       }),
     });
 

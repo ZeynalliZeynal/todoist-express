@@ -89,6 +89,7 @@ const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, funct
             url,
             auth: "log in",
             username: existingUser.name,
+            location: existingUser.location,
         })));
         return token;
     }
@@ -97,7 +98,7 @@ const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, funct
     }
 });
 exports.sendLoginEmailVerification = sendLoginEmailVerification;
-const sendSignupEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ name, email, }) {
+const sendSignupEmailVerification = (_a, location_1) => __awaiter(void 0, [_a, location_1], void 0, function* ({ name, email, }, location) {
     const otp = crypto_1.default.randomInt(100000, 999999).toString();
     const token = yield (0, exports.createEmailVerificationOTP)({
         email,
@@ -114,6 +115,7 @@ const sendSignupEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, func
             url,
             auth: "sign up",
             username: name,
+            location,
         })));
         return token;
     }

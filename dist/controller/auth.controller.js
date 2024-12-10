@@ -114,7 +114,20 @@ exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, 
 }));
 exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const request = auth_schema_1.signupVerificationSchema.parse(req.body);
-    const token = yield (0, auth_service_1.sendSignupEmailVerification)(request);
+    const ip = request_ip_1.default.getClientIp(req);
+    let location;
+    try {
+        const res = yield axios_1.default.get(`https://apiip.net/api/check?ip=${ip}&accessKey=${env_1.apiip_accessKey}`);
+        location = {
+            city: res.data.city,
+            country: res.data.countryName,
+            continent: res.data.continentName,
+        };
+    }
+    catch (err) {
+        console.log("IP is invalid");
+    }
+    const token = yield (0, auth_service_1.sendSignupEmailVerification)(request, location);
     return (0, cookies_1.setVerifyCookies)({
         res,
         verifyToken: token,
