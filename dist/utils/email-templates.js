@@ -505,7 +505,7 @@ text-decoration: none
 </html>`,
 });
 exports.resetPasswordEmailTemplate = resetPasswordEmailTemplate;
-const otpVerificationEmail = ({ username, otp, url, auth, }) => ({
+const otpVerificationEmail = ({ username, otp, url, auth, location, }) => ({
     subject: `${otp} - Todoist NEXT ${auth === "log in" ? "Login" : "Signup"} Verification`,
     text: "OTP code for email verification",
     html: `
@@ -530,7 +530,7 @@ const otpVerificationEmail = ({ username, otp, url, auth, }) => ({
                   </table>
 
                   <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px">Hello <strong style="color:#000;font-weight:bold">${username}</strong>,</p>
-                  <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px">We have received a ${auth} attempt from <strong style="color:#000;font-weight:bold">{location}</strong>.</p>
+                  <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px">We have received a ${auth} attempt${location && (location.city || location.country) && ` from <strong style="color:#000;font-weight:bold">${location.city}, ${location.country}</strong>`}.</p>
                   <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;font-size:14px;line-height:24px">To complete the ${auth} process; enter the 6-digit code in the original window, or enter it in a new one by going to the link below:</p>
                   <br>
 
