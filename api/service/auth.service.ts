@@ -199,7 +199,14 @@ export const loginUser = async ({
     OTPPurpose.EMAIL_VERIFICATION,
   );
 
-  const user = await User.findOne({ email });
+  const user = await User.findOneAndUpdate(
+    { email },
+    {
+      verified: true,
+      verifiedAt: Date.now(),
+    },
+    { new: true },
+  );
 
   if (!user) throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
 
@@ -305,6 +312,12 @@ export const verifyOTP = async (
     throw new AppError(
       "The code has expired. Request a new one.",
       StatusCodes.UNAUTHORIZED,
+    );
+
+  if (existingOtp.isUsed)
+    throw new AppError(
+      "This code is already used. Please request a new one.",
+      StatusCodes.BAD_REQUEST,
     );
 
   const isMatch = await existingOtp.compareOTPs(otp, existingOtp.otp);

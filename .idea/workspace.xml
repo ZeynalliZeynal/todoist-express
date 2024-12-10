@@ -7,19 +7,9 @@
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/controller/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/auth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/middleware/auth.middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/auth.middleware.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/model/otp.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/otp.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/router/auth.router.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/router/auth.router.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/service/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/utils/jwt.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/utils/jwt.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/validator/auth.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/validator/auth.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/controller/auth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/auth.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/middleware/auth.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/auth.middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/otp.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/otp.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/auth.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/auth.router.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/service/auth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/auth.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/jwt.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/jwt.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/validator/auth.schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/validator/auth.schema.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,7 +165,7 @@
       <workItem from="1733614028606" duration="78000" />
       <workItem from="1733652983466" duration="30244000" />
       <workItem from="1733761294264" duration="17787000" />
-      <workItem from="1733830257103" duration="5897000" />
+      <workItem from="1733830257103" duration="6859000" />
     </task>
     <servers />
   </component>

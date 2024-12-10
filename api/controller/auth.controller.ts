@@ -89,7 +89,12 @@ export const login = catchErrors(async (req, res, next) => {
     device: userAgent.device.toString(),
   };
 
-  const { otp, verifyToken } = req.body;
+  const { otp } = req.body;
+
+  if (!req.query.token)
+    return next(
+      new AppError("Token is param required.", StatusCodes.BAD_REQUEST),
+    );
 
   const request = loginSchema.parse({
     otp,
@@ -97,7 +102,7 @@ export const login = catchErrors(async (req, res, next) => {
 
   const { accessToken, refreshToken } = await loginUser({
     ...request,
-    verifyToken,
+    verifyToken: String(req.query.token),
     userAgent: userAgentObj,
   });
 
@@ -138,6 +143,7 @@ export const sendLoginVerifyEmailController = catchErrors(
   async (req, res, next) => {
     const email = emailSchema.parse(req.body.email);
 
+    console.log(email);
     const token = await sendLoginEmailVerification({
       email,
     });

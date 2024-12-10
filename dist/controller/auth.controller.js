@@ -69,11 +69,13 @@ exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0
         os: userAgent.os.toString(),
         device: userAgent.device.toString(),
     };
-    const { otp, verifyToken } = req.body;
+    const { otp } = req.body;
+    if (!req.query.token)
+        return next(new app_error_1.default("Token is param required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
     const request = auth_schema_1.loginSchema.parse({
         otp,
     });
-    const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(Object.assign(Object.assign({}, request), { verifyToken, userAgent: userAgentObj }));
+    const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), userAgent: userAgentObj }));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({
@@ -97,6 +99,7 @@ exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
 }));
 exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const email = auth_schema_1.emailSchema.parse(req.body.email);
+    console.log(email);
     const token = yield (0, auth_service_1.sendLoginEmailVerification)({
         email,
     });

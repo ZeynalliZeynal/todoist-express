@@ -150,7 +150,10 @@ exports.createAccount = createAccount;
 const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, verifyToken, userAgent, }) {
     // verify the user's email
     const { email } = yield (0, exports.verifyOTP)(otp, verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    const user = yield user_model_1.default.findOne({ email });
+    const user = yield user_model_1.default.findOneAndUpdate({ email }, {
+        verified: true,
+        verifiedAt: Date.now(),
+    }, { new: true });
     if (!user)
         throw new app_error_1.default("Email is incorrect.", http_status_codes_1.StatusCodes.NOT_FOUND);
     // validate password
@@ -227,6 +230,8 @@ const verifyOTP = (otp, token, purpose) => __awaiter(void 0, void 0, void 0, fun
     });
     if (!existingOtp)
         throw new app_error_1.default("The code has expired. Request a new one.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
+    if (existingOtp.isUsed)
+        throw new app_error_1.default("This code is already used. Please request a new one.", http_status_codes_1.StatusCodes.BAD_REQUEST);
     const isMatch = yield existingOtp.compareOTPs(otp, existingOtp.otp);
     if (!isMatch)
         throw new app_error_1.default("The entered code is incorrect. Please try again and check for typos.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
