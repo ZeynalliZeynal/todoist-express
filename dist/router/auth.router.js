@@ -7,11 +7,12 @@ const express_1 = __importDefault(require("express"));
 const auth_controller_1 = require("../controller/auth.controller");
 const router = express_1.default.Router();
 router.post("/signup", auth_controller_1.signup);
+router.post("/signup/email/send", auth_controller_1.sendSignupVerifyEmailController);
 router.post("/login", auth_controller_1.login);
+router.post("/login/email/send", auth_controller_1.sendLoginVerifyEmailController);
 router.post("/logout", auth_controller_1.logout);
 router.post("/refresh", auth_controller_1.refreshToken);
-router.post("/email/verify", auth_controller_1.verifyEmailController);
-router.post("/email/verify/resend", auth_controller_1.resendVerifyEmailController);
+// router.post("/email/verify", verifyEmailController);
 /*
 router.post("/password/forgot", forgotPassword);
 router.patch("/password/reset/:token", resetPassword);

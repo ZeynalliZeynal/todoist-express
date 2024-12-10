@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authorizeTo = exports.refreshToken = exports.resendVerifyEmailController = exports.verifyEmailController = exports.logout = exports.login = exports.signup = void 0;
+exports.authorizeTo = exports.refreshToken = exports.sendSignupVerifyEmailController = exports.sendLoginVerifyEmailController = exports.logout = exports.login = exports.signup = void 0;
 const user_model_1 = __importDefault(require("../model/user.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const catch_errors_2 = __importDefault(require("../utils/catch-errors"));
@@ -25,13 +25,13 @@ const jwt_1 = require("../utils/jwt");
 const session_model_1 = __importDefault(require("../model/session.model"));
 const app_assert_1 = __importDefault(require("../utils/app-assert"));
 const env_1 = require("../constants/env");
-const otp_model_1 = require("../model/otp.model");
 const axios_1 = __importDefault(require("axios"));
 const request_ip_1 = __importDefault(require("request-ip"));
 const useragent_1 = __importDefault(require("useragent"));
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const ip = request_ip_1.default.getClientIp(req);
     const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
+    const { otp, planId } = req.body;
     const userAgentObj = {
         browser: userAgent.toAgent(),
         os: userAgent.os.toString(),
@@ -49,13 +49,17 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     catch (err) {
         console.log("IP is invalid");
     }
-    const request = auth_schema_1.signupSchema.parse(Object.assign(Object.assign({}, req.body), { userAgentObj }));
-    const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), { location, planId: req.body.planId }));
+    if (!req.query.token)
+        return next(new app_error_1.default("Token is param required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    const request = auth_schema_1.signupSchema.parse({
+        otp,
+    });
+    const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), location, userAgent: userAgentObj, planId }));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({
         status: "success",
-        message: "Verification email sent. Please verify your email to continue.",
+        message: "Signup is successful.",
     });
 }));
 exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,13 +69,16 @@ exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0
         os: userAgent.os.toString(),
         device: userAgent.device.toString(),
     };
-    const request = auth_schema_1.loginSchema.parse(Object.assign({}, req.body));
-    const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(Object.assign(Object.assign({}, request), { userAgent: userAgentObj }));
+    const { otp, verifyToken } = req.body;
+    const request = auth_schema_1.loginSchema.parse({
+        otp,
+    });
+    const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(Object.assign(Object.assign({}, request), { verifyToken, userAgent: userAgentObj }));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({
         status: "success",
-        message: "Verification email sent. Please verify your email to continue",
+        message: "Login is successful.",
     });
 }));
 exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -82,24 +89,30 @@ exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     if (!payload || !payload.sessionId)
         return next(new app_error_1.default("You are not logged in.", http_status_codes_1.StatusCodes.BAD_REQUEST));
     yield session_model_1.default.findByIdAndDelete(payload.sessionId);
+    yield user_model_1.default.findByIdAndUpdate(payload.userId, { verified: false }, { runValidators: false });
     return (0, cookies_1.clearAuthCookies)(res).status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "Logout successful",
     });
 }));
-exports.verifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // await verifyEmail(req.params.token);
-    yield (0, auth_service_1.verifyOTP)(req.body.otp, req.body.email, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    return res.status(http_status_codes_1.StatusCodes.OK).json({
-        status: "success",
-        message: "Email was successfully verified",
+exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = auth_schema_1.emailSchema.parse(req.body.email);
+    const token = yield (0, auth_service_1.sendLoginEmailVerification)({
+        email,
     });
-}));
-exports.resendVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_service_1.sendOTPEmailVerification)(req.body.email);
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
-        message: "Verification email sent.",
+        message: "Verification email has been sent. The code will expire after 5 minutes.",
+        token,
+    });
+}));
+exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const request = auth_schema_1.signupVerificationSchema.parse(req.body);
+    const token = yield (0, auth_service_1.sendSignupEmailVerification)(request);
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success",
+        message: "Verification email has been sent. The code will expire after 5 minutes.",
+        token,
     });
 }));
 exports.refreshToken = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -126,6 +139,17 @@ const authorizeTo = (roles) => (0, catch_errors_1.default)((req, res, next) => _
 }));
 exports.authorizeTo = authorizeTo;
 /*
+export const verifyEmailController = catchErrors(async (req, res, next) => {
+  // await verifyEmail(req.params.token);
+
+  await verifyOTP(req.body.otp, req.body.email, OTPPurpose.EMAIL_VERIFICATION);
+
+  return res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Email was successfully verified",
+  });
+});
+
 export const updatePassword = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findById(req.userId).select("+password");

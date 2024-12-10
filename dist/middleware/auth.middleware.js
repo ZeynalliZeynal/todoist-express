@@ -35,10 +35,15 @@ exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter
         return next(new app_error_1.default("Token is no longer belong to this user. Please log in again", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     if (!currentSession)
         return next(new app_error_1.default("Your session has been expired or deleted. Please log in again.", http_status_codes_1.StatusCodes.UNAUTHORIZED));
-    if (!currentUser.isVerified())
+    if (!currentUser.verified)
         return next(new app_error_1.default("Please verify your email", http_status_codes_1.StatusCodes.UNAUTHORIZED));
-    if (currentUser.isPasswordChangedAfter(payload.iat))
-        return next(new app_error_1.default("Password recently changed. Please log in again", http_status_codes_1.StatusCodes.UNAUTHORIZED));
+    // if (currentUser.isPasswordChangedAfter(payload.iat))
+    //   return next(
+    //     new AppError(
+    //       "Password recently changed. Please log in again",
+    //       StatusCodes.UNAUTHORIZED,
+    //     ),
+    //   );
     req.userId = payload.userId;
     req.sessionId = payload.sessionId;
     next();

@@ -25,7 +25,6 @@ export interface OTPDocument extends mongoose.Document {
 const schema = new mongoose.Schema<OTPDocument>({
   email: {
     type: String,
-    unique: true,
   },
   purpose: {
     type: String,

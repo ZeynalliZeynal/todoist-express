@@ -3,13 +3,18 @@ import User, { RoleProps } from "../model/user.model";
 import catchAsync from "../utils/catch-errors";
 import catchErrors from "../utils/catch-errors";
 import AppError from "../utils/app-error";
-import { loginSchema, signupSchema } from "../validator/auth.schema";
+import {
+  emailSchema,
+  loginSchema,
+  signupSchema,
+  signupVerificationSchema,
+} from "../validator/auth.schema";
 import {
   createAccount,
   loginUser,
   refreshUserAccessToken,
-  sendOTPEmailVerification,
-  verifyOTP,
+  sendLoginEmailVerification,
+  sendSignupEmailVerification,
 } from "../service/auth.service";
 import { StatusCodes } from "http-status-codes";
 import {
@@ -22,7 +27,6 @@ import { verifyToken } from "../utils/jwt";
 import Session from "../model/session.model";
 import appAssert from "../utils/app-assert";
 import { apiip_accessKey } from "../constants/env";
-import { OTPPurpose } from "../model/otp.model";
 import axios from "axios";
 import requestIp from "request-ip";
 import useragent from "useragent";
@@ -30,6 +34,7 @@ import useragent from "useragent";
 export const signup = catchErrors(async (req, res, next) => {
   const ip = requestIp.getClientIp(req);
   const userAgent = useragent.parse(req.headers["user-agent"]);
+  const { otp, planId } = req.body;
 
   const userAgentObj = {
     browser: userAgent.toAgent(),
@@ -51,22 +56,28 @@ export const signup = catchErrors(async (req, res, next) => {
     console.log("IP is invalid");
   }
 
+  if (!req.query.token)
+    return next(
+      new AppError("Token is param required.", StatusCodes.BAD_REQUEST),
+    );
+
   const request = signupSchema.parse({
-    ...req.body,
-    userAgentObj,
+    otp,
   });
 
   const { refreshToken, accessToken } = await createAccount({
     ...request,
+    verifyToken: String(req.query.token),
     location,
-    planId: req.body.planId,
+    userAgent: userAgentObj,
+    planId,
   });
 
   return setAuthCookies({ res, refreshToken, accessToken })
     .status(StatusCodes.OK)
     .json({
       status: "success",
-      message: "Verification email sent. Please verify your email to continue.",
+      message: "Signup is successful.",
     });
 });
 
@@ -78,12 +89,15 @@ export const login = catchErrors(async (req, res, next) => {
     device: userAgent.device.toString(),
   };
 
+  const { otp, verifyToken } = req.body;
+
   const request = loginSchema.parse({
-    ...req.body,
+    otp,
   });
 
   const { accessToken, refreshToken } = await loginUser({
     ...request,
+    verifyToken,
     userAgent: userAgentObj,
   });
 
@@ -91,7 +105,7 @@ export const login = catchErrors(async (req, res, next) => {
     .status(StatusCodes.OK)
     .json({
       status: "success",
-      message: "Verification email sent. Please verify your email to continue",
+      message: "Login is successful.",
     });
 });
 
@@ -108,30 +122,46 @@ export const logout = catchErrors(async (req, res, next) => {
 
   await Session.findByIdAndDelete(payload.sessionId);
 
+  await User.findByIdAndUpdate(
+    payload.userId,
+    { verified: false },
+    { runValidators: false },
+  );
+
   return clearAuthCookies(res).status(StatusCodes.OK).json({
     status: "success",
     message: "Logout successful",
   });
 });
 
-export const verifyEmailController = catchErrors(async (req, res, next) => {
-  // await verifyEmail(req.params.token);
-
-  await verifyOTP(req.body.otp, req.body.email, OTPPurpose.EMAIL_VERIFICATION);
-
-  return res.status(StatusCodes.OK).json({
-    status: "success",
-    message: "Email was successfully verified",
-  });
-});
-
-export const resendVerifyEmailController = catchErrors(
+export const sendLoginVerifyEmailController = catchErrors(
   async (req, res, next) => {
-    await sendOTPEmailVerification(req.body.email);
+    const email = emailSchema.parse(req.body.email);
+
+    const token = await sendLoginEmailVerification({
+      email,
+    });
 
     res.status(StatusCodes.OK).json({
       status: "success",
-      message: "Verification email sent.",
+      message:
+        "Verification email has been sent. The code will expire after 5 minutes.",
+      token,
+    });
+  },
+);
+
+export const sendSignupVerifyEmailController = catchErrors(
+  async (req, res, next) => {
+    const request = signupVerificationSchema.parse(req.body);
+
+    const token = await sendSignupEmailVerification(request);
+
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      message:
+        "Verification email has been sent. The code will expire after 5 minutes.",
+      token,
     });
   },
 );
@@ -178,6 +208,17 @@ export const authorizeTo = (roles: RoleProps) =>
   });
 
 /*
+export const verifyEmailController = catchErrors(async (req, res, next) => {
+  // await verifyEmail(req.params.token);
+
+  await verifyOTP(req.body.otp, req.body.email, OTPPurpose.EMAIL_VERIFICATION);
+
+  return res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Email was successfully verified",
+  });
+});
+
 export const updatePassword = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findById(req.userId).select("+password");

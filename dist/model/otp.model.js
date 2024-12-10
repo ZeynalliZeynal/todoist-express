@@ -24,7 +24,6 @@ var OTPPurpose;
 const schema = new mongoose_1.default.Schema({
     email: {
         type: String,
-        unique: true,
     },
     purpose: {
         type: String,

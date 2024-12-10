@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyEmail = exports.verifyOTP = exports.refreshUserAccessToken = exports.loginUser = exports.createAccount = exports.sendOTPEmailVerification = exports.createEmailVerificationOTP = void 0;
+exports.verifyOTP = exports.refreshUserAccessToken = exports.loginUser = exports.createAccount = exports.sendSignupEmailVerification = exports.sendLoginEmailVerification = exports.createEmailVerificationOTP = void 0;
 const user_model_1 = __importDefault(require("../model/user.model"));
 const env_1 = require("../constants/env");
 const session_model_1 = __importDefault(require("../model/session.model"));
@@ -55,60 +55,82 @@ const app_error_1 = __importDefault(require("../utils/app-error"));
 const email_1 = require("../utils/email");
 const email_templates_1 = require("../utils/email-templates");
 const date_fns_1 = require("date-fns");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const otp_model_1 = __importStar(require("../model/otp.model"));
 const crypto_1 = __importDefault(require("crypto"));
-const createEmailVerificationOTP = (email, otp, purpose) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.default.exists({ email, verified: false });
-    if (!user)
-        throw new app_error_1.default("The user is already verified", http_status_codes_1.StatusCodes.NOT_FOUND);
-    const existingOTP = yield otp_model_1.default.exists({ email });
-    if (existingOTP)
-        throw new app_error_1.default("You cannot create a new request while one already existed.", http_status_codes_1.StatusCodes.BAD_REQUEST);
+const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, void 0, function* () {
     const newOtp = yield otp_model_1.default.create({
-        email,
-        otp,
+        email: data.email,
+        otp: data.otp,
         purpose,
         expiresAt: (0, date_fns_1.addMinutes)(Date.now(), 5),
     });
-    return newOtp;
+    const token = (0, jwt_1.signToken)({ otpId: newOtp._id, name: data.name, email: data.email }, jwt_1.verificationTokenSignOptions);
+    return token;
 });
 exports.createEmailVerificationOTP = createEmailVerificationOTP;
-const sendOTPEmailVerification = (email, auth) => __awaiter(void 0, void 0, void 0, function* () {
+const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, }) {
     const existingUser = yield user_model_1.default.findOne({ email });
     if (!existingUser)
-        throw new app_error_1.default("Email is incorrect", http_status_codes_1.StatusCodes.NOT_FOUND);
+        throw new app_error_1.default("Email is incorrect.", http_status_codes_1.StatusCodes.NOT_FOUND);
     const otp = crypto_1.default.randomInt(100000, 999999).toString();
-    const url = `${env_1.client_dev_origin}/auth/login/email`;
-    yield (0, exports.createEmailVerificationOTP)(email, otp, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
+    const token = yield (0, exports.createEmailVerificationOTP)({
+        otp,
+        name: existingUser.name,
+        email,
+    }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
+    const url = `${env_1.client_dev_origin}/auth/login/email?token=${token}`;
     try {
         yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
             otp,
             url,
-            auth,
+            auth: "log in",
             username: existingUser.name,
         })));
+        return token;
     }
     catch (err) {
         throw new app_error_1.default("Error occurred sending an email", http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR);
     }
 });
-exports.sendOTPEmailVerification = sendOTPEmailVerification;
+exports.sendLoginEmailVerification = sendLoginEmailVerification;
+const sendSignupEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ name, email, }) {
+    const existingUser = yield user_model_1.default.exists({ email });
+    if (existingUser)
+        throw new app_error_1.default("Email is already in use.", http_status_codes_1.StatusCodes.CONFLICT);
+    const otp = crypto_1.default.randomInt(100000, 999999).toString();
+    const token = yield (0, exports.createEmailVerificationOTP)({
+        email,
+        otp,
+        name,
+    }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
+    const url = `${env_1.client_dev_origin}/auth/signup/email?token=${token}`;
+    try {
+        yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
+            otp,
+            url,
+            auth: "sign up",
+            username: name,
+        })));
+        return token;
+    }
+    catch (err) {
+        throw new app_error_1.default("Error occurred sending an email", http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+});
+exports.sendSignupEmailVerification = sendSignupEmailVerification;
 const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    //   verify that user doesn't exist
-    const existingUser = yield user_model_1.default.exists({
-        email: data.email,
-    });
-    if (!existingUser)
-        throw new app_error_1.default("Email already exists", http_status_codes_1.StatusCodes.CONFLICT);
-    // create new user
+    // verify entered email. if not verified, the error will be thrown
+    const { name, email } = yield (0, exports.verifyOTP)(data.otp, data.verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
+    console.log(email);
     const user = yield user_model_1.default.create({
-        name: data.name,
-        email: data.email,
+        email,
+        name,
+        verified: true,
+        verifiedAt: new Date(),
         location: data.location,
-        role: env_1.admin_email === data.email ? "admin" : "user",
+        role: env_1.admin_email === email ? "admin" : "user",
+        planId: data.planId,
     });
-    yield (0, exports.sendOTPEmailVerification)(user.email, "sign up");
     // create session
     const session = yield session_model_1.default.create({
         userId: user._id,
@@ -125,11 +147,12 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 exports.createAccount = createAccount;
-const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, userAgent }) {
-    // get user by email
+const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, verifyToken, userAgent, }) {
+    // verify the user's email
+    const { email } = yield (0, exports.verifyOTP)(otp, verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
     const user = yield user_model_1.default.findOne({ email });
     if (!user)
-        throw new app_error_1.default("Email is incorrect", http_status_codes_1.StatusCodes.NOT_FOUND);
+        throw new app_error_1.default("Email is incorrect.", http_status_codes_1.StatusCodes.NOT_FOUND);
     // validate password
     // const isPasswordValid = await user!.comparePasswords(
     //   password,
@@ -140,7 +163,6 @@ const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, us
     //   "Invalid email or password",
     //   StatusCodes.UNAUTHORIZED,
     // );
-    yield (0, exports.sendOTPEmailVerification)(user.email, "log in");
     const userId = user._id;
     // create a session
     const session = yield session_model_1.default.create({
@@ -190,43 +212,31 @@ const refreshUserAccessToken = (token) => __awaiter(void 0, void 0, void 0, func
     };
 });
 exports.refreshUserAccessToken = refreshUserAccessToken;
-const verifyOTP = (otp, email, purpose) => __awaiter(void 0, void 0, void 0, function* () {
-    const findUser = yield user_model_1.default.findOne({ email });
-    if (!findUser)
-        throw new app_error_1.default("Email is incorrect.", http_status_codes_1.StatusCodes.NOT_FOUND);
-    const findOTP = yield otp_model_1.default.findOne({
-        email,
+const verifyOTP = (otp, token, purpose) => __awaiter(void 0, void 0, void 0, function* () {
+    const { payload } = (0, jwt_1.verifyToken)(token, {
+        secret: env_1.jwt_verify_secret,
+    });
+    if (!payload)
+        throw new app_error_1.default("Token is invalid or expired.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
+    const existingOtp = yield otp_model_1.default.findById({
+        _id: payload.otpId,
+        email: payload.email,
         purpose,
         expiresAt: { $gte: Date.now() },
         isUsed: false,
     });
-    if (!findOTP)
+    if (!existingOtp)
         throw new app_error_1.default("The code has expired. Request a new one.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
-    const isMatch = yield findOTP.compareOTPs(otp, findOTP.otp);
+    const isMatch = yield existingOtp.compareOTPs(otp, existingOtp.otp);
     if (!isMatch)
         throw new app_error_1.default("The entered code is incorrect. Please try again and check for typos.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
-    findUser.verifiedAt = new Date();
-    findUser.verified = true;
-    findOTP.isUsed = true;
-    yield findUser.save({
+    existingOtp.isUsed = true;
+    yield existingOtp.save({
         validateBeforeSave: false,
     });
-    yield findOTP.save();
-});
-exports.verifyOTP = verifyOTP;
-const verifyEmail = (token) => __awaiter(void 0, void 0, void 0, function* () {
-    const decoded = jsonwebtoken_1.default.verify(token, env_1.jwt_verify_secret);
-    if (!decoded)
-        throw new app_error_1.default("Invalid or expired token", http_status_codes_1.StatusCodes.UNAUTHORIZED);
-    const userId = decoded.userId;
-    const updatedUser = yield user_model_1.default.findByIdAndUpdate(userId, {
-        verified: true,
-        verifiedAt: Date.now(),
-    }, { new: true });
-    if (!updatedUser)
-        throw new app_error_1.default("User not found", http_status_codes_1.StatusCodes.UNAUTHORIZED);
     return {
-        user: updatedUser,
+        name: payload.name,
+        email: payload.email,
     };
 });
-exports.verifyEmail = verifyEmail;
+exports.verifyOTP = verifyOTP;

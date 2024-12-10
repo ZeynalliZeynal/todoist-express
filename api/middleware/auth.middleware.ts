@@ -53,18 +53,18 @@ export const authenticate: RequestHandler = catchErrors(
         ),
       );
 
-    if (!currentUser.isVerified())
+    if (!currentUser.verified)
       return next(
         new AppError("Please verify your email", StatusCodes.UNAUTHORIZED),
       );
 
-    if (currentUser.isPasswordChangedAfter(payload.iat))
-      return next(
-        new AppError(
-          "Password recently changed. Please log in again",
-          StatusCodes.UNAUTHORIZED,
-        ),
-      );
+    // if (currentUser.isPasswordChangedAfter(payload.iat))
+    //   return next(
+    //     new AppError(
+    //       "Password recently changed. Please log in again",
+    //       StatusCodes.UNAUTHORIZED,
+    //     ),
+    //   );
 
     req.userId = payload.userId;
     req.sessionId = payload.sessionId;

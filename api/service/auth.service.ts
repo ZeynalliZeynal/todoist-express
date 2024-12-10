@@ -11,20 +11,20 @@ import {
   RefreshTokenPayload,
   refreshTokenSignOptions,
   signToken,
+  VerificationTokenPayload,
+  verificationTokenSignOptions,
   verifyToken,
 } from "../utils/jwt";
 import AppError from "../utils/app-error";
 import { sendMail } from "../utils/email";
 import { otpVerificationEmail } from "../utils/email-templates";
 import { addDays, addMinutes } from "date-fns";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import mongoose from "mongoose";
 import OTP, { OTPPurpose } from "../model/otp.model";
 import crypto from "crypto";
 
 export interface CreateAccountParams {
-  name: string;
-  email: string;
+  otp: string;
+  verifyToken: string;
   // password: string;
   // confirmPassword: string;
   userAgent?: SessionDocument["userAgent"];
@@ -33,52 +33,52 @@ export interface CreateAccountParams {
 }
 
 export interface LoginParams {
-  email: string;
+  otp: string;
+  verifyToken: string;
   // password: string;
   userAgent?: SessionDocument["userAgent"];
 }
 
 export const createEmailVerificationOTP = async (
-  email: string,
-  otp: string,
+  data: { name: string; email: string; otp: string },
   purpose: OTPPurpose,
 ) => {
-  const user = await User.exists({ email, verified: false });
-  if (!user)
-    throw new AppError("The user is already verified", StatusCodes.NOT_FOUND);
-
-  const existingOTP = await OTP.exists({ email });
-
-  if (existingOTP)
-    throw new AppError(
-      "You cannot create a new request while one already existed.",
-      StatusCodes.BAD_REQUEST,
-    );
-
   const newOtp = await OTP.create({
-    email,
-    otp,
+    email: data.email,
+    otp: data.otp,
     purpose,
     expiresAt: addMinutes(Date.now(), 5),
   });
 
-  return newOtp;
+  const token = signToken(
+    { otpId: newOtp._id, name: data.name, email: data.email },
+    verificationTokenSignOptions,
+  );
+
+  return token;
 };
 
-export const sendOTPEmailVerification = async (
-  email: string,
-  auth: "sign up" | "log in",
-) => {
+export const sendLoginEmailVerification = async ({
+  email,
+}: {
+  email: string;
+}) => {
   const existingUser = await User.findOne({ email });
 
   if (!existingUser)
-    throw new AppError("Email is incorrect", StatusCodes.NOT_FOUND);
+    throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
 
   const otp = crypto.randomInt(100000, 999999).toString();
 
-  const url = `${client_dev_origin}/auth/login/email`;
-
-  await createEmailVerificationOTP(email, otp, OTPPurpose.EMAIL_VERIFICATION);
+  const token = await createEmailVerificationOTP(
+    {
+      otp,
+      name: existingUser.name,
+      email,
+    },
+    OTPPurpose.EMAIL_VERIFICATION,
+  );
+  const url = `${client_dev_origin}/auth/login/email?token=${token}`;
 
   try {
     await sendMail({
@@ -86,10 +86,56 @@ export const sendOTPEmailVerification = async (
       ...otpVerificationEmail({
         otp,
         url,
-        auth,
+        auth: "log in",
         username: existingUser.name,
       }),
     });
+
+    return token;
+  } catch (err) {
+    throw new AppError(
+      "Error occurred sending an email",
+      StatusCodes.INTERNAL_SERVER_ERROR,
+    );
+  }
+};
+export const sendSignupEmailVerification = async ({
+  name,
+  email,
+}: {
+  email: string;
+  name: string;
+}) => {
+  const existingUser = await User.exists({ email });
+
+  if (existingUser)
+    throw new AppError("Email is already in use.", StatusCodes.CONFLICT);
+
+  const otp = crypto.randomInt(100000, 999999).toString();
+
+  const token = await createEmailVerificationOTP(
+    {
+      email,
+      otp,
+      name,
+    },
+    OTPPurpose.EMAIL_VERIFICATION,
+  );
+
+  const url = `${client_dev_origin}/auth/signup/email?token=${token}`;
+
+  try {
+    await sendMail({
+      to: [email],
+      ...otpVerificationEmail({
+        otp,
+        url,
+        auth: "sign up",
+        username: name,
+      }),
+    });
+
+    return token;
   } catch (err) {
     throw new AppError(
       "Error occurred sending an email",
@@ -99,23 +145,24 @@ export const sendOTPEmailVerification = async (
 };
 
 export const createAccount = async (data: CreateAccountParams) => {
-  //   verify that user doesn't exist
-  const existingUser = await User.exists({
-    email: data.email,
-  });
+  // verify entered email. if not verified, the error will be thrown
+  const { name, email } = await verifyOTP(
+    data.otp,
+    data.verifyToken,
+    OTPPurpose.EMAIL_VERIFICATION,
+  );
 
-  if (!existingUser)
-    throw new AppError("Email already exists", StatusCodes.CONFLICT);
+  console.log(email);
 
-  // create new user
   const user = await User.create({
-    name: data.name,
-    email: data.email,
+    email,
+    name,
+    verified: true,
+    verifiedAt: new Date(),
     location: data.location,
-    role: admin_email === data.email ? "admin" : "user",
+    role: admin_email === email ? "admin" : "user",
+    planId: data.planId,
   });
-
-  await sendOTPEmailVerification(user.email, "sign up");
 
   // create session
   const session = await Session.create({
@@ -140,10 +187,21 @@ export const createAccount = async (data: CreateAccountParams) => {
   };
 };
 
-export const loginUser = async ({ email, userAgent }: LoginParams) => {
-  // get user by email
+export const loginUser = async ({
+  otp,
+  verifyToken,
+  userAgent,
+}: LoginParams) => {
+  // verify the user's email
+  const { email } = await verifyOTP(
+    otp,
+    verifyToken,
+    OTPPurpose.EMAIL_VERIFICATION,
+  );
+
   const user = await User.findOne({ email });
-  if (!user) throw new AppError("Email is incorrect", StatusCodes.NOT_FOUND);
+
+  if (!user) throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
 
   // validate password
   // const isPasswordValid = await user!.comparePasswords(
@@ -156,7 +214,6 @@ export const loginUser = async ({ email, userAgent }: LoginParams) => {
   //   StatusCodes.UNAUTHORIZED,
   // );
 
-  await sendOTPEmailVerification(user.email, "log in");
   const userId = user._id;
 
   // create a session
@@ -223,28 +280,34 @@ export const refreshUserAccessToken = async (token: string) => {
 
 export const verifyOTP = async (
   otp: string,
-  email: string,
+  token: string,
   purpose: OTPPurpose,
 ) => {
-  const findUser = await User.findOne({ email });
+  const { payload } = verifyToken<VerificationTokenPayload>(token, {
+    secret: jwt_verify_secret,
+  });
 
-  if (!findUser)
-    throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
+  if (!payload)
+    throw new AppError(
+      "Token is invalid or expired.",
+      StatusCodes.UNAUTHORIZED,
+    );
 
-  const findOTP = await OTP.findOne({
-    email,
+  const existingOtp = await OTP.findById({
+    _id: payload.otpId,
+    email: payload.email,
     purpose,
     expiresAt: { $gte: Date.now() },
     isUsed: false,
   });
 
-  if (!findOTP)
+  if (!existingOtp)
     throw new AppError(
       "The code has expired. Request a new one.",
       StatusCodes.UNAUTHORIZED,
     );
 
-  const isMatch = await findOTP.compareOTPs(otp, findOTP.otp);
+  const isMatch = await existingOtp.compareOTPs(otp, existingOtp.otp);
 
   if (!isMatch)
     throw new AppError(
@@ -252,41 +315,13 @@ export const verifyOTP = async (
       StatusCodes.UNAUTHORIZED,
     );
 
-  findUser.verifiedAt = new Date();
-  findUser.verified = true;
-
-  findOTP.isUsed = true;
-
-  await findUser.save({
+  existingOtp.isUsed = true;
+  await existingOtp.save({
     validateBeforeSave: false,
   });
-  await findOTP.save();
-};
-export const verifyEmail = async (token: string) => {
-  const decoded = jwt.verify(token, jwt_verify_secret);
-
-  if (!decoded)
-    throw new AppError("Invalid or expired token", StatusCodes.UNAUTHORIZED);
-
-  const userId = (
-    decoded as JwtPayload & {
-      userId: mongoose.Types.ObjectId;
-    }
-  ).userId;
-
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    {
-      verified: true,
-      verifiedAt: Date.now(),
-    },
-    { new: true },
-  );
-
-  if (!updatedUser)
-    throw new AppError("User not found", StatusCodes.UNAUTHORIZED);
 
   return {
-    user: updatedUser,
+    name: payload.name,
+    email: payload.email,
   };
 };

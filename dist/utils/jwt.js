@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = exports.signToken = exports.refreshTokenSignOptions = void 0;
+exports.verifyToken = exports.signToken = exports.verificationTokenSignOptions = exports.refreshTokenSignOptions = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const env_1 = require("../constants/env");
 const defaults = {
@@ -27,6 +27,10 @@ const accessTokenSignOptions = {
 exports.refreshTokenSignOptions = {
     expiresIn: env_1.jwt_refresh_expires_in,
     secret: env_1.jwt_refresh_secret,
+};
+exports.verificationTokenSignOptions = {
+    expiresIn: env_1.jwt_verify_expires_in,
+    secret: env_1.jwt_verify_secret,
 };
 const signToken = (payload, options) => {
     const _a = options || accessTokenSignOptions, { secret } = _a, signOptions = __rest(_a, ["secret"]);

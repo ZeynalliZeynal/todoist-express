@@ -4,12 +4,21 @@ import {
   jwt_refresh_expires_in,
   jwt_refresh_secret,
   jwt_secret,
+  jwt_verify_expires_in,
+  jwt_verify_secret,
 } from "../constants/env";
 import { SessionDocument } from "../model/session.model";
 import mongoose from "mongoose";
+import { OTPDocument } from "../model/otp.model";
 
 export interface RefreshTokenPayload extends JwtPayload {
   sessionId: SessionDocument["_id"];
+}
+
+export interface VerificationTokenPayload extends JwtPayload {
+  otpId: OTPDocument["_id"];
+  name: string;
+  email: string;
 }
 
 export interface AccessTokenPayload extends JwtPayload {
@@ -29,6 +38,11 @@ const accessTokenSignOptions = {
 export const refreshTokenSignOptions = {
   expiresIn: jwt_refresh_expires_in,
   secret: jwt_refresh_secret,
+};
+
+export const verificationTokenSignOptions = {
+  expiresIn: jwt_verify_expires_in,
+  secret: jwt_verify_secret,
 };
 
 export const signToken = (
