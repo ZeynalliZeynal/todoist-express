@@ -35,7 +35,8 @@ const limiter = (0, express_rate_limit_1.default)({
     legacyHeaders: false,
     message: "Too many requests from this IP. Please try again in an hour!",
 });
-app.use("/api", limiter);
+if (env_1.node_env === "production")
+    app.use("/api/auth", limiter);
 app.use(express_1.default.json({
     limit: "10mb",
 }));

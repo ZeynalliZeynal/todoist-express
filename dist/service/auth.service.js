@@ -57,7 +57,11 @@ const email_templates_1 = require("../utils/email-templates");
 const date_fns_1 = require("date-fns");
 const otp_model_1 = __importStar(require("../model/otp.model"));
 const crypto_1 = __importDefault(require("crypto"));
+const plan_model_1 = __importDefault(require("../model/plan.model"));
 const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingOtp = yield otp_model_1.default.exists({ email: data.email });
+    if (existingOtp)
+        throw new app_error_1.default("Email verification in progress. Please check your inbox and spam folder.", http_status_codes_1.StatusCodes.CONFLICT, "EMAIL_VERIFICATION_CONFLICT" /* ErrorCodes.EMAIL_VERIFICATION_CONFLICT */);
     const newOtp = yield otp_model_1.default.create({
         email: data.email,
         otp: data.otp,
@@ -94,15 +98,15 @@ const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, funct
 });
 exports.sendLoginEmailVerification = sendLoginEmailVerification;
 const sendSignupEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ name, email, }) {
-    const existingUser = yield user_model_1.default.exists({ email });
-    if (existingUser)
-        throw new app_error_1.default("Email is already in use.", http_status_codes_1.StatusCodes.CONFLICT);
     const otp = crypto_1.default.randomInt(100000, 999999).toString();
     const token = yield (0, exports.createEmailVerificationOTP)({
         email,
         otp,
         name,
     }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
+    const existingUser = yield user_model_1.default.exists({ email });
+    if (existingUser)
+        throw new app_error_1.default("Email is already in use.", http_status_codes_1.StatusCodes.CONFLICT);
     const url = `${env_1.client_dev_origin}/auth/signup/email?token=${token}`;
     try {
         yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
@@ -121,7 +125,14 @@ exports.sendSignupEmailVerification = sendSignupEmailVerification;
 const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     // verify entered email. if not verified, the error will be thrown
     const { name, email } = yield (0, exports.verifyOTP)(data.otp, data.verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    console.log(email);
+    const plan = yield plan_model_1.default.findOne({
+        name: {
+            $regex: data.plan,
+            $options: "i",
+        },
+    });
+    if (!plan)
+        throw new app_error_1.default("Plan name is incorrect", http_status_codes_1.StatusCodes.NOT_FOUND);
     const user = yield user_model_1.default.create({
         email,
         name,
@@ -129,7 +140,7 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
         verifiedAt: new Date(),
         location: data.location,
         role: env_1.admin_email === email ? "admin" : "user",
-        planId: data.planId,
+        planId: plan._id,
     });
     // create session
     const session = yield session_model_1.default.create({

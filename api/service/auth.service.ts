@@ -21,6 +21,8 @@ import { otpVerificationEmail } from "../utils/email-templates";
 import { addDays, addMinutes } from "date-fns";
 import OTP, { OTPPurpose } from "../model/otp.model";
 import crypto from "crypto";
+import Plan from "../model/plan.model";
+import ErrorCodes from "../constants/error-codes";
 
 export interface CreateAccountParams {
   otp: string;
@@ -29,7 +31,7 @@ export interface CreateAccountParams {
   // confirmPassword: string;
   userAgent?: SessionDocument["userAgent"];
   location?: UserDocument["location"];
-  planId: UserDocument["planId"];
+  plan: string;
 }
 
 export interface LoginParams {
@@ -43,6 +45,14 @@ export const createEmailVerificationOTP = async (
   data: { name: string; email: string; otp: string },
   purpose: OTPPurpose,
 ) => {
+  const existingOtp = await OTP.exists({ email: data.email });
+  if (existingOtp)
+    throw new AppError(
+      "Email verification in progress. Please check your inbox and spam folder.",
+      StatusCodes.CONFLICT,
+      ErrorCodes.EMAIL_VERIFICATION_CONFLICT,
+    );
+
   const newOtp = await OTP.create({
     email: data.email,
     otp: data.otp,
@@ -106,13 +116,7 @@ export const sendSignupEmailVerification = async ({
   email: string;
   name: string;
 }) => {
-  const existingUser = await User.exists({ email });
-
-  if (existingUser)
-    throw new AppError("Email is already in use.", StatusCodes.CONFLICT);
-
   const otp = crypto.randomInt(100000, 999999).toString();
-
   const token = await createEmailVerificationOTP(
     {
       email,
@@ -121,6 +125,9 @@ export const sendSignupEmailVerification = async ({
     },
     OTPPurpose.EMAIL_VERIFICATION,
   );
+  const existingUser = await User.exists({ email });
+  if (existingUser)
+    throw new AppError("Email is already in use.", StatusCodes.CONFLICT);
 
   const url = `${client_dev_origin}/auth/signup/email?token=${token}`;
 
@@ -152,7 +159,15 @@ export const createAccount = async (data: CreateAccountParams) => {
     OTPPurpose.EMAIL_VERIFICATION,
   );
 
-  console.log(email);
+  const plan = await Plan.findOne({
+    name: {
+      $regex: data.plan,
+      $options: "i",
+    },
+  });
+
+  if (!plan)
+    throw new AppError("Plan name is incorrect", StatusCodes.NOT_FOUND);
 
   const user = await User.create({
     email,
@@ -161,7 +176,7 @@ export const createAccount = async (data: CreateAccountParams) => {
     verifiedAt: new Date(),
     location: data.location,
     role: admin_email === email ? "admin" : "user",
-    planId: data.planId,
+    planId: plan._id,
   });
 
   // create session

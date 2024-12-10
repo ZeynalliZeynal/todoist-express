@@ -88,6 +88,11 @@ schema.virtual("tasks", {
     foreignField: "userId", // foreign key
     localField: "_id", // primary key
 });
+schema.virtual("plans", {
+    ref: "Plan",
+    foreignField: "_id", // foreign key
+    localField: "planId", // primary key
+});
 // schema.pre("save", async function (next) {
 //   if (!this.isModified("password")) return next();
 //
@@ -141,9 +146,6 @@ schema.method("comparePasswords", function (candidatePassword, userPassword) {
 //
 //   return verificationToken;
 // });
-schema.method("isVerified", function () {
-    return this.verified;
-});
 schema.pre(/^find/, function (next) {
     this.select("-__v");
     next();

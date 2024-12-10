@@ -13,7 +13,7 @@ export const authenticate: RequestHandler = catchErrors(
       req.headers.authorization;
 
     const accessToken =
-      accessTokenFromHeaders?.split("Bearer ")[1].trim() ||
+      accessTokenFromHeaders?.split("Bearer ")[1]?.trim() ||
       accessTokenFromCookies;
 
     if (!accessToken)
@@ -23,7 +23,6 @@ export const authenticate: RequestHandler = catchErrors(
           StatusCodes.UNAUTHORIZED,
         ),
       );
-
     const { payload, error } = verifyToken(accessToken);
     if (error || !payload)
       throw new AppError(

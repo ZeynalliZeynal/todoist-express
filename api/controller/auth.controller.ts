@@ -22,6 +22,7 @@ import {
   getAccessTokenCookieOptions,
   getRefreshTokenCookieOptions,
   setAuthCookies,
+  setVerifyCookies,
 } from "../utils/cookies";
 import { verifyToken } from "../utils/jwt";
 import Session from "../model/session.model";
@@ -34,7 +35,7 @@ import useragent from "useragent";
 export const signup = catchErrors(async (req, res, next) => {
   const ip = requestIp.getClientIp(req);
   const userAgent = useragent.parse(req.headers["user-agent"]);
-  const { otp, planId } = req.body;
+  const { otp, plan } = req.body;
 
   const userAgentObj = {
     browser: userAgent.toAgent(),
@@ -70,7 +71,7 @@ export const signup = catchErrors(async (req, res, next) => {
     verifyToken: String(req.query.token),
     location,
     userAgent: userAgentObj,
-    planId,
+    plan,
   });
 
   return setAuthCookies({ res, refreshToken, accessToken })
@@ -143,17 +144,20 @@ export const sendLoginVerifyEmailController = catchErrors(
   async (req, res, next) => {
     const email = emailSchema.parse(req.body.email);
 
-    console.log(email);
     const token = await sendLoginEmailVerification({
       email,
     });
 
-    res.status(StatusCodes.OK).json({
-      status: "success",
-      message:
-        "Verification email has been sent. The code will expire after 5 minutes.",
-      token,
-    });
+    return setVerifyCookies({
+      res,
+      verifyToken: token,
+    })
+      .status(StatusCodes.OK)
+      .json({
+        status: "success",
+        message:
+          "Verification email has been sent. The code will expire after 5 minutes.",
+      });
   },
 );
 
@@ -163,12 +167,16 @@ export const sendSignupVerifyEmailController = catchErrors(
 
     const token = await sendSignupEmailVerification(request);
 
-    res.status(StatusCodes.OK).json({
-      status: "success",
-      message:
-        "Verification email has been sent. The code will expire after 5 minutes.",
-      token,
-    });
+    return setVerifyCookies({
+      res,
+      verifyToken: token,
+    })
+      .status(StatusCodes.OK)
+      .json({
+        status: "success",
+        message:
+          "Verification email has been sent. The code will expire after 5 minutes.",
+      });
   },
 );
 

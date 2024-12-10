@@ -11,7 +11,7 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import cors from "cors";
-import { client_dev_origin } from "./constants/env";
+import { client_dev_origin, node_env } from "./constants/env";
 import cookieParser from "cookie-parser";
 import { StatusCodes } from "http-status-codes";
 import profileRouter from "./router/profile.router";
@@ -35,7 +35,7 @@ const limiter = rateLimit({
   message: "Too many requests from this IP. Please try again in an hour!",
 });
 
-app.use("/api", limiter);
+if (node_env === "production") app.use("/api/auth", limiter);
 
 app.use(
   express.json({

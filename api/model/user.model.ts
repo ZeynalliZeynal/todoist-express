@@ -38,8 +38,6 @@ export interface UserDocument extends mongoose.Document {
   createResetPasswordToken(): string;
 
   createVerificationToken(): string;
-
-  isVerified(): boolean;
 }
 
 const schema = new mongoose.Schema<UserDocument>(
@@ -119,6 +117,12 @@ schema.virtual("tasks", {
   localField: "_id", // primary key
 });
 
+schema.virtual("plans", {
+  ref: "Plan",
+  foreignField: "_id", // foreign key
+  localField: "planId", // primary key
+});
+
 // schema.pre("save", async function (next) {
 //   if (!this.isModified("password")) return next();
 //
@@ -179,10 +183,6 @@ schema.method(
 //
 //   return verificationToken;
 // });
-
-schema.method("isVerified", function () {
-  return this.verified;
-});
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {
   this.select("-__v");

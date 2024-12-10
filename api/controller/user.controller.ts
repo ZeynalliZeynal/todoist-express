@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import catchAsync from "../utils/catch-errors";
+import catchErrors from "../utils/catch-errors";
 import User from "../model/user.model";
 import AppError from "../utils/app-error";
 
@@ -13,9 +13,9 @@ const filterObj = (obj: Record<string, any>, keys: string[]) => {
   return newObj;
 };
 
-export const getAllUsers = catchAsync(
+export const getAllUsers = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
-    const users = await User.find();
+    const users = await User.find().populate("plans");
 
     res.status(200).json({
       status: "success",
@@ -27,7 +27,7 @@ export const getAllUsers = catchAsync(
   },
 );
 
-export const getUser = catchAsync(
+export const getUser = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findById(req.params.id).populate("tasks");
     if (!user) return next(new AppError("No user found by this id", 404));

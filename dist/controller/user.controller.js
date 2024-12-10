@@ -25,7 +25,7 @@ const filterObj = (obj, keys) => {
     return newObj;
 };
 exports.getAllUsers = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield user_model_1.default.find();
+    const users = yield user_model_1.default.find().populate("plans");
     res.status(200).json({
         status: "success",
         length: users.length,

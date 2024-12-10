@@ -31,7 +31,7 @@ const useragent_1 = __importDefault(require("useragent"));
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const ip = request_ip_1.default.getClientIp(req);
     const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
-    const { otp, planId } = req.body;
+    const { otp, plan } = req.body;
     const userAgentObj = {
         browser: userAgent.toAgent(),
         os: userAgent.os.toString(),
@@ -54,7 +54,7 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     const request = auth_schema_1.signupSchema.parse({
         otp,
     });
-    const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), location, userAgent: userAgentObj, planId }));
+    const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), location, userAgent: userAgentObj, plan }));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({
@@ -99,23 +99,30 @@ exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
 }));
 exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const email = auth_schema_1.emailSchema.parse(req.body.email);
-    console.log(email);
     const token = yield (0, auth_service_1.sendLoginEmailVerification)({
         email,
     });
-    res.status(http_status_codes_1.StatusCodes.OK).json({
+    return (0, cookies_1.setVerifyCookies)({
+        res,
+        verifyToken: token,
+    })
+        .status(http_status_codes_1.StatusCodes.OK)
+        .json({
         status: "success",
         message: "Verification email has been sent. The code will expire after 5 minutes.",
-        token,
     });
 }));
 exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const request = auth_schema_1.signupVerificationSchema.parse(req.body);
     const token = yield (0, auth_service_1.sendSignupEmailVerification)(request);
-    res.status(http_status_codes_1.StatusCodes.OK).json({
+    return (0, cookies_1.setVerifyCookies)({
+        res,
+        verifyToken: token,
+    })
+        .status(http_status_codes_1.StatusCodes.OK)
+        .json({
         status: "success",
         message: "Verification email has been sent. The code will expire after 5 minutes.",
-        token,
     });
 }));
 exports.refreshToken = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
