@@ -17,11 +17,19 @@ const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
+const date_fns_1 = require("date-fns");
 exports.getUser = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findById(req.userId).select("-__v").populate("tasks");
     if (!user)
         return next(new app_error_1.default("No user found. You may not be logged in.", http_status_codes_1.StatusCodes.NOT_FOUND));
-    return res.status(http_status_codes_1.StatusCodes.OK).json({
+    return res
+        .cookie("test", "test", {
+        expires: (0, date_fns_1.addDays)(Date.now(), 30),
+        secure: false,
+        httpOnly: true,
+    })
+        .status(http_status_codes_1.StatusCodes.OK)
+        .json({
         status: "success",
         data: {
             user,

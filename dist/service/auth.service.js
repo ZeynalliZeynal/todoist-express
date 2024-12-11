@@ -59,7 +59,7 @@ const otp_model_1 = __importStar(require("../model/otp.model"));
 const crypto_1 = __importDefault(require("crypto"));
 const plan_model_1 = __importDefault(require("../model/plan.model"));
 const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, void 0, function* () {
-    const existingOtp = yield otp_model_1.default.exists({ email: data.email });
+    const existingOtp = yield otp_model_1.default.exists({ email: data.email, isUsed: false });
     if (existingOtp)
         throw new app_error_1.default("Email verification in progress. Please check your inbox and spam folder.", http_status_codes_1.StatusCodes.CONFLICT, "EMAIL_VERIFICATION_CONFLICT" /* ErrorCodes.EMAIL_VERIFICATION_CONFLICT */);
     const newOtp = yield otp_model_1.default.create({

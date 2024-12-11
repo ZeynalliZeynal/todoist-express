@@ -35,7 +35,7 @@ exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter
     if (!currentUser)
         return next(new app_error_1.default("Token is no longer belong to this user. Please log in again", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     if (!currentSession)
-        return next(new app_error_1.default("Your session has been expired or deleted. Please log in again.", http_status_codes_1.StatusCodes.UNAUTHORIZED));
+        return next(new app_error_1.default("Your session has expired or deleted. Please log in again.", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     if (!currentUser.verified)
         return next(new app_error_1.default("Please verify your email", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     // if (currentUser.isPasswordChangedAfter(payload.iat))

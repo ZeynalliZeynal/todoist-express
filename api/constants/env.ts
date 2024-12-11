@@ -28,3 +28,11 @@ export const jwt_verify_expires_in = getEnv("JWT_VERIFY_EXPIRES_IN");
 export const jwt_expires_in = getEnv("JWT_EXPIRES_IN");
 
 export const apiip_accessKey = getEnv("APIIP_ACCESS_KEY");
+
+export const google_client_id = getEnv("GOOGLE_CLIENT_ID");
+export const google_secret = getEnv("GOOGLE_SECRET");
+export const google_callback_url = getEnv("GOOGLE_CALLBACK_URL");
+export const google_auth_url = getEnv("GOOGLE_AUTH_URL");
+export const google_token_url = getEnv("GOOGLE_TOKEN_URL");
+
+export const express_session_secret = getEnv("EXPRESS_SESSION_SECRET");

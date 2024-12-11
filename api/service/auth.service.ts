@@ -45,7 +45,7 @@ export const createEmailVerificationOTP = async (
   data: { name: string; email: string; otp: string },
   purpose: OTPPurpose,
 ) => {
-  const existingOtp = await OTP.exists({ email: data.email });
+  const existingOtp = await OTP.exists({ email: data.email, isUsed: false });
   if (existingOtp)
     throw new AppError(
       "Email verification in progress. Please check your inbox and spam folder.",
@@ -271,6 +271,7 @@ export const refreshUserAccessToken = async (token: string) => {
   const { payload } = verifyToken<RefreshTokenPayload>(token, {
     secret: jwt_refresh_secret,
   });
+
   if (!payload) throw new AppError("Invalid token", StatusCodes.UNAUTHORIZED);
 
   const session = await Session.findById(payload.sessionId);
