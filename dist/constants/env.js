@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.express_session_secret = exports.google_token_url = exports.google_auth_url = exports.google_callback_url = exports.google_secret = exports.google_client_id = exports.apiip_accessKey = exports.jwt_expires_in = exports.jwt_verify_expires_in = exports.jwt_refresh_expires_in = exports.jwt_verify_secret = exports.jwt_refresh_secret = exports.jwt_secret = exports.database_password = exports.database_uri = exports.brevo_api_key = exports.email_sender = exports.email_password = exports.email_username = exports.email_host = exports.port = exports.admin_email = exports.node_env = exports.client_dev_origin = void 0;
+exports.express_session_secret = exports.apiip_accessKey = exports.jwt_expires_in = exports.jwt_verify_expires_in = exports.jwt_refresh_expires_in = exports.jwt_verify_secret = exports.jwt_refresh_secret = exports.jwt_secret = exports.database_password = exports.database_uri = exports.brevo_api_key = exports.email_sender = exports.email_password = exports.email_username = exports.email_host = exports.port = exports.admin_email = exports.node_env = exports.client_dev_origin = void 0;
 const getEnv = (key, defaultValue) => {
     const value = process.env[key];
     if (value === undefined)
@@ -25,9 +25,4 @@ exports.jwt_refresh_expires_in = getEnv("JWT_REFRESH_EXPIRES_IN");
 exports.jwt_verify_expires_in = getEnv("JWT_VERIFY_EXPIRES_IN");
 exports.jwt_expires_in = getEnv("JWT_EXPIRES_IN");
 exports.apiip_accessKey = getEnv("APIIP_ACCESS_KEY");
-exports.google_client_id = getEnv("GOOGLE_CLIENT_ID");
-exports.google_secret = getEnv("GOOGLE_SECRET");
-exports.google_callback_url = getEnv("GOOGLE_CALLBACK_URL");
-exports.google_auth_url = getEnv("GOOGLE_AUTH_URL");
-exports.google_token_url = getEnv("GOOGLE_TOKEN_URL");
 exports.express_session_secret = getEnv("EXPRESS_SESSION_SECRET");

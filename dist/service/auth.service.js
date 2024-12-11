@@ -169,16 +169,6 @@ const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, veri
     }, { new: true });
     if (!user)
         throw new app_error_1.default("Email is incorrect.", http_status_codes_1.StatusCodes.NOT_FOUND);
-    // validate password
-    // const isPasswordValid = await user!.comparePasswords(
-    //   password,
-    //   user!.password,
-    // );
-    // appAssert(
-    //   isPasswordValid,
-    //   "Invalid email or password",
-    //   StatusCodes.UNAUTHORIZED,
-    // );
     const userId = user._id;
     // create a session
     const session = yield session_model_1.default.create({

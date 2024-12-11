@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/constants/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/constants/env.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/profile.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/profile.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/middleware/auth.middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/auth.middleware.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/router/auth.router.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/router/auth.router.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/profile.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/profile.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/middleware/auth.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/auth.middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/service/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/auth.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,7 +162,7 @@
       <workItem from="1733652983466" duration="30244000" />
       <workItem from="1733761294264" duration="17787000" />
       <workItem from="1733830257103" duration="22194000" />
-      <workItem from="1733930488475" duration="10345000" />
+      <workItem from="1733930488475" duration="10826000" />
     </task>
     <servers />
   </component>

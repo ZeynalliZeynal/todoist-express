@@ -37,7 +37,6 @@ export interface CreateAccountParams {
 export interface LoginParams {
   otp: string;
   verifyToken: string;
-  // password: string;
   userAgent?: SessionDocument["userAgent"];
 }
 
@@ -229,17 +228,6 @@ export const loginUser = async ({
   );
 
   if (!user) throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
-
-  // validate password
-  // const isPasswordValid = await user!.comparePasswords(
-  //   password,
-  //   user!.password,
-  // );
-  // appAssert(
-  //   isPasswordValid,
-  //   "Invalid email or password",
-  //   StatusCodes.UNAUTHORIZED,
-  // );
 
   const userId = user._id;
 
