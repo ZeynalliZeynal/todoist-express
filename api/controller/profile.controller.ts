@@ -21,6 +21,7 @@ export const getUser: RequestHandler = catchErrors(async (req, res, next) => {
       expires: addDays(Date.now(), 30),
       secure: false,
       httpOnly: true,
+      sameSite: "lax",
     })
     .status(StatusCodes.OK)
     .json({

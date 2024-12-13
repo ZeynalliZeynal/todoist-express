@@ -5,16 +5,11 @@ import { StatusCodes } from "http-status-codes";
 import { verifyToken } from "../utils/jwt";
 import User from "../model/user.model";
 import Session from "../model/session.model";
+import { getToken } from "../utils/cookies";
 
 export const authenticate: RequestHandler = catchErrors(
   async (req, res, next) => {
-    const accessTokenFromCookies: string | undefined = req.cookies.accessToken;
-    const accessTokenFromHeaders: string | undefined =
-      req.headers.authorization;
-
-    const accessToken =
-      accessTokenFromHeaders?.split("Bearer ")[1]?.trim() ||
-      accessTokenFromCookies;
+    const accessToken = getToken(req, "accessToken");
 
     if (!accessToken)
       return next(
@@ -56,6 +51,8 @@ export const authenticate: RequestHandler = catchErrors(
       return next(
         new AppError("Please verify your email", StatusCodes.UNAUTHORIZED),
       );
+
+    console.log(currentUser.role);
 
     // if (currentUser.isPasswordChangedAfter(payload.iat))
     //   return next(

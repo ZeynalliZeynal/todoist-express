@@ -17,6 +17,7 @@ import { StatusCodes } from "http-status-codes";
 import profileRouter from "./router/profile.router";
 import sessionRouter from "./router/session.router";
 import planRouter from "./router/plan.router";
+import templateCategoriesRouter from "./router/template-categories.router";
 
 const app = express();
 
@@ -56,6 +57,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/tasks", taskRouter);
 app.use("/api/v1/templates", templateRouter);
+app.use("/api/v1/template-categories", templateCategoriesRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/profile", profileRouter);

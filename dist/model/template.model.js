@@ -5,11 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const schema = new mongoose_1.default.Schema({
-    category: {
-        type: String,
-        required: [true, "Category is required"],
-        trim: true,
-    },
     name: {
         type: String,
         unique: true,
@@ -38,6 +33,22 @@ const schema = new mongoose_1.default.Schema({
         type: String,
         trim: true,
     },
+    tags: {
+        type: [String],
+        required: true,
+    },
+    category: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "TemplateCategory",
+        required: true,
+        index: true,
+    },
+    user: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        index: true,
+    },
 }, {
     toJSON: {
         virtuals: true,
@@ -47,4 +58,6 @@ const schema = new mongoose_1.default.Schema({
     },
     timestamps: true,
 });
+schema.index({ category: 1 });
+schema.index({ user: 1 });
 exports.default = mongoose_1.default.model("Template", schema);

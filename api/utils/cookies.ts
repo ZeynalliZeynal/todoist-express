@@ -1,4 +1,4 @@
-import { CookieOptions, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { node_env } from "../constants/env";
 import { addDays, addMinutes } from "date-fns";
 
@@ -53,3 +53,13 @@ export const clearAuthCookies = (res: Response) =>
       path: refresh_path,
     })
     .clearCookie("verifyToken");
+
+export function getToken(req: Request, value: string) {
+  const tokenFromCookies: string | undefined = req.cookies[value];
+  const tokenFromHeaders: string | undefined = req.headers.authorization;
+
+  const token =
+    tokenFromHeaders?.split("Bearer ")[1]?.trim() || tokenFromCookies;
+
+  return token;
+}

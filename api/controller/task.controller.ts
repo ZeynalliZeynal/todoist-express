@@ -3,12 +3,13 @@ import Task from "../model/task.model";
 import { NextFunction, Request, Response } from "express";
 import catchAsync from "../utils/catch-errors";
 import AppError from "../utils/app-error";
+import { StatusCodes } from "http-status-codes";
 
 const getTasks = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const features = new ApiFeatures(
       Task.find({
-        user: req.userId,
+        userId: req.userId,
       }),
       req.query,
     )
@@ -19,7 +20,7 @@ const getTasks = catchAsync(
 
     const tasks = await features.query;
 
-    res.status(302).json({
+    res.status(StatusCodes.OK).json({
       status: "success",
       data: {
         tasks,
@@ -31,7 +32,7 @@ const getTasks = catchAsync(
 const getTask = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const task = await Task.findOne({
-      user: req.userId,
+      userId: req.userId,
       _id: req.params.id,
     }).populate("user");
 
@@ -59,7 +60,7 @@ const createTask = catchAsync(
       tags: req.body.tags,
       dueDate: req.body.dueDate,
       priority: req.body.priority,
-      user: req.userId,
+      userId: req.userId,
     });
 
     res.status(201).json({
@@ -74,8 +75,8 @@ const createTask = catchAsync(
 const updateTask = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { body } = req;
-    const task = await Task.findByIdAndUpdate(
-      req.params.id,
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
       {
         ...body,
         updatedAt: Date.now(),
@@ -103,7 +104,10 @@ const updateTask = catchAsync(
 
 const deleteTask = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const task = await Task.findByIdAndDelete(req.params.id);
+    const task = await Task.findOneAndDelete({
+      userId: req.userId,
+      _id: req.params.id,
+    });
 
     if (!task) {
       return next(
@@ -120,7 +124,9 @@ const deleteTask = catchAsync(
 
 const clearTasks = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    await Task.deleteMany();
+    await Task.deleteMany({
+      userId: req.userId,
+    });
 
     res.status(204).json({
       status: "success",

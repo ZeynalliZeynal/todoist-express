@@ -16,7 +16,6 @@ const schema = new mongoose_1.default.Schema({
     },
     name: {
         type: String,
-        unique: true,
         required: [true, "Name cannot be empty."],
         minlength: [5, "Name must be at least 5 characters"],
         maxlength: [50, "Name must be at most 50 characters"],

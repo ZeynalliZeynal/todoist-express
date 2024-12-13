@@ -19,12 +19,9 @@ const http_status_codes_1 = require("http-status-codes");
 const jwt_1 = require("../utils/jwt");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const session_model_1 = __importDefault(require("../model/session.model"));
+const cookies_1 = require("../utils/cookies");
 exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const accessTokenFromCookies = req.cookies.accessToken;
-    const accessTokenFromHeaders = req.headers.authorization;
-    const accessToken = ((_a = accessTokenFromHeaders === null || accessTokenFromHeaders === void 0 ? void 0 : accessTokenFromHeaders.split("Bearer ")[1]) === null || _a === void 0 ? void 0 : _a.trim()) ||
-        accessTokenFromCookies;
+    const accessToken = (0, cookies_1.getToken)(req, "accessToken");
     if (!accessToken)
         return next(new app_error_1.default("You must log in to perform this action", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     const { payload, error } = (0, jwt_1.verifyToken)(accessToken);
@@ -38,6 +35,7 @@ exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter
         return next(new app_error_1.default("Your session has expired or deleted. Please log in again.", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     if (!currentUser.verified)
         return next(new app_error_1.default("Please verify your email", http_status_codes_1.StatusCodes.UNAUTHORIZED));
+    console.log(currentUser.role);
     // if (currentUser.isPasswordChangedAfter(payload.iat))
     //   return next(
     //     new AppError(

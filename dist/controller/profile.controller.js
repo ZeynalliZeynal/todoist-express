@@ -27,6 +27,7 @@ exports.getUser = (0, catch_errors_1.default)((req, res, next) => __awaiter(void
         expires: (0, date_fns_1.addDays)(Date.now(), 30),
         secure: false,
         httpOnly: true,
+        sameSite: "lax",
     })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({

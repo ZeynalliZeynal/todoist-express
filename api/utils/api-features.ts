@@ -11,7 +11,7 @@ type QueryString = {
   fields?: string;
   page?: string;
   limit?: string;
-  category?: string;
+  categoryName?: string;
 };
 
 class ApiFeatures<T extends TaskDocument | TemplateDocument> {
@@ -37,12 +37,14 @@ class ApiFeatures<T extends TaskDocument | TemplateDocument> {
         },
       };
 
-    if (this.queryString.category)
+    if (this.queryString.categoryName)
       queryObj = {
         ...queryObj,
         category: {
-          $regex: this.queryString.category,
-          $options: "i",
+          name: {
+            $regex: this.queryString.categoryName,
+            $options: "i",
+          },
         },
       };
 

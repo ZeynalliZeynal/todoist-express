@@ -17,16 +17,17 @@ const api_features_1 = __importDefault(require("../utils/api-features"));
 const task_model_1 = __importDefault(require("../model/task.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
+const http_status_codes_1 = require("http-status-codes");
 const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const features = new api_features_1.default(task_model_1.default.find({
-        user: req.userId,
+        userId: req.userId,
     }), req.query)
         .filter()
         .sort()
         .limitFields()
         .paginate();
     const tasks = yield features.query;
-    res.status(302).json({
+    res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: {
             tasks,
@@ -36,7 +37,7 @@ const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 
 exports.getTasks = getTasks;
 const getTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const task = yield task_model_1.default.findOne({
-        user: req.userId,
+        userId: req.userId,
         _id: req.params.id,
     }).populate("user");
     if (!task) {
@@ -58,7 +59,7 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
         tags: req.body.tags,
         dueDate: req.body.dueDate,
         priority: req.body.priority,
-        user: req.userId,
+        userId: req.userId,
     });
     res.status(201).json({
         status: "success",
@@ -70,7 +71,7 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 exports.createTask = createTask;
 const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const task = yield task_model_1.default.findByIdAndUpdate(req.params.id, Object.assign(Object.assign({}, body), { updatedAt: Date.now() }), {
+    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, userId: req.userId }, Object.assign(Object.assign({}, body), { updatedAt: Date.now() }), {
         new: true,
         runValidators: true,
     });
@@ -86,7 +87,10 @@ const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 }));
 exports.updateTask = updateTask;
 const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const task = yield task_model_1.default.findByIdAndDelete(req.params.id);
+    const task = yield task_model_1.default.findOneAndDelete({
+        userId: req.userId,
+        _id: req.params.id,
+    });
     if (!task) {
         return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
     }
@@ -97,7 +101,9 @@ const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 }));
 exports.deleteTask = deleteTask;
 const clearTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    yield task_model_1.default.deleteMany();
+    yield task_model_1.default.deleteMany({
+        userId: req.userId,
+    });
     res.status(204).json({
         status: "success",
         data: null,

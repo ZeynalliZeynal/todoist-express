@@ -1,21 +1,18 @@
 import mongoose from "mongoose";
 
 export interface TemplateDocument extends mongoose.Document {
-  category: string;
   name: string;
   description: string;
   content: string;
   exampleUrl: string;
   imageUrl?: string;
+  category: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
+  tags: ["list", "board"];
 }
 
 const schema = new mongoose.Schema<TemplateDocument>(
   {
-    category: {
-      type: String,
-      required: [true, "Category is required"],
-      trim: true,
-    },
     name: {
       type: String,
       unique: true,
@@ -44,6 +41,22 @@ const schema = new mongoose.Schema<TemplateDocument>(
       type: String,
       trim: true,
     },
+    tags: {
+      type: [String],
+      required: true,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "TemplateCategory",
+      required: true,
+      index: true,
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
   },
   {
     toJSON: {
@@ -55,5 +68,8 @@ const schema = new mongoose.Schema<TemplateDocument>(
     timestamps: true,
   },
 );
+
+schema.index({ category: 1 });
+schema.index({ user: 1 });
 
 export default mongoose.model<TemplateDocument>("Template", schema);
