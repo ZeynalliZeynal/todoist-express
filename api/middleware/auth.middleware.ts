@@ -52,8 +52,6 @@ export const authenticate: RequestHandler = catchErrors(
         new AppError("Please verify your email", StatusCodes.UNAUTHORIZED),
       );
 
-    console.log(currentUser.role);
-
     // if (currentUser.isPasswordChangedAfter(payload.iat))
     //   return next(
     //     new AppError(

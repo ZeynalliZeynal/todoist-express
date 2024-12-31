@@ -94,8 +94,16 @@ const getTemplateCategories = catchAsync(
 
     if (req.query.templates && req.query.templates === "enable")
       query = query.populate("templates");
+    if (
+      req.query.templates &&
+      !isNaN(parseInt(req.query.size as string, 10)) &&
+      parseInt(req.query.size as string, 10) > 0
+    )
+      query = query.limit(parseInt(req.query.size as string, 10));
 
-    const categories = await query;
+    let features = new ApiFeatures(query, req.query).limitFields();
+
+    const categories = await features.query;
 
     res.status(StatusCodes.OK).json({
       status: "success",

@@ -164,7 +164,10 @@ export const sendLoginVerifyEmailController = catchErrors(
 export const sendSignupVerifyEmailController = catchErrors(
   async (req, res, next) => {
     const request = signupVerificationSchema.parse(req.body);
-    const ip = requestIp.getClientIp(req);
+    const ip =
+      req.headers["x-real-ip"] ||
+      req.headers["x-forwarded-for"] ||
+      requestIp.getClientIp(req);
 
     let location;
     try {
@@ -178,6 +181,7 @@ export const sendSignupVerifyEmailController = catchErrors(
       };
     } catch (err) {
       console.log("IP is invalid");
+      location = { city: "Unknown", country: "Unknown", continent: "Unknown" };
     }
 
     const token = await sendSignupEmailVerification(request, location);

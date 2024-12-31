@@ -83,7 +83,12 @@ const getTemplateCategories = (0, catch_errors_1.default)((req, res, next) => __
     let query = template_category_model_1.default.find();
     if (req.query.templates && req.query.templates === "enable")
         query = query.populate("templates");
-    const categories = yield query;
+    if (req.query.templates &&
+        !isNaN(parseInt(req.query.size, 10)) &&
+        parseInt(req.query.size, 10) > 0)
+        query = query.limit(parseInt(req.query.size, 10));
+    let features = new api_features_1.default(query, req.query).limitFields();
+    const categories = yield features.query;
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: {
