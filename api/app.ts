@@ -41,7 +41,7 @@ if (node_env === "production") app.use("/api/auth", limiter);
 app.use(
   express.json({
     limit: "10mb",
-  }),
+  })
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -49,7 +49,7 @@ app.use(
   cors({
     origin: client_dev_origin,
     credentials: true,
-  }),
+  })
 );
 
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -65,7 +65,7 @@ app.use("/api/v1/profile/sessions", sessionRouter);
 app.use("/api/v1/plans", planRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
-  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
+  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND))
 );
 
 app.use(errorHandler);
