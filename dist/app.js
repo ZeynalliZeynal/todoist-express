@@ -43,7 +43,11 @@ app.use(express_1.default.json({
 }));
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({
-    origin: env_1.client_dev_origin,
+    origin: env_1.node_env === "development"
+        ? env_1.client_dev_origin
+        : env_1.node_env === "production"
+            ? env_1.client_prod_origin
+            : "*",
     credentials: true,
 }));
 // app.use(bodyParser.urlencoded({ extended: true }));

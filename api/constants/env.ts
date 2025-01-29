@@ -7,6 +7,7 @@ const getEnv = (key: string, defaultValue?: string | number): string => {
 };
 
 export const client_dev_origin = getEnv("CLIENT_DEV_URL");
+export const client_prod_origin = getEnv("CLIENT_PROD_URL");
 export const node_env = getEnv("NODE_ENV", "development");
 export const admin_email = getEnv("ADMIN_EMAIL");
 export const port = getEnv("PORT", 8080);

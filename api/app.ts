@@ -11,7 +11,11 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import cors from "cors";
-import { client_dev_origin, node_env } from "./constants/env";
+import {
+  client_dev_origin,
+  client_prod_origin,
+  node_env,
+} from "./constants/env";
 import cookieParser from "cookie-parser";
 import { StatusCodes } from "http-status-codes";
 import profileRouter from "./router/profile.router";
@@ -47,7 +51,12 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: client_dev_origin,
+    origin:
+      node_env === "development"
+        ? client_dev_origin
+        : node_env === "production"
+        ? client_prod_origin
+        : "*",
     credentials: true,
   })
 );
