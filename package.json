@@ -2,12 +2,12 @@
   "name": "todoist-server",
   "version": "1.0.1",
   "description": "",
-  "main": "dist/index.js",
+  "main": "public/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "concurrently \"nodemon dist/index.js\" \"tsc -w\"",
-    "prod": "cross-env NODE_ENV=production node dist/index.js",
-    "start": "node dist/index.js",
+    "dev": "concurrently \"nodemon public/index.js\" \"tsc -w\"",
+    "prod": "cross-env NODE_ENV=production node public/index.js",
+    "start": "node public/index.js",
     "release": "standard-version",
     "push": "git push origin main --follow-tags"
   },
