@@ -72,6 +72,11 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/profile/sessions", sessionRouter);
 app.use("/api/v1/plans", planRouter);
+app.use("/api/v1/ping", (req: Request, res: Response) => {
+  res
+    .status(200)
+    .json({ status: "success", message: "API is up and running." });
+});
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
   next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND))

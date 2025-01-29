@@ -12,7 +12,7 @@
     "push": "git push origin main --follow-tags"
   },
   "keywords": [],
-  "author": "zeynal",
+  "author": "Zeynalli Zeynal <zzeynalli446@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",

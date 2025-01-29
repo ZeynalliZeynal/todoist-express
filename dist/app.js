@@ -60,6 +60,11 @@ app.use("/api/v1/users", user_router_1.default);
 app.use("/api/v1/profile", profile_router_1.default);
 app.use("/api/v1/profile/sessions", session_router_1.default);
 app.use("/api/v1/plans", plan_router_1.default);
+app.use("/api/v1/ping", (req, res) => {
+    res
+        .status(200)
+        .json({ status: "success", message: "API is up and running." });
+});
 app.all("*", (req, res, next) => next(new app_error_1.default(`${req.originalUrl} not found`, http_status_codes_1.StatusCodes.NOT_FOUND)));
 app.use(error_handler_1.errorHandler);
 exports.default = app;
