@@ -10,6 +10,8 @@ import {
 import { SessionDocument } from "../model/session.model";
 import mongoose from "mongoose";
 import { OTPDocument } from "../model/otp.model";
+import { SigningOptions } from "crypto";
+import { StringValue } from "ms";
 
 export interface RefreshTokenPayload extends JwtPayload {
   sessionId: SessionDocument["_id"];
@@ -31,23 +33,23 @@ const defaults = {
 };
 
 const accessTokenSignOptions = {
-  expiresIn: jwt_expires_in,
+  expiresIn: parseInt(jwt_expires_in, 10),
   secret: jwt_secret,
 };
 
 export const refreshTokenSignOptions = {
-  expiresIn: jwt_refresh_expires_in,
+  expiresIn: jwt_refresh_expires_in as StringValue,
   secret: jwt_refresh_secret,
 };
 
 export const verificationTokenSignOptions = {
-  expiresIn: jwt_verify_expires_in,
+  expiresIn: jwt_verify_expires_in as StringValue,
   secret: jwt_verify_secret,
 };
 
 export const signToken = (
   payload: JwtPayload,
-  options?: SignOptions & { secret: string },
+  options?: SignOptions & { secret: string }
 ) => {
   const { secret, ...signOptions } = options || accessTokenSignOptions;
   return jwt.sign(payload, secret, { ...signOptions, ...defaults });
@@ -55,7 +57,7 @@ export const signToken = (
 
 export const verifyToken = <TPayload extends object = AccessTokenPayload>(
   token: string,
-  options?: VerifyOptions & { secret: string },
+  options?: VerifyOptions & { secret: string }
 ) => {
   const { secret = jwt_secret, ...verifyOptions } = options || {};
 
