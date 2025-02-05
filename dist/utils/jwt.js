@@ -21,7 +21,7 @@ const defaults = {
     audience: ["user"],
 };
 const accessTokenSignOptions = {
-    expiresIn: parseInt(env_1.jwt_expires_in, 10),
+    expiresIn: env_1.jwt_expires_in,
     secret: env_1.jwt_secret,
 };
 exports.refreshTokenSignOptions = {

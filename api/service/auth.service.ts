@@ -2,8 +2,10 @@ import User, { UserDocument } from "../model/user.model";
 import {
   admin_email,
   client_dev_origin,
+  client_prod_origin,
   jwt_refresh_secret,
   jwt_verify_secret,
+  node_env,
 } from "../constants/env";
 import Session, { SessionDocument } from "../model/session.model";
 import { StatusCodes } from "http-status-codes";
@@ -40,16 +42,19 @@ export interface LoginParams {
   userAgent?: SessionDocument["userAgent"];
 }
 
+const appOrigin =
+  node_env === "development" ? client_dev_origin : client_prod_origin;
+
 export const createEmailVerificationOTP = async (
   data: { name: string; email: string; otp: string },
-  purpose: OTPPurpose
+  purpose: OTPPurpose,
 ) => {
   const existingOtp = await OTP.exists({ email: data.email, isUsed: false });
   if (existingOtp)
     throw new AppError(
       "Email verification in progress. Please check your inbox and spam folder.",
       StatusCodes.CONFLICT,
-      ErrorCodes.EMAIL_VERIFICATION_CONFLICT
+      ErrorCodes.EMAIL_VERIFICATION_CONFLICT,
     );
 
   const newOtp = await OTP.create({
@@ -61,7 +66,7 @@ export const createEmailVerificationOTP = async (
 
   const token = signToken(
     { otpId: newOtp._id, name: data.name, email: data.email },
-    verificationTokenSignOptions
+    verificationTokenSignOptions,
   );
 
   return token;
@@ -85,9 +90,9 @@ export const sendLoginEmailVerification = async ({
       name: existingUser.name,
       email,
     },
-    OTPPurpose.EMAIL_VERIFICATION
+    OTPPurpose.EMAIL_VERIFICATION,
   );
-  const url = `${client_dev_origin}/auth/login/email?token=${token}`;
+  const url = `${appOrigin}/auth/login/email?token=${token}`;
 
   try {
     await sendMail({
@@ -105,7 +110,7 @@ export const sendLoginEmailVerification = async ({
   } catch (err) {
     throw new AppError(
       "Error occurred sending an email",
-      StatusCodes.INTERNAL_SERVER_ERROR
+      StatusCodes.INTERNAL_SERVER_ERROR,
     );
   }
 };
@@ -117,7 +122,7 @@ export const sendSignupEmailVerification = async (
     email: string;
     name: string;
   },
-  location: UserDocument["location"]
+  location: UserDocument["location"],
 ) => {
   const otp = crypto.randomInt(100000, 999999).toString();
   const token = await createEmailVerificationOTP(
@@ -126,13 +131,13 @@ export const sendSignupEmailVerification = async (
       otp,
       name,
     },
-    OTPPurpose.EMAIL_VERIFICATION
+    OTPPurpose.EMAIL_VERIFICATION,
   );
   const existingUser = await User.exists({ email });
   if (existingUser)
     throw new AppError("Email is already in use.", StatusCodes.CONFLICT);
 
-  const url = `${client_dev_origin}/auth/signup/email?token=${token}`;
+  const url = `${appOrigin}/auth/signup/email?token=${token}`;
 
   try {
     await sendMail({
@@ -150,7 +155,7 @@ export const sendSignupEmailVerification = async (
   } catch (err) {
     throw new AppError(
       "Error occurred sending an email",
-      StatusCodes.INTERNAL_SERVER_ERROR
+      StatusCodes.INTERNAL_SERVER_ERROR,
     );
   }
 };
@@ -160,7 +165,7 @@ export const createAccount = async (data: CreateAccountParams) => {
   const { name, email } = await verifyOTP(
     data.otp,
     data.verifyToken,
-    OTPPurpose.EMAIL_VERIFICATION
+    OTPPurpose.EMAIL_VERIFICATION,
   );
 
   const plan = await Plan.findOne({
@@ -215,7 +220,7 @@ export const loginUser = async ({
   const { email } = await verifyOTP(
     otp,
     verifyToken,
-    OTPPurpose.EMAIL_VERIFICATION
+    OTPPurpose.EMAIL_VERIFICATION,
   );
 
   const user = await User.findOneAndUpdate(
@@ -224,7 +229,7 @@ export const loginUser = async ({
       verified: true,
       verifiedAt: Date.now(),
     },
-    { new: true }
+    { new: true },
   );
 
   if (!user) throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
@@ -239,7 +244,7 @@ export const loginUser = async ({
   // sign access token & refresh token
   const refreshToken = signToken(
     { sessionId: session._id },
-    refreshTokenSignOptions
+    refreshTokenSignOptions,
   );
 
   const accessToken = signToken({
@@ -279,7 +284,7 @@ export const refreshUserAccessToken = async (token: string) => {
         {
           sessionId: session!._id,
         },
-        refreshTokenSignOptions
+        refreshTokenSignOptions,
       )
     : undefined;
 
@@ -297,7 +302,7 @@ export const refreshUserAccessToken = async (token: string) => {
 export const verifyOTP = async (
   otp: string,
   token: string,
-  purpose: OTPPurpose
+  purpose: OTPPurpose,
 ) => {
   const { payload } = verifyToken<VerificationTokenPayload>(token, {
     secret: jwt_verify_secret,
@@ -306,7 +311,7 @@ export const verifyOTP = async (
   if (!payload)
     throw new AppError(
       "Token is invalid or expired.",
-      StatusCodes.UNAUTHORIZED
+      StatusCodes.UNAUTHORIZED,
     );
 
   const existingOtp = await OTP.findById({
@@ -320,13 +325,13 @@ export const verifyOTP = async (
   if (!existingOtp)
     throw new AppError(
       "The code has expired. Request a new one.",
-      StatusCodes.UNAUTHORIZED
+      StatusCodes.UNAUTHORIZED,
     );
 
   if (existingOtp.isUsed)
     throw new AppError(
       "This code is already used. Please request a new one.",
-      StatusCodes.BAD_REQUEST
+      StatusCodes.BAD_REQUEST,
     );
 
   const isMatch = await existingOtp.compareOTPs(otp, existingOtp.otp);
@@ -334,7 +339,7 @@ export const verifyOTP = async (
   if (!isMatch)
     throw new AppError(
       "The entered code is incorrect. Please try again and check for typos.",
-      StatusCodes.UNAUTHORIZED
+      StatusCodes.UNAUTHORIZED,
     );
 
   existingOtp.isUsed = true;

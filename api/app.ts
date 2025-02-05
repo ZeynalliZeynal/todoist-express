@@ -1,9 +1,9 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, {NextFunction, Request, Response} from "express";
 import morgan from "morgan";
 import taskRouter from "./router/task.router";
 import templateRouter from "./router/template.router";
 import AppError from "./utils/app-error";
-import { errorHandler } from "./middleware/error-handler";
+import {errorHandler} from "./middleware/error-handler";
 import authRouter from "./router/auth.router";
 import userRouter from "./router/user.router";
 import rateLimit from "express-rate-limit";
@@ -11,13 +11,9 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import cors from "cors";
-import {
-  client_dev_origin,
-  client_prod_origin,
-  node_env,
-} from "./constants/env";
+import {client_dev_origin, client_prod_origin, node_env,} from "./constants/env";
 import cookieParser from "cookie-parser";
-import { StatusCodes } from "http-status-codes";
+import {StatusCodes} from "http-status-codes";
 import profileRouter from "./router/profile.router";
 import sessionRouter from "./router/session.router";
 import planRouter from "./router/plan.router";
@@ -42,7 +38,7 @@ const limiter = rateLimit({
 
 if (node_env === "production") app.use("/api/auth", limiter);
 
-app.use(
+app.use(   
   express.json({
     limit: "10mb",
   })

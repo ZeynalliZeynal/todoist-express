@@ -47,7 +47,7 @@ const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ subject, t
         to: [...to],
         subject,
         text,
-        html,
+        html
     });
 });
 exports.sendMail = sendMail;

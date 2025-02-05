@@ -58,6 +58,7 @@ const date_fns_1 = require("date-fns");
 const otp_model_1 = __importStar(require("../model/otp.model"));
 const crypto_1 = __importDefault(require("crypto"));
 const plan_model_1 = __importDefault(require("../model/plan.model"));
+const appOrigin = env_1.node_env === "development" ? env_1.client_dev_origin : env_1.client_prod_origin;
 const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, void 0, function* () {
     const existingOtp = yield otp_model_1.default.exists({ email: data.email, isUsed: false });
     if (existingOtp)
@@ -82,7 +83,7 @@ const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, funct
         name: existingUser.name,
         email,
     }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    const url = `${env_1.client_dev_origin}/auth/login/email?token=${token}`;
+    const url = `${appOrigin}/auth/login/email?token=${token}`;
     try {
         yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
             otp,
@@ -108,7 +109,7 @@ const sendSignupEmailVerification = (_a, location_1) => __awaiter(void 0, [_a, l
     const existingUser = yield user_model_1.default.exists({ email });
     if (existingUser)
         throw new app_error_1.default("Email is already in use.", http_status_codes_1.StatusCodes.CONFLICT);
-    const url = `${env_1.client_dev_origin}/auth/signup/email?token=${token}`;
+    const url = `${appOrigin}/auth/signup/email?token=${token}`;
     try {
         yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
             otp,
