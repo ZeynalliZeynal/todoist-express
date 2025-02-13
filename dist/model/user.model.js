@@ -88,7 +88,7 @@ schema.virtual("tasks", {
     foreignField: "userId", // foreign key
     localField: "_id", // primary key
 });
-schema.virtual("plans", {
+schema.virtual("plan", {
     ref: "Plan",
     foreignField: "_id", // foreign key
     localField: "planId", // primary key

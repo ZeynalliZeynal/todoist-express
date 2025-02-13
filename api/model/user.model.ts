@@ -30,7 +30,7 @@ export interface UserDocument extends mongoose.Document {
 
   comparePasswords(
     candidatePassword: string,
-    userPassword: string,
+    userPassword: string
   ): Promise<boolean>;
 
   isPasswordChangedAfter(JWTTimestamp?: number): boolean;
@@ -108,7 +108,7 @@ const schema = new mongoose.Schema<UserDocument>(
       virtuals: true,
     },
     timestamps: true,
-  },
+  }
 );
 
 schema.virtual("tasks", {
@@ -117,7 +117,7 @@ schema.virtual("tasks", {
   localField: "_id", // primary key
 });
 
-schema.virtual("plans", {
+schema.virtual("plan", {
   ref: "Plan",
   foreignField: "_id", // foreign key
   localField: "planId", // primary key
@@ -148,7 +148,7 @@ schema.method(
   "comparePasswords",
   async function (candidatePassword: string, userPassword: string) {
     return await bcrypt.compare(candidatePassword, userPassword);
-  },
+  }
 );
 
 // schema.method("isPasswordChangedAfter", function (JWTTimestamp) {

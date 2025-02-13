@@ -19,7 +19,12 @@ const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const date_fns_1 = require("date-fns");
 exports.getUser = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.default.findById(req.userId).select("-__v").populate("tasks");
+    let query = user_model_1.default.findById(req.userId);
+    if (req.query.tasks && req.query.tasks === "enable")
+        query = query.populate("tasks");
+    if (req.query.plan && req.query.plan === "enable")
+        query = query.populate("plan");
+    const user = yield query;
     if (!user)
         return next(new app_error_1.default("No user found. You may not be logged in.", http_status_codes_1.StatusCodes.NOT_FOUND));
     return res

@@ -1,6 +1,6 @@
 {
   "name": "todoist-server",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -66,7 +66,6 @@
     "@types/useragent": "^2.3.4",
     "@types/validator": "^13.12.2",
     "cross-env": "^7.0.3",
-    "standard-version": "^9.5.0",
     "typescript": "^5.7.2"
   },
   "engines": {
