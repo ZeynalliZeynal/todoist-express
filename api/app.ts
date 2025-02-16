@@ -1,9 +1,9 @@
-import express, {NextFunction, Request, Response} from "express";
+import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import taskRouter from "./router/task.router";
 import templateRouter from "./router/template.router";
 import AppError from "./utils/app-error";
-import {errorHandler} from "./middleware/error-handler";
+import { errorHandler } from "./middleware/error-handler";
 import authRouter from "./router/auth.router";
 import userRouter from "./router/user.router";
 import rateLimit from "express-rate-limit";
@@ -11,13 +11,18 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import cors from "cors";
-import {client_dev_origin, client_prod_origin, node_env,} from "./constants/env";
+import {
+  client_dev_origin,
+  client_prod_origin,
+  node_env,
+} from "./constants/env";
 import cookieParser from "cookie-parser";
-import {StatusCodes} from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import profileRouter from "./router/profile.router";
 import sessionRouter from "./router/session.router";
 import planRouter from "./router/plan.router";
 import templateCategoriesRouter from "./router/template-categories.router";
+import projectRouter from "./router/project.router";
 
 const app = express();
 
@@ -38,10 +43,10 @@ const limiter = rateLimit({
 
 if (node_env === "production") app.use("/api/auth", limiter);
 
-app.use(   
+app.use(
   express.json({
     limit: "10mb",
-  })
+  }),
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -51,16 +56,17 @@ app.use(
       node_env === "development"
         ? client_dev_origin
         : node_env === "production"
-        ? client_prod_origin
-        : "*",
+          ? client_prod_origin
+          : "*",
     credentials: true,
-  })
+  }),
 );
 
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/v1/tasks", taskRouter);
+app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/templates", templateRouter);
 app.use("/api/v1/template-categories", templateCategoriesRouter);
 app.use("/api/v1/auth", authRouter);
@@ -75,7 +81,7 @@ app.use("/api/v1/ping", (req: Request, res: Response) => {
 });
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
-  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND))
+  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
 );
 
 app.use(errorHandler);

@@ -17,7 +17,8 @@ export interface TaskDocument extends mongoose.Document {
   slug: string;
   priority: Priorities;
   dueDate?: Date;
-  userId: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
+  project: mongoose.Types.ObjectId;
 }
 
 const dueDateToday = new Date(
@@ -71,9 +72,15 @@ const schema = new mongoose.Schema<TaskDocument>(
       type: Date,
       default: dueDateToday,
     },
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+      index: true,
+    },
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
       required: true,
       index: true,
     },

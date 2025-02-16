@@ -23,6 +23,7 @@ const profile_router_1 = __importDefault(require("./router/profile.router"));
 const session_router_1 = __importDefault(require("./router/session.router"));
 const plan_router_1 = __importDefault(require("./router/plan.router"));
 const template_categories_router_1 = __importDefault(require("./router/template-categories.router"));
+const project_router_1 = __importDefault(require("./router/project.router"));
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
 app.use((0, express_mongo_sanitize_1.default)());
@@ -53,6 +54,7 @@ app.use((0, cors_1.default)({
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
 app.use("/api/v1/tasks", task_router_1.default);
+app.use("/api/v1/projects", project_router_1.default);
 app.use("/api/v1/templates", template_router_1.default);
 app.use("/api/v1/template-categories", template_categories_router_1.default);
 app.use("/api/v1/auth", auth_router_1.default);

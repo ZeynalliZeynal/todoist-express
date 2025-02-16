@@ -18,15 +18,16 @@ const task_model_1 = __importDefault(require("../model/task.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
+const project_model_1 = __importDefault(require("../model/project.model"));
 const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const features = new api_features_1.default(task_model_1.default.find({
-        userId: req.userId,
+        user: req.userId,
     }), req.query)
         .filter()
         .sort()
         .limitFields()
         .paginate();
-    const tasks = yield features.query;
+    const tasks = yield features.query.populate("user").populate("project");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: {
@@ -37,9 +38,11 @@ const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 
 exports.getTasks = getTasks;
 const getTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const task = yield task_model_1.default.findOne({
-        userId: req.userId,
+        user: req.userId,
         _id: req.params.id,
-    }).populate("user");
+    })
+        .populate("user")
+        .populate("project");
     if (!task) {
         return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
     }
@@ -52,6 +55,20 @@ const getTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0
 }));
 exports.getTask = getTask;
 const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body.project)
+        return next(new app_error_1.default("A task must be belong to a project.", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    const project = yield project_model_1.default.exists({
+        user: req.userId,
+        _id: req.body.project,
+    });
+    if (!project)
+        return next(new app_error_1.default(`Project with id ${req.body.project} not found.`, 404));
+    const existingTask = yield task_model_1.default.exists({
+        user: req.userId,
+        name: req.body.name,
+    });
+    if (existingTask)
+        return next(new app_error_1.default(`Task with the name '${req.body.name}' already exists.`, http_status_codes_1.StatusCodes.CONFLICT));
     const task = yield task_model_1.default.create({
         name: req.body.name,
         description: req.body.description,
@@ -59,7 +76,8 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
         tags: req.body.tags,
         dueDate: req.body.dueDate,
         priority: req.body.priority,
-        userId: req.userId,
+        project: req.body.project,
+        user: req.userId,
     });
     res.status(201).json({
         status: "success",
@@ -71,7 +89,7 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 exports.createTask = createTask;
 const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, userId: req.userId }, Object.assign(Object.assign({}, body), { updatedAt: Date.now() }), {
+    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, user: req.userId }, Object.assign(Object.assign({}, body), { updatedAt: Date.now() }), {
         new: true,
         runValidators: true,
     });
@@ -88,7 +106,7 @@ const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 exports.updateTask = updateTask;
 const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const task = yield task_model_1.default.findOneAndDelete({
-        userId: req.userId,
+        user: req.userId,
         _id: req.params.id,
     });
     if (!task) {
@@ -102,7 +120,7 @@ const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 exports.deleteTask = deleteTask;
 const clearTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     yield task_model_1.default.deleteMany({
-        userId: req.userId,
+        user: req.userId,
     });
     res.status(204).json({
         status: "success",

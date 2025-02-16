@@ -47,9 +47,15 @@ const schema = new mongoose_1.default.Schema({
         type: Date,
         default: dueDateToday,
     },
-    userId: {
+    user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
+        index: true,
+    },
+    project: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "Project",
         required: true,
         index: true,
     },
