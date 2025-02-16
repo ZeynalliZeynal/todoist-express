@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/model/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/user.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/service/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/auth.service.ts" afterDir="false" />
-    </list>
+    <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +58,7 @@
     "npm.dev.executor": "Run",
     "prettierjs.PrettierConfiguration.Package": "C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier",
     "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "actions.on.save",
+    "settings.editor.selected.configurable": "terminal",
     "ts.external.directory.path": "C:\\Users\\asus\\Desktop\\education\\projects\\todoist\\server\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   },
@@ -183,7 +179,7 @@
       <workItem from="1738237038075" duration="5000" />
       <workItem from="1738767210932" duration="3296000" />
       <workItem from="1738828815687" duration="29000" />
-      <workItem from="1739724518775" duration="6455000" />
+      <workItem from="1739724518775" duration="6857000" />
     </task>
     <servers />
   </component>
