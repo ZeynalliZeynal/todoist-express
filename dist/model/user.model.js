@@ -68,7 +68,7 @@ const schema = new mongoose_1.default.Schema({
         default: true,
         select: false,
     },
-    planId: {
+    plan: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "Plan",
         index: true,
@@ -85,13 +85,8 @@ const schema = new mongoose_1.default.Schema({
 });
 schema.virtual("tasks", {
     ref: "Task",
-    foreignField: "userId", // foreign key
+    foreignField: "user", // foreign key
     localField: "_id", // primary key
-});
-schema.virtual("plan", {
-    ref: "Plan",
-    foreignField: "_id", // foreign key
-    localField: "planId", // primary key
 });
 // schema.pre("save", async function (next) {
 //   if (!this.isModified("password")) return next();

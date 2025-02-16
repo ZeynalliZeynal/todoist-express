@@ -143,7 +143,7 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
         verifiedAt: new Date(),
         location: data.location,
         role: env_1.admin_email === email ? "admin" : "user",
-        planId: plan._id,
+        plan: plan._id,
     });
     // create session
     const session = yield session_model_1.default.create({

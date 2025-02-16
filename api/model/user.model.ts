@@ -26,11 +26,11 @@ export interface UserDocument extends mongoose.Document {
     country: string;
     continent: string;
   };
-  planId: mongoose.Types.ObjectId;
+  plan: mongoose.Types.ObjectId;
 
   comparePasswords(
     candidatePassword: string,
-    userPassword: string
+    userPassword: string,
   ): Promise<boolean>;
 
   isPasswordChangedAfter(JWTTimestamp?: number): boolean;
@@ -93,7 +93,7 @@ const schema = new mongoose.Schema<UserDocument>(
       default: true,
       select: false,
     },
-    planId: {
+    plan: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Plan",
       index: true,
@@ -108,19 +108,13 @@ const schema = new mongoose.Schema<UserDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
 
 schema.virtual("tasks", {
   ref: "Task",
-  foreignField: "userId", // foreign key
+  foreignField: "user", // foreign key
   localField: "_id", // primary key
-});
-
-schema.virtual("plan", {
-  ref: "Plan",
-  foreignField: "_id", // foreign key
-  localField: "planId", // primary key
 });
 
 // schema.pre("save", async function (next) {
@@ -148,7 +142,7 @@ schema.method(
   "comparePasswords",
   async function (candidatePassword: string, userPassword: string) {
     return await bcrypt.compare(candidatePassword, userPassword);
-  }
+  },
 );
 
 // schema.method("isPasswordChangedAfter", function (JWTTimestamp) {

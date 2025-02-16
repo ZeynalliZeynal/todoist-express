@@ -185,7 +185,7 @@ export const createAccount = async (data: CreateAccountParams) => {
     verifiedAt: new Date(),
     location: data.location,
     role: admin_email === email ? "admin" : "user",
-    planId: plan._id,
+    plan: plan._id,
   });
 
   // create session

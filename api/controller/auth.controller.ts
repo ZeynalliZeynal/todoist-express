@@ -38,9 +38,9 @@ export const signup = catchErrors(async (req, res, next) => {
   const { otp, plan } = req.body;
 
   const userAgentObj = {
-    browser: userAgent.toAgent(),
-    os: userAgent.os.toString(),
-    device: userAgent.device.toString(),
+    browser: userAgent.toAgent() || "unknown",
+    os: userAgent.os.toString() || "unknown",
+    device: userAgent.device.toString() || "unknown",
   };
 
   let location;
@@ -85,9 +85,9 @@ export const signup = catchErrors(async (req, res, next) => {
 export const login = catchErrors(async (req, res, next) => {
   const userAgent = useragent.parse(req.headers["user-agent"]);
   const userAgentObj = {
-    browser: userAgent.toAgent(),
-    os: userAgent.os.toString(),
-    device: userAgent.device.toString(),
+    browser: userAgent.toAgent() || "unknown",
+    os: userAgent.os.toString() || "unknown",
+    device: userAgent.device.toString() || "unknown",
   };
 
   const { otp } = req.body;

@@ -33,9 +33,9 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
     const { otp, plan } = req.body;
     const userAgentObj = {
-        browser: userAgent.toAgent(),
-        os: userAgent.os.toString(),
-        device: userAgent.device.toString(),
+        browser: userAgent.toAgent() || "unknown",
+        os: userAgent.os.toString() || "unknown",
+        device: userAgent.device.toString() || "unknown",
     };
     let location;
     try {
@@ -65,9 +65,9 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
 exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
     const userAgentObj = {
-        browser: userAgent.toAgent(),
-        os: userAgent.os.toString(),
-        device: userAgent.device.toString(),
+        browser: userAgent.toAgent() || "unknown",
+        os: userAgent.os.toString() || "unknown",
+        device: userAgent.device.toString() || "unknown",
     };
     const { otp } = req.body;
     if (!req.query.token)
