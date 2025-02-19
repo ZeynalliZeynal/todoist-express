@@ -16,16 +16,11 @@ exports.getUser = exports.getAllUsers = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
-const filterObj = (obj, keys) => {
-    const newObj = {};
-    Object.keys(obj).forEach((key) => {
-        if (keys.includes(key))
-            newObj[key] = obj[key];
-    });
-    return newObj;
-};
-exports.getAllUsers = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield user_model_1.default.find().populate("plans");
+exports.getAllUsers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield user_model_1.default.find()
+        .populate("plan")
+        .populate("tasks")
+        .populate("projects");
     res.status(200).json({
         status: "success",
         length: users.length,
@@ -35,7 +30,10 @@ exports.getAllUsers = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     });
 }));
 exports.getUser = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.default.findById(req.params.id).populate("tasks");
+    const user = yield user_model_1.default.findById(req.params.id)
+        .populate("plan")
+        .populate("tasks")
+        .populate("projects");
     if (!user)
         return next(new app_error_1.default("No user found by this id", 404));
     res.status(200).json({

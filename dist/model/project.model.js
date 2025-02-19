@@ -15,6 +15,10 @@ const schema = new mongoose_1.default.Schema({
     logo: {
         type: String,
     },
+    favorite: {
+        type: Boolean,
+        default: false,
+    },
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User",

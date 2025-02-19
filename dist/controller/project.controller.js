@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTask = exports.createProject = exports.getProject = exports.getProjects = void 0;
+exports.deleteProject = exports.createProject = exports.updateProject = exports.getProject = exports.getProjects = void 0;
 const api_features_1 = __importDefault(require("../utils/api-features"));
 const task_model_1 = __importDefault(require("../model/task.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
@@ -73,17 +73,47 @@ const createProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     });
 }));
 exports.createProject = createProject;
-const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const task = yield task_model_1.default.findOneAndDelete({
+const deleteProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const tasks = yield task_model_1.default.deleteMany({
+        user: req.userId,
+        project: req.params.id,
+    });
+    if (!tasks) {
+        return next(new app_error_1.default(`No tasks found with the project id ${req.params.id}`, 404));
+    }
+    const project = yield project_model_1.default.findOneAndDelete({
         user: req.userId,
         _id: req.params.id,
     });
-    if (!task) {
-        return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
+    if (!project) {
+        return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
     }
     res.status(204).json({
         status: "success",
         data: null,
     });
 }));
-exports.deleteTask = deleteTask;
+exports.deleteProject = deleteProject;
+const updateProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingProject = yield project_model_1.default.exists({
+        user: req.userId,
+        _id: req.params.id,
+    });
+    if (!existingProject) {
+        return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
+    }
+    const project = yield project_model_1.default.findOneAndUpdate({
+        user: req.userId,
+        _id: req.params.id,
+    }, {
+        name: req.body.name,
+        description: req.body.description,
+        logo: req.body.logo,
+        favorite: req.body.favorite,
+    });
+    res.status(204).json({
+        status: "success",
+        data: { project },
+    });
+}));
+exports.updateProject = updateProject;

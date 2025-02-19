@@ -85,8 +85,13 @@ const schema = new mongoose_1.default.Schema({
 });
 schema.virtual("tasks", {
     ref: "Task",
-    foreignField: "user", // foreign key
-    localField: "_id", // primary key
+    foreignField: "user",
+    localField: "_id",
+});
+schema.virtual("projects", {
+    ref: "Project",
+    foreignField: "user",
+    localField: "_id",
 });
 // schema.pre("save", async function (next) {
 //   if (!this.isModified("password")) return next();

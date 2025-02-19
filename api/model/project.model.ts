@@ -4,6 +4,7 @@ export interface ProjectDocument extends mongoose.Document {
   name: string;
   description: string;
   logo: string;
+  favorite: Boolean;
   user: mongoose.Types.ObjectId;
 }
 
@@ -18,6 +19,10 @@ const schema = new mongoose.Schema<ProjectDocument>(
     },
     logo: {
       type: String,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -34,7 +39,7 @@ const schema = new mongoose.Schema<ProjectDocument>(
       virtuals: true,
     },
     timestamps: true,
-  },
+  }
 );
 
 export default mongoose.model<ProjectDocument>("Project", schema);

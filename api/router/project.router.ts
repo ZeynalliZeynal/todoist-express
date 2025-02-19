@@ -1,11 +1,12 @@
 import express from "express";
-import { deleteTask } from "../controller/task.controller";
-import { authenticate } from "../middleware/auth.middleware";
 import {
   createProject,
+  deleteProject,
   getProject,
   getProjects,
+  updateProject,
 } from "../controller/project.controller";
+import { authenticate } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router
 router
   .route("/:id")
   .get(authenticate, getProject)
-  .delete(authenticate, deleteTask);
+  .delete(authenticate, deleteProject)
+  .patch(authenticate, updateProject);
 
 export default router;

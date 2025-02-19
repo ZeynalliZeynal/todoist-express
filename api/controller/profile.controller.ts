@@ -6,15 +6,10 @@ import { StatusCodes } from "http-status-codes";
 import { addDays } from "date-fns";
 
 export const getUser: RequestHandler = catchErrors(async (req, res, next) => {
-  let query = User.findById(req.userId);
-
-  if (req.query.tasks && req.query.tasks === "enable")
-    query = query.populate("tasks");
-
-  if (req.query.plan && req.query.plan === "enable")
-    query = query.populate("plan");
-
-  const user = await query;
+  const user = await User.findById(req.userId)
+    .populate("plan")
+    .populate("tasks")
+    .populate("projects");
 
   if (!user)
     return next(
@@ -24,18 +19,10 @@ export const getUser: RequestHandler = catchErrors(async (req, res, next) => {
       )
     );
 
-  return res
-    .cookie("test", "test", {
-      expires: addDays(Date.now(), 30),
-      secure: false,
-      httpOnly: true,
-      sameSite: "lax",
-    })
-    .status(StatusCodes.OK)
-    .json({
-      status: "success",
-      data: {
-        user,
-      },
-    });
+  return res.status(StatusCodes.OK).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
 });
