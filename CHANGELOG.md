@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.2](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.2.1...v2.2.2) (2025-03-02)
+
+
+### Bug Fixes
+
+* add messages in responses, and let the user to create a unique named task in a single project, not including others ([9ad59dd](https://github.com/ZeynalliZeynal/todoist-server/commit/9ad59dd285a867bb3643ad5c4412f4e17200fd6e))
+
 ### [2.2.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.2.0...v2.2.1) (2025-03-02)
 
 
