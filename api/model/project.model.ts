@@ -13,6 +13,7 @@ const schema = new mongoose.Schema<ProjectDocument>(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
     description: {
       type: String,
@@ -39,7 +40,7 @@ const schema = new mongoose.Schema<ProjectDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model<ProjectDocument>("Project", schema);

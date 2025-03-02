@@ -8,6 +8,7 @@ const schema = new mongoose_1.default.Schema({
     name: {
         type: String,
         required: true,
+        trim: true,
     },
     description: {
         type: String,

@@ -77,12 +77,13 @@ const createTask = catchAsync(
     const existingTask = await Task.exists({
       user: req.userId,
       name: req.body.name,
+      project: req.body.project,
     });
 
     if (existingTask)
       return next(
         new AppError(
-          `Task with the name '${req.body.name}' already exists.`,
+          `Task with the name '${req.body.name}' already exists. Try another project or change the name.`,
           StatusCodes.CONFLICT,
         ),
       );
@@ -90,7 +91,6 @@ const createTask = catchAsync(
     const task = await Task.create({
       name: req.body.name,
       description: req.body.description,
-      completed: req.body.completed,
       tags: req.body.tags,
       dueDate: req.body.dueDate,
       priority: req.body.priority,
@@ -98,8 +98,9 @@ const createTask = catchAsync(
       user: req.userId,
     });
 
-    res.status(201).json({
+    res.status(StatusCodes.CREATED).json({
       status: "success",
+      message: "Task successfully added.",
       data: {
         task,
       },
@@ -128,8 +129,9 @@ const updateTask = catchAsync(
       );
     }
 
-    res.status(200).json({
+    res.status(StatusCodes.OK).json({
       status: "success",
+      message: "Task successfully updated.",
       data: {
         task,
       },
@@ -150,8 +152,9 @@ const deleteTask = catchAsync(
       );
     }
 
-    res.status(204).json({
+    res.status(StatusCodes.NO_CONTENT).json({
       status: "success",
+      message: "Task successfully deleted.",
       data: null,
     });
   },
@@ -161,10 +164,12 @@ const clearTasks = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     await Task.deleteMany({
       user: req.userId,
+      project: req.body.project,
     });
 
-    res.status(204).json({
+    res.status(StatusCodes.NO_CONTENT).json({
       status: "success",
+      message: "Tasks successfully cleared.",
       data: null,
     });
   },

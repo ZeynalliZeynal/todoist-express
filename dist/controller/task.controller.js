@@ -66,21 +66,22 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     const existingTask = yield task_model_1.default.exists({
         user: req.userId,
         name: req.body.name,
+        project: req.body.project,
     });
     if (existingTask)
-        return next(new app_error_1.default(`Task with the name '${req.body.name}' already exists.`, http_status_codes_1.StatusCodes.CONFLICT));
+        return next(new app_error_1.default(`Task with the name '${req.body.name}' already exists. Try another project or change the name.`, http_status_codes_1.StatusCodes.CONFLICT));
     const task = yield task_model_1.default.create({
         name: req.body.name,
         description: req.body.description,
-        completed: req.body.completed,
         tags: req.body.tags,
         dueDate: req.body.dueDate,
         priority: req.body.priority,
         project: req.body.project,
         user: req.userId,
     });
-    res.status(201).json({
+    res.status(http_status_codes_1.StatusCodes.CREATED).json({
         status: "success",
+        message: "Task successfully added.",
         data: {
             task,
         },
@@ -96,8 +97,9 @@ const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     if (!task) {
         return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
     }
-    res.status(200).json({
+    res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
+        message: "Task successfully updated.",
         data: {
             task,
         },
@@ -112,8 +114,9 @@ const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     if (!task) {
         return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
     }
-    res.status(204).json({
+    res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
+        message: "Task successfully deleted.",
         data: null,
     });
 }));
@@ -121,9 +124,11 @@ exports.deleteTask = deleteTask;
 const clearTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     yield task_model_1.default.deleteMany({
         user: req.userId,
+        project: req.body.project,
     });
-    res.status(204).json({
+    res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
+        message: "Tasks successfully cleared.",
         data: null,
     });
 }));

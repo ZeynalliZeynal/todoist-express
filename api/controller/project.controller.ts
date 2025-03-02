@@ -76,6 +76,7 @@ const createProject = catchAsync(
 
     res.status(201).json({
       status: "success",
+      message: "Project successfully created.",
       data: {
         project,
       },
@@ -112,6 +113,7 @@ const deleteProject = catchAsync(
 
     res.status(StatusCodes.NO_CONTENT).json({
       status: "success",
+      message: "Project successfully deleted.",
       data: null,
     });
   },
@@ -125,7 +127,10 @@ const updateProject = catchAsync(
     });
     if (!existingProject) {
       return next(
-        new AppError(`No project found with the id ${req.params.id}`, 404),
+        new AppError(
+          `No project found with the id ${req.params.id}`,
+          StatusCodes.NOT_FOUND,
+        ),
       );
     }
 
@@ -142,8 +147,9 @@ const updateProject = catchAsync(
       },
     );
 
-    res.status(204).json({
+    res.status(StatusCodes.OK).json({
       status: "success",
+      message: "Project successfully updated.",
       data: { project },
     });
   },
@@ -173,6 +179,7 @@ const addProjectToFavorites = catchAsync(
 
     res.status(StatusCodes.OK).json({
       status: "success",
+      message: "Project successfully added to favorites.",
       data: { project },
     });
   },

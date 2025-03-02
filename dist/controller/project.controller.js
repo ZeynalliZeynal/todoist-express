@@ -67,6 +67,7 @@ const createProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     });
     res.status(201).json({
         status: "success",
+        message: "Project successfully created.",
         data: {
             project,
         },
@@ -90,6 +91,7 @@ const deleteProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     }
     res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
+        message: "Project successfully deleted.",
         data: null,
     });
 }));
@@ -100,7 +102,7 @@ const updateProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
         _id: req.params.id,
     });
     if (!existingProject) {
-        return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
+        return next(new app_error_1.default(`No project found with the id ${req.params.id}`, http_status_codes_1.StatusCodes.NOT_FOUND));
     }
     const project = yield project_model_1.default.findOneAndUpdate({
         user: req.userId,
@@ -111,8 +113,9 @@ const updateProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
         logo: req.body.logo,
         favorite: req.body.favorite,
     });
-    res.status(204).json({
+    res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
+        message: "Project successfully updated.",
         data: { project },
     });
 }));
@@ -133,6 +136,7 @@ const addProjectToFavorites = (0, catch_errors_1.default)((req, res, next) => __
     });
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
+        message: "Project successfully added to favorites.",
         data: { project },
     });
 }));
