@@ -110,7 +110,7 @@ const deleteProject = catchAsync(
       );
     }
 
-    res.status(204).json({
+    res.status(StatusCodes.NO_CONTENT).json({
       status: "success",
       data: null,
     });
@@ -171,7 +171,7 @@ const addProjectToFavorites = catchAsync(
       },
     );
 
-    res.status(204).json({
+    res.status(StatusCodes.OK).json({
       status: "success",
       data: { project },
     });
@@ -190,19 +190,19 @@ const removeProjectFromFavorites = catchAsync(
       );
     }
 
-    const project = await Project.findOneAndUpdate(
+    await Project.findOneAndUpdate(
       {
         user: req.userId,
         _id: req.params.id,
       },
       {
-        favorite: true,
+        favorite: false,
       },
     );
 
     res.status(204).json({
       status: "success",
-      data: { project },
+      message: "Project successfully removed from favorites",
     });
   },
 );

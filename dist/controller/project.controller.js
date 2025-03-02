@@ -88,7 +88,7 @@ const deleteProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     if (!project) {
         return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
     }
-    res.status(204).json({
+    res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
         data: null,
     });
@@ -131,7 +131,7 @@ const addProjectToFavorites = (0, catch_errors_1.default)((req, res, next) => __
     }, {
         favorite: true,
     });
-    res.status(204).json({
+    res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: { project },
     });
@@ -145,15 +145,15 @@ const removeProjectFromFavorites = (0, catch_errors_1.default)((req, res, next) 
     if (!existingProject) {
         return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
     }
-    const project = yield project_model_1.default.findOneAndUpdate({
+    yield project_model_1.default.findOneAndUpdate({
         user: req.userId,
         _id: req.params.id,
     }, {
-        favorite: true,
+        favorite: false,
     });
     res.status(204).json({
         status: "success",
-        data: { project },
+        message: "Project successfully removed from favorites",
     });
 }));
 exports.removeProjectFromFavorites = removeProjectFromFavorites;

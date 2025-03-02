@@ -38,7 +38,7 @@ class ApiFeatures {
         if (this.queryString.sort)
             this.query = this.query.sort(this.queryString.sort.split(",").join(" "));
         else
-            this.query = this.query.sort("-createdAt");
+            this.query = this.query.sort(`-createdAt`);
         return this;
     }
     limitFields() {
