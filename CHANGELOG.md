@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.2.0...v2.2.1) (2025-03-02)
+
+
+### Bug Fixes
+
+* update favorite to false in removeProjectFromFavorites controller ([1cb507b](https://github.com/ZeynalliZeynal/todoist-server/commit/1cb507b479b9ec3fca6691ab978f26aeceea33da))
+
 ## [2.2.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.1.0...v2.2.0) (2025-03-02)
 
 
