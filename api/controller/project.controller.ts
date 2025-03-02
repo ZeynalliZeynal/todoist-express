@@ -12,7 +12,7 @@ const getProjects = catchAsync(
       Project.find({
         user: req.userId,
       }),
-      req.query
+      req.query,
     )
       .filter()
       .sort()
@@ -27,7 +27,7 @@ const getProjects = catchAsync(
         projects,
       },
     });
-  }
+  },
 );
 
 const getProject = catchAsync(
@@ -39,7 +39,7 @@ const getProject = catchAsync(
 
     if (!project) {
       return next(
-        new AppError(`No project found with the id ${req.params.id}`, 404)
+        new AppError(`No project found with the id ${req.params.id}`, 404),
       );
     }
 
@@ -49,7 +49,7 @@ const getProject = catchAsync(
         project,
       },
     });
-  }
+  },
 );
 
 const createProject = catchAsync(
@@ -63,8 +63,8 @@ const createProject = catchAsync(
       return next(
         new AppError(
           `Project with the name '${req.body.name}' already exists.`,
-          StatusCodes.CONFLICT
-        )
+          StatusCodes.CONFLICT,
+        ),
       );
 
     const project = await Project.create({
@@ -80,7 +80,7 @@ const createProject = catchAsync(
         project,
       },
     });
-  }
+  },
 );
 
 const deleteProject = catchAsync(
@@ -92,7 +92,10 @@ const deleteProject = catchAsync(
 
     if (!tasks) {
       return next(
-        new AppError(`No tasks found with the project id ${req.params.id}`, 404)
+        new AppError(
+          `No tasks found with the project id ${req.params.id}`,
+          404,
+        ),
       );
     }
 
@@ -103,7 +106,7 @@ const deleteProject = catchAsync(
 
     if (!project) {
       return next(
-        new AppError(`No project found with the id ${req.params.id}`, 404)
+        new AppError(`No project found with the id ${req.params.id}`, 404),
       );
     }
 
@@ -111,7 +114,7 @@ const deleteProject = catchAsync(
       status: "success",
       data: null,
     });
-  }
+  },
 );
 
 const updateProject = catchAsync(
@@ -122,7 +125,7 @@ const updateProject = catchAsync(
     });
     if (!existingProject) {
       return next(
-        new AppError(`No project found with the id ${req.params.id}`, 404)
+        new AppError(`No project found with the id ${req.params.id}`, 404),
       );
     }
 
@@ -136,14 +139,80 @@ const updateProject = catchAsync(
         description: req.body.description,
         logo: req.body.logo,
         favorite: req.body.favorite,
-      }
+      },
     );
 
     res.status(204).json({
       status: "success",
       data: { project },
     });
-  }
+  },
 );
 
-export { getProjects, getProject, updateProject, createProject, deleteProject };
+const addProjectToFavorites = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const existingProject = await Project.exists({
+      user: req.userId,
+      _id: req.params.id,
+    });
+    if (!existingProject) {
+      return next(
+        new AppError(`No project found with the id ${req.params.id}`, 404),
+      );
+    }
+
+    const project = await Project.findOneAndUpdate(
+      {
+        user: req.userId,
+        _id: req.params.id,
+      },
+      {
+        favorite: true,
+      },
+    );
+
+    res.status(204).json({
+      status: "success",
+      data: { project },
+    });
+  },
+);
+
+const removeProjectFromFavorites = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const existingProject = await Project.exists({
+      user: req.userId,
+      _id: req.params.id,
+    });
+    if (!existingProject) {
+      return next(
+        new AppError(`No project found with the id ${req.params.id}`, 404),
+      );
+    }
+
+    const project = await Project.findOneAndUpdate(
+      {
+        user: req.userId,
+        _id: req.params.id,
+      },
+      {
+        favorite: true,
+      },
+    );
+
+    res.status(204).json({
+      status: "success",
+      data: { project },
+    });
+  },
+);
+
+export {
+  getProjects,
+  getProject,
+  updateProject,
+  createProject,
+  deleteProject,
+  addProjectToFavorites,
+  removeProjectFromFavorites,
+};

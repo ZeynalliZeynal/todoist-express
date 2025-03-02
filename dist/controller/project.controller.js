@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProject = exports.createProject = exports.updateProject = exports.getProject = exports.getProjects = void 0;
+exports.removeProjectFromFavorites = exports.addProjectToFavorites = exports.deleteProject = exports.createProject = exports.updateProject = exports.getProject = exports.getProjects = void 0;
 const api_features_1 = __importDefault(require("../utils/api-features"));
 const task_model_1 = __importDefault(require("../model/task.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
@@ -117,3 +117,43 @@ const updateProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     });
 }));
 exports.updateProject = updateProject;
+const addProjectToFavorites = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingProject = yield project_model_1.default.exists({
+        user: req.userId,
+        _id: req.params.id,
+    });
+    if (!existingProject) {
+        return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
+    }
+    const project = yield project_model_1.default.findOneAndUpdate({
+        user: req.userId,
+        _id: req.params.id,
+    }, {
+        favorite: true,
+    });
+    res.status(204).json({
+        status: "success",
+        data: { project },
+    });
+}));
+exports.addProjectToFavorites = addProjectToFavorites;
+const removeProjectFromFavorites = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingProject = yield project_model_1.default.exists({
+        user: req.userId,
+        _id: req.params.id,
+    });
+    if (!existingProject) {
+        return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
+    }
+    const project = yield project_model_1.default.findOneAndUpdate({
+        user: req.userId,
+        _id: req.params.id,
+    }, {
+        favorite: true,
+    });
+    res.status(204).json({
+        status: "success",
+        data: { project },
+    });
+}));
+exports.removeProjectFromFavorites = removeProjectFromFavorites;

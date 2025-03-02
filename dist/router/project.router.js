@@ -16,4 +16,8 @@ router
     .get(auth_middleware_1.authenticate, project_controller_1.getProject)
     .delete(auth_middleware_1.authenticate, project_controller_1.deleteProject)
     .patch(auth_middleware_1.authenticate, project_controller_1.updateProject);
+router
+    .route("/:id/favorites")
+    .delete(auth_middleware_1.authenticate, project_controller_1.removeProjectFromFavorites)
+    .post(auth_middleware_1.authenticate, project_controller_1.addProjectToFavorites);
 exports.default = router;
