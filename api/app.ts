@@ -23,6 +23,7 @@ import sessionRouter from "./router/session.router";
 import planRouter from "./router/plan.router";
 import templateCategoriesRouter from "./router/template-categories.router";
 import projectRouter from "./router/project.router";
+import fileRouter from "./router/file.router";
 
 const app = express();
 
@@ -79,6 +80,7 @@ app.use("/api/v1/ping", (req: Request, res: Response) => {
     .status(200)
     .json({ status: "success", message: "API is up and running." });
 });
+app.use("/api/v1/files", fileRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
   next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),

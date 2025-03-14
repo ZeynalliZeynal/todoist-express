@@ -21,6 +21,7 @@ export interface UserDocument extends mongoose.Document {
   verifiedAt?: Date;
   verified?: boolean;
   verificationToken?: string;
+  avatar?: string;
   location?: {
     city: string;
     country: string;
@@ -30,7 +31,7 @@ export interface UserDocument extends mongoose.Document {
 
   comparePasswords(
     candidatePassword: string,
-    userPassword: string
+    userPassword: string,
   ): Promise<boolean>;
 
   isPasswordChangedAfter(JWTTimestamp?: number): boolean;
@@ -45,6 +46,7 @@ const schema = new mongoose.Schema<UserDocument>(
     name: {
       type: String,
       trim: true,
+      minlength: [3, "Name must be at least 3 characters"],
       required: [true, "Name is required"],
     },
     email: {
@@ -54,6 +56,12 @@ const schema = new mongoose.Schema<UserDocument>(
       required: [true, "Email is required"],
       lowercase: true,
       validate: [validator.isEmail, "Your email is not a valid"],
+    },
+    avatar: {
+      type: String,
+      default: function (this: { name: string }) {
+        return `https://avatar.vercel.sh/${encodeURIComponent(this.name)}`;
+      },
     },
     // password: {
     //   type: String,
@@ -108,7 +116,7 @@ const schema = new mongoose.Schema<UserDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
 
 schema.virtual("tasks", {
@@ -148,7 +156,7 @@ schema.method(
   "comparePasswords",
   async function (candidatePassword: string, userPassword: string) {
     return await bcrypt.compare(candidatePassword, userPassword);
-  }
+  },
 );
 
 // schema.method("isPasswordChangedAfter", function (JWTTimestamp) {

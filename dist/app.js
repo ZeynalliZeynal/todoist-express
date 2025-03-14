@@ -24,6 +24,7 @@ const session_router_1 = __importDefault(require("./router/session.router"));
 const plan_router_1 = __importDefault(require("./router/plan.router"));
 const template_categories_router_1 = __importDefault(require("./router/template-categories.router"));
 const project_router_1 = __importDefault(require("./router/project.router"));
+const file_router_1 = __importDefault(require("./router/file.router"));
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
 app.use((0, express_mongo_sanitize_1.default)());
@@ -67,6 +68,7 @@ app.use("/api/v1/ping", (req, res) => {
         .status(200)
         .json({ status: "success", message: "API is up and running." });
 });
+app.use("/api/v1/files", file_router_1.default);
 app.all("*", (req, res, next) => next(new app_error_1.default(`${req.originalUrl} not found`, http_status_codes_1.StatusCodes.NOT_FOUND)));
 app.use(error_handler_1.errorHandler);
 exports.default = app;

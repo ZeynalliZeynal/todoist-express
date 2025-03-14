@@ -20,6 +20,7 @@ const schema = new mongoose_1.default.Schema({
     name: {
         type: String,
         trim: true,
+        minlength: [3, "Name must be at least 3 characters"],
         required: [true, "Name is required"],
     },
     email: {
@@ -29,6 +30,12 @@ const schema = new mongoose_1.default.Schema({
         required: [true, "Email is required"],
         lowercase: true,
         validate: [validator_1.default.isEmail, "Your email is not a valid"],
+    },
+    avatar: {
+        type: String,
+        default: function () {
+            return `https://avatar.vercel.sh/${encodeURIComponent(this.name)}`;
+        },
     },
     // password: {
     //   type: String,

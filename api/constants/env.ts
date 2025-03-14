@@ -30,4 +30,7 @@ export const jwt_expires_in = getEnv("JWT_EXPIRES_IN");
 
 export const apiip_accessKey = getEnv("APIIP_ACCESS_KEY");
 
-export const express_session_secret = getEnv("EXPRESS_SESSION_SECRET");
+export const s3_bucket_name = getEnv("S3_BUCKET_NAME");
+export const s3_bucket_region = getEnv("S3_BUCKET_REGION");
+export const s3_access_key = getEnv("S3_ACCESS_KEY");
+export const s3_secret_key = getEnv("S3_SECRET_KEY");
