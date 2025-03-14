@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.2.2...v2.3.0) (2025-03-14)
+
+
+### Features
+
+* add uploading a file to s3 bucket feature ([b1c0d72](https://github.com/ZeynalliZeynal/todoist-server/commit/b1c0d72a6533555035ef2b0bb6becf16ca947cc7))
+
 ### [2.2.2](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.2.1...v2.2.2) (2025-03-02)
 
 
