@@ -20,14 +20,18 @@ export const getSessions: RequestHandler = catchErrors(
       { sort: { createdAt: -1 } },
     );
 
+    const mappedSessions = sessions.map((session) => ({
+      ...session.toObject(),
+      current: session.id === req.sessionId,
+    }));
+
+    mappedSessions.sort((a, b) => (b.current ? 1 : a.current ? -1 : 0));
+
     return res.status(StatusCodes.OK).json({
       status: "success",
-      data: sessions.map((session) => ({
-        ...session.toObject(),
-        ...(session.id === req.sessionId && {
-          current: true,
-        }),
-      })),
+      data: {
+        sessions: mappedSessions,
+      },
     });
   },
 );

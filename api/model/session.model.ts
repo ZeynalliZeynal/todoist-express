@@ -8,11 +8,17 @@ export interface SessionDocument extends mongoose.Document {
     os: string;
     device: string;
   };
+  createdAt: Date;
   expiresAt: Date;
 }
 
 const schema = new mongoose.Schema<SessionDocument>(
   {
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      expires: 30 * 24 * 60 * 60,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

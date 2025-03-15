@@ -27,11 +27,13 @@ exports.getSessions = (0, catch_errors_1.default)((req, res, next) => __awaiter(
         userAgent: 1,
         createdAt: 1,
     }, { sort: { createdAt: -1 } });
+    const mappedSessions = sessions.map((session) => (Object.assign(Object.assign({}, session.toObject()), { current: session.id === req.sessionId })));
+    mappedSessions.sort((a, b) => (b.current ? 1 : a.current ? -1 : 0));
     return res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
-        data: sessions.map((session) => (Object.assign(Object.assign({}, session.toObject()), (session.id === req.sessionId && {
-            current: true,
-        })))),
+        data: {
+            sessions: mappedSessions,
+        },
     });
 }));
 exports.deleteSession = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

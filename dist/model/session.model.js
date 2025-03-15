@@ -6,6 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const date_fns_1 = require("date-fns");
 const schema = new mongoose_1.default.Schema({
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 30 * 24 * 60 * 60,
+    },
     userId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User",
