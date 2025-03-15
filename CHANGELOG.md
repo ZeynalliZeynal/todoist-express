@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.3.0...v2.4.0) (2025-03-15)
+
+
+### Features
+
+* get sorted sessions ([1656f83](https://github.com/ZeynalliZeynal/todoist-server/commit/1656f83662e49b75ff00fa31f430ac58111c673a))
+* send number of tasks and projects in profile ([758eb10](https://github.com/ZeynalliZeynal/todoist-server/commit/758eb1078c9881800cc02cbab48e5d52c109e5c8))
+
 ## [2.3.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.2.2...v2.3.0) (2025-03-14)
 
 
