@@ -17,16 +17,26 @@ const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
+const task_model_1 = __importDefault(require("../model/task.model"));
+const project_model_1 = __importDefault(require("../model/project.model"));
 exports.getProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findById(req.userId)
         .populate("plan")
         .populate("tasks")
         .populate("projects");
+    const taskCount = yield task_model_1.default.countDocuments({
+        user: req.userId,
+    });
+    const projectCount = yield project_model_1.default.countDocuments({
+        user: req.userId,
+    });
     if (!user)
         return next(new app_error_1.default("No user found. You may not be logged in.", http_status_codes_1.StatusCodes.NOT_FOUND));
     return res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: {
+            taskCount,
+            projectCount,
             user,
         },
     });

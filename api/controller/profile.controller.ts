@@ -3,6 +3,8 @@ import catchErrors from "../utils/catch-errors";
 import User from "../model/user.model";
 import AppError from "../utils/app-error";
 import { StatusCodes } from "http-status-codes";
+import Task from "../model/task.model";
+import Project from "../model/project.model";
 
 export const getProfile: RequestHandler = catchErrors(
   async (req, res, next) => {
@@ -10,6 +12,14 @@ export const getProfile: RequestHandler = catchErrors(
       .populate("plan")
       .populate("tasks")
       .populate("projects");
+
+    const taskCount = await Task.countDocuments({
+      user: req.userId,
+    });
+
+    const projectCount = await Project.countDocuments({
+      user: req.userId,
+    });
 
     if (!user)
       return next(
@@ -22,6 +32,8 @@ export const getProfile: RequestHandler = catchErrors(
     return res.status(StatusCodes.OK).json({
       status: "success",
       data: {
+        taskCount,
+        projectCount,
         user,
       },
     });
