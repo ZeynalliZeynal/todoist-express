@@ -30,10 +30,12 @@ const schema = new mongoose_1.default.Schema({
         type: Boolean,
         default: false,
     },
-    tags: {
-        type: [String],
-        default: undefined,
-    },
+    tags: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "TaskTag",
+        },
+    ],
     slug: String,
     priority: {
         type: String,

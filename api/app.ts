@@ -24,6 +24,7 @@ import planRouter from "./router/plan.router";
 import templateCategoriesRouter from "./router/template-categories.router";
 import projectRouter from "./router/project.router";
 import fileRouter from "./router/file.router";
+import taskTagRouter from "./router/task-tag.router";
 
 const app = express();
 
@@ -67,6 +68,7 @@ app.use(
 app.use(cookieParser());
 
 app.use("/api/v1/tasks", taskRouter);
+app.use("/api/v1/task-tags", taskTagRouter);
 app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/templates", templateRouter);
 app.use("/api/v1/template-categories", templateCategoriesRouter);
@@ -75,6 +77,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/profile/sessions", sessionRouter);
 app.use("/api/v1/plans", planRouter);
+
 app.use("/api/v1/ping", (req: Request, res: Response) => {
   res
     .status(200)

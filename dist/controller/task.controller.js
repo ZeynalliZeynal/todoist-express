@@ -27,7 +27,10 @@ const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 
         .sort()
         .limitFields()
         .paginate();
-    const tasks = yield features.query.populate("user").populate("project");
+    const tasks = yield features.query
+        .populate("user")
+        .populate("project")
+        .populate("tags");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: {

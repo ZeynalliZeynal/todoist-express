@@ -55,10 +55,12 @@ const schema = new mongoose.Schema<TaskDocument>(
       type: Boolean,
       default: false,
     },
-    tags: {
-      type: [String],
-      default: undefined,
-    },
+    tags: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TaskTag",
+      },
+    ],
     slug: String,
     priority: {
       type: String,

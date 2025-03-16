@@ -19,7 +19,10 @@ const getTasks = catchAsync(
       .limitFields()
       .paginate();
 
-    const tasks = await features.query.populate("user").populate("project");
+    const tasks = await features.query
+      .populate("user")
+      .populate("project")
+      .populate("tags");
 
     res.status(StatusCodes.OK).json({
       status: "success",
