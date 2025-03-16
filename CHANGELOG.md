@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.4.0...v3.0.0) (2025-03-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* add task tag model, router, and controllers. When deleting a tag, it will also take that tag out of the tasks where it is used.
+
+### Features
+
+* add task tag model, router, and controllers. When deleting a tag, it will also take that tag out of the tasks where it is used. ([b80a40f](https://github.com/ZeynalliZeynal/todoist-server/commit/b80a40fc0600fcee05bd8e0331ff0465a15a333e))
+
 ## [2.4.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.3.0...v2.4.0) (2025-03-15)
 
 
