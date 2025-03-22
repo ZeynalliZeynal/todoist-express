@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.0.0...v3.1.0) (2025-03-22)
+
+
+### Features
+
+* add a middleware to get user agent and location ([45d461b](https://github.com/ZeynalliZeynal/todoist-server/commit/45d461b1c6ca0c492b9d4f9563e384aabbec1527))
+
 ## [3.0.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v2.4.0...v3.0.0) (2025-03-16)
 
 
