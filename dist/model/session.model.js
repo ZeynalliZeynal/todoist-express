@@ -20,6 +20,7 @@ const schema = new mongoose_1.default.Schema({
     userAgent: {
         type: Object,
     },
+    location: Object,
     expiresAt: {
         type: Date,
         default: (0, date_fns_1.addDays)(new Date(), 30),

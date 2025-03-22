@@ -22,11 +22,7 @@ export interface UserDocument extends mongoose.Document {
   verified?: boolean;
   verificationToken?: string;
   avatar?: string;
-  location?: {
-    city: string;
-    country: string;
-    continent: string;
-  };
+  location?: any;
   plan: mongoose.Types.ObjectId;
 
   comparePasswords(

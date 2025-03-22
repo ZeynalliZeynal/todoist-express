@@ -98,8 +98,6 @@ const schema = new mongoose.Schema<TaskDocument>(
   },
 );
 
-schema.index({ user: 1 });
-
 schema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();

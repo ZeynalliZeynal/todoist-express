@@ -3,11 +3,8 @@ import { addDays } from "date-fns";
 
 export interface SessionDocument extends mongoose.Document {
   userId: mongoose.Types.ObjectId;
-  userAgent?: {
-    browser: string;
-    os: string;
-    device: string;
-  };
+  userAgent?: Object;
+  location?: any;
   createdAt: Date;
   expiresAt: Date;
 }
@@ -28,6 +25,7 @@ const schema = new mongoose.Schema<SessionDocument>(
     userAgent: {
       type: Object,
     },
+    location: Object,
     expiresAt: {
       type: Date,
       default: addDays(new Date(), 30),

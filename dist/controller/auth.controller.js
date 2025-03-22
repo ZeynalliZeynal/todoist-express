@@ -27,34 +27,14 @@ const app_assert_1 = __importDefault(require("../utils/app-assert"));
 const env_1 = require("../constants/env");
 const axios_1 = __importDefault(require("axios"));
 const request_ip_1 = __importDefault(require("request-ip"));
-const useragent_1 = __importDefault(require("useragent"));
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const ip = request_ip_1.default.getClientIp(req);
-    const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
     const { otp, plan } = req.body;
-    const userAgentObj = {
-        browser: userAgent.toAgent() || "unknown",
-        os: userAgent.os.toString() || "unknown",
-        device: userAgent.device.toString() || "unknown",
-    };
-    let location;
-    try {
-        const res = yield axios_1.default.get(`https://apiip.net/api/check?ip=${ip}&accessKey=${env_1.apiip_accessKey}`);
-        location = {
-            city: res.data.city,
-            country: res.data.countryName,
-            continent: res.data.continentName,
-        };
-    }
-    catch (err) {
-        console.log("IP is invalid");
-    }
     if (!req.query.token)
         return next(new app_error_1.default("Token is param required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
     const request = auth_schema_1.signupSchema.parse({
         otp,
     });
-    const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), location, userAgent: userAgentObj, plan }));
+    const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), location: req.location, userAgent: req.userAgent, plan }));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({
@@ -63,19 +43,13 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     });
 }));
 exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const userAgent = useragent_1.default.parse(req.headers["user-agent"]);
-    const userAgentObj = {
-        browser: userAgent.toAgent() || "unknown",
-        os: userAgent.os.toString() || "unknown",
-        device: userAgent.device.toString() || "unknown",
-    };
     const { otp } = req.body;
     if (!req.query.token)
         return next(new app_error_1.default("Token is param required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
     const request = auth_schema_1.loginSchema.parse({
         otp,
     });
-    const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), userAgent: userAgentObj }));
+    const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), userAgent: req.userAgent, location: req.location }));
     return (0, cookies_1.setAuthCookies)({ res, refreshToken, accessToken })
         .status(http_status_codes_1.StatusCodes.OK)
         .json({

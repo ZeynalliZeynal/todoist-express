@@ -25,6 +25,7 @@ import templateCategoriesRouter from "./router/template-categories.router";
 import projectRouter from "./router/project.router";
 import fileRouter from "./router/file.router";
 import taskTagRouter from "./router/task-tag.router";
+import { getUserAgent } from "./middleware/user-agent.middleware";
 
 const app = express();
 
@@ -64,8 +65,23 @@ app.use(
   }),
 );
 
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(getUserAgent);
+
+app.get("/", (req, res) => {
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Available routes are given below.",
+    data: {
+      routes: [
+        {
+          ping: "/api/v1/ping",
+        },
+      ],
+    },
+  });
+});
 
 app.use("/api/v1/tasks", taskRouter);
 app.use("/api/v1/task-tags", taskTagRouter);
@@ -78,10 +94,15 @@ app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/profile/sessions", sessionRouter);
 app.use("/api/v1/plans", planRouter);
 
-app.use("/api/v1/ping", (req: Request, res: Response) => {
-  res
-    .status(200)
-    .json({ status: "success", message: "API is up and running." });
+app.use("/api/v1/ping", async (req: Request, res: Response) => {
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "API is up and running.",
+    data: {
+      location: req.location,
+      userAgent: req.userAgent,
+    },
+  });
 });
 app.use("/api/v1/files", fileRouter);
 

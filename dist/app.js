@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -26,6 +35,7 @@ const template_categories_router_1 = __importDefault(require("./router/template-
 const project_router_1 = __importDefault(require("./router/project.router"));
 const file_router_1 = __importDefault(require("./router/file.router"));
 const task_tag_router_1 = __importDefault(require("./router/task-tag.router"));
+const user_agent_middleware_1 = require("./middleware/user-agent.middleware");
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
 app.use((0, express_mongo_sanitize_1.default)());
@@ -53,8 +63,21 @@ app.use((0, cors_1.default)({
             : "*",
     credentials: true,
 }));
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
+app.use(user_agent_middleware_1.getUserAgent);
+app.get("/", (req, res) => {
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success",
+        message: "Available routes are given below.",
+        data: {
+            routes: [
+                {
+                    ping: "/api/v1/ping",
+                },
+            ],
+        },
+    });
+});
 app.use("/api/v1/tasks", task_router_1.default);
 app.use("/api/v1/task-tags", task_tag_router_1.default);
 app.use("/api/v1/projects", project_router_1.default);
@@ -65,11 +88,16 @@ app.use("/api/v1/users", user_router_1.default);
 app.use("/api/v1/profile", profile_router_1.default);
 app.use("/api/v1/profile/sessions", session_router_1.default);
 app.use("/api/v1/plans", plan_router_1.default);
-app.use("/api/v1/ping", (req, res) => {
-    res
-        .status(200)
-        .json({ status: "success", message: "API is up and running." });
-});
+app.use("/api/v1/ping", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success",
+        message: "API is up and running.",
+        data: {
+            location: req.location,
+            userAgent: req.userAgent,
+        },
+    });
+}));
 app.use("/api/v1/files", file_router_1.default);
 app.all("*", (req, res, next) => next(new app_error_1.default(`${req.originalUrl} not found`, http_status_codes_1.StatusCodes.NOT_FOUND)));
 app.use(error_handler_1.errorHandler);

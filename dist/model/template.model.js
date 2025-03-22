@@ -58,6 +58,4 @@ const schema = new mongoose_1.default.Schema({
     },
     timestamps: true,
 });
-schema.index({ category: 1 });
-schema.index({ user: 1 });
 exports.default = mongoose_1.default.model("Template", schema);

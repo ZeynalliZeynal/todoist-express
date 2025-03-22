@@ -69,7 +69,4 @@ const schema = new mongoose.Schema<TemplateDocument>(
   },
 );
 
-schema.index({ category: 1 });
-schema.index({ user: 1 });
-
 export default mongoose.model<TemplateDocument>("Template", schema);

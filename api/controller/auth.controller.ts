@@ -30,32 +30,9 @@ import appAssert from "../utils/app-assert";
 import { apiip_accessKey } from "../constants/env";
 import axios from "axios";
 import requestIp from "request-ip";
-import useragent from "useragent";
 
 export const signup = catchErrors(async (req, res, next) => {
-  const ip = requestIp.getClientIp(req);
-  const userAgent = useragent.parse(req.headers["user-agent"]);
   const { otp, plan } = req.body;
-
-  const userAgentObj = {
-    browser: userAgent.toAgent() || "unknown",
-    os: userAgent.os.toString() || "unknown",
-    device: userAgent.device.toString() || "unknown",
-  };
-
-  let location;
-  try {
-    const res = await axios.get(
-      `https://apiip.net/api/check?ip=${ip}&accessKey=${apiip_accessKey}`,
-    );
-    location = {
-      city: res.data.city,
-      country: res.data.countryName,
-      continent: res.data.continentName,
-    };
-  } catch (err) {
-    console.log("IP is invalid");
-  }
 
   if (!req.query.token)
     return next(
@@ -69,8 +46,8 @@ export const signup = catchErrors(async (req, res, next) => {
   const { refreshToken, accessToken } = await createAccount({
     ...request,
     verifyToken: String(req.query.token),
-    location,
-    userAgent: userAgentObj,
+    location: req.location,
+    userAgent: req.userAgent,
     plan,
   });
 
@@ -83,13 +60,6 @@ export const signup = catchErrors(async (req, res, next) => {
 });
 
 export const login = catchErrors(async (req, res, next) => {
-  const userAgent = useragent.parse(req.headers["user-agent"]);
-  const userAgentObj = {
-    browser: userAgent.toAgent() || "unknown",
-    os: userAgent.os.toString() || "unknown",
-    device: userAgent.device.toString() || "unknown",
-  };
-
   const { otp } = req.body;
 
   if (!req.query.token)
@@ -104,7 +74,8 @@ export const login = catchErrors(async (req, res, next) => {
   const { accessToken, refreshToken } = await loginUser({
     ...request,
     verifyToken: String(req.query.token),
-    userAgent: userAgentObj,
+    userAgent: req.userAgent,
+    location: req.location,
   });
 
   return setAuthCookies({ res, refreshToken, accessToken })

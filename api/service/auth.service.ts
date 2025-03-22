@@ -39,6 +39,7 @@ export interface CreateAccountParams {
 export interface LoginParams {
   otp: string;
   verifyToken: string;
+  location?: UserDocument["location"];
   userAgent?: SessionDocument["userAgent"];
 }
 
@@ -215,6 +216,7 @@ export const loginUser = async ({
   otp,
   verifyToken,
   userAgent,
+  location,
 }: LoginParams) => {
   // verify the user's email
   const { email } = await verifyOTP(
@@ -240,6 +242,7 @@ export const loginUser = async ({
   const session = await Session.create({
     userId,
     userAgent,
+    location,
   });
   // sign access token & refresh token
   const refreshToken = signToken(

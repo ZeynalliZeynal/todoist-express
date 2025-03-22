@@ -161,7 +161,7 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 exports.createAccount = createAccount;
-const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, verifyToken, userAgent, }) {
+const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, verifyToken, userAgent, location, }) {
     // verify the user's email
     const { email } = yield (0, exports.verifyOTP)(otp, verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
     const user = yield user_model_1.default.findOneAndUpdate({ email }, {
@@ -175,6 +175,7 @@ const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, veri
     const session = yield session_model_1.default.create({
         userId,
         userAgent,
+        location,
     });
     // sign access token & refresh token
     const refreshToken = (0, jwt_1.signToken)({ sessionId: session._id }, jwt_1.refreshTokenSignOptions);

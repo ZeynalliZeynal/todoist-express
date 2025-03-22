@@ -5,6 +5,8 @@ declare global {
     interface Request {
       userId: mongoose.Types.ObjectId;
       sessionId: mongoose.Types.ObjectId;
+      location: any;
+      userAgent: any;
     }
   }
 }
