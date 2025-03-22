@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTask = exports.getTask = exports.getTasks = exports.clearTasks = exports.updateTask = exports.createTask = void 0;
+exports.removeTaskFromCompleted = exports.addTaskToCompleted = exports.deleteTask = exports.getTask = exports.getTasks = exports.clearTasks = exports.updateTask = exports.createTask = void 0;
 const api_features_1 = __importDefault(require("../utils/api-features"));
 const task_model_1 = __importDefault(require("../model/task.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
@@ -104,7 +104,14 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 exports.createTask = createTask;
 const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, user: req.userId }, Object.assign(Object.assign({}, body), { updatedAt: Date.now() }), {
+    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, user: req.userId }, {
+        name: body.name,
+        description: body.description,
+        tags: body.tags,
+        dueDate: body.dueDate,
+        priority: body.priority,
+        completed: body.completed,
+    }, {
         new: true,
         runValidators: true,
     });
@@ -120,6 +127,44 @@ const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     });
 }));
 exports.updateTask = updateTask;
+const addTaskToCompleted = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, user: req.userId }, {
+        completed: true,
+    }, {
+        new: true,
+        runValidators: false,
+    });
+    if (!task) {
+        return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
+    }
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success",
+        message: "Task successfully completed.",
+        data: {
+            task,
+        },
+    });
+}));
+exports.addTaskToCompleted = addTaskToCompleted;
+const removeTaskFromCompleted = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, user: req.userId }, {
+        completed: false,
+    }, {
+        new: true,
+        runValidators: false,
+    });
+    if (!task) {
+        return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
+    }
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success",
+        message: "Task successfully completed.",
+        data: {
+            task,
+        },
+    });
+}));
+exports.removeTaskFromCompleted = removeTaskFromCompleted;
 const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const task = yield task_model_1.default.findOneAndDelete({
         user: req.userId,

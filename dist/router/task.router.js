@@ -17,4 +17,8 @@ router
     .get(auth_middleware_1.authenticate, task_controller_1.getTask)
     .patch(auth_middleware_1.authenticate, task_controller_1.updateTask)
     .delete(auth_middleware_1.authenticate, task_controller_1.deleteTask);
+router
+    .route("/:id/completed")
+    .post(auth_middleware_1.authenticate, task_controller_1.addTaskToCompleted)
+    .delete(auth_middleware_1.authenticate, task_controller_1.removeTaskFromCompleted);
 exports.default = router;

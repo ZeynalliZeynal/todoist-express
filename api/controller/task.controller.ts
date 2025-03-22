@@ -137,8 +137,12 @@ const updateTask = catchAsync(
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id, user: req.userId },
       {
-        ...body,
-        updatedAt: Date.now(),
+        name: body.name,
+        description: body.description,
+        tags: body.tags,
+        dueDate: body.dueDate,
+        priority: body.priority,
+        completed: body.completed,
       },
       {
         new: true,
@@ -155,6 +159,64 @@ const updateTask = catchAsync(
     res.status(StatusCodes.OK).json({
       status: "success",
       message: "Task successfully updated.",
+      data: {
+        task,
+      },
+    });
+  },
+);
+
+const addTaskToCompleted = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, user: req.userId },
+      {
+        completed: true,
+      },
+      {
+        new: true,
+        runValidators: false,
+      },
+    );
+
+    if (!task) {
+      return next(
+        new AppError(`No task found with the id ${req.params.id}`, 404),
+      );
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      message: "Task successfully completed.",
+      data: {
+        task,
+      },
+    });
+  },
+);
+
+const removeTaskFromCompleted = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, user: req.userId },
+      {
+        completed: false,
+      },
+      {
+        new: true,
+        runValidators: false,
+      },
+    );
+
+    if (!task) {
+      return next(
+        new AppError(`No task found with the id ${req.params.id}`, 404),
+      );
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      message: "Task successfully completed.",
       data: {
         task,
       },
@@ -198,4 +260,13 @@ const clearTasks = catchAsync(
   },
 );
 
-export { createTask, updateTask, clearTasks, getTasks, getTask, deleteTask };
+export {
+  createTask,
+  updateTask,
+  clearTasks,
+  getTasks,
+  getTask,
+  deleteTask,
+  addTaskToCompleted,
+  removeTaskFromCompleted,
+};
