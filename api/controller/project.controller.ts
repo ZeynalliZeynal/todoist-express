@@ -86,19 +86,10 @@ const createProject = catchAsync(
 
 const deleteProject = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tasks = await Task.deleteMany({
+    await Task.deleteMany({
       user: req.userId,
       project: req.params.id,
     });
-
-    if (!tasks) {
-      return next(
-        new AppError(
-          `No tasks found with the project id ${req.params.id}`,
-          404,
-        ),
-      );
-    }
 
     const project = await Project.findOneAndDelete({
       user: req.userId,

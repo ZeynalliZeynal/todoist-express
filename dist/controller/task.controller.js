@@ -20,14 +20,25 @@ const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const project_model_1 = __importDefault(require("../model/project.model"));
 const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const features = new api_features_1.default(task_model_1.default.find({
+    let features = new api_features_1.default(task_model_1.default.find({
         user: req.userId,
     }), req.query)
         .filter()
         .sort()
         .limitFields()
         .paginate();
-    const tasks = yield features.query
+    let query = features.query;
+    if (req.query.project) {
+        const project = yield project_model_1.default.findOne({
+            user: req.userId,
+            slug: req.query.project,
+        });
+        if (!project) {
+            return next(new app_error_1.default(`No project found with the slug ${req.query.project}`, 404));
+        }
+        query = query.find({ project: project._id });
+    }
+    const tasks = yield query
         .populate("user")
         .populate("project")
         .populate("tags");

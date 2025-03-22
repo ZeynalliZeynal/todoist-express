@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
 
 export interface ProjectDocument extends mongoose.Document {
   name: string;
   description: string;
   logo: string;
   favorite: Boolean;
+  slug: string;
   user: mongoose.Types.ObjectId;
 }
 
@@ -31,6 +33,10 @@ const schema = new mongoose.Schema<ProjectDocument>(
       required: true,
       index: true,
     },
+    slug: {
+      type: String,
+      index: true,
+    },
   },
   {
     toJSON: {
@@ -42,5 +48,10 @@ const schema = new mongoose.Schema<ProjectDocument>(
     timestamps: true,
   },
 );
+
+schema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
 export default mongoose.model<ProjectDocument>("Project", schema);

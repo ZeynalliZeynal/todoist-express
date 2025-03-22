@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const slugify_1 = __importDefault(require("slugify"));
-const dueDateToday = new Date(new Date(new Date().setDate(new Date(new Date()).getDate() + 1)).setHours(0, 0, 0, 0));
+const date_fns_1 = require("date-fns");
 const schema = new mongoose_1.default.Schema({
     createdAt: {
         type: Date,
@@ -47,7 +47,7 @@ const schema = new mongoose_1.default.Schema({
     },
     dueDate: {
         type: Date,
-        default: dueDateToday,
+        default: () => (0, date_fns_1.startOfDay)((0, date_fns_1.addDays)(new Date(), 1)),
     },
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,

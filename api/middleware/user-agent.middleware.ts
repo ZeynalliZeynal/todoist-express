@@ -3,20 +3,13 @@ import catchErrors from "../utils/catch-errors";
 import requestIp from "request-ip";
 import axios from "axios";
 import { apiip_accessKey } from "../constants/env";
+import DeviceDetector from "device-detector-js";
 
 export const getUserAgent: RequestHandler = catchErrors(
   async (req, res, next) => {
     const ip = requestIp.getClientIp(req);
-
-    let userAgent;
-    try {
-      const apiRes = await axios(
-        `https://api.apicagent.com/?ua=` + req.headers["user-agent"] || "",
-      );
-      userAgent = apiRes.data;
-    } catch (error) {
-      console.error(error);
-    }
+    const deviceDetector = new DeviceDetector();
+    const userAgent = deviceDetector.parse(req.headers["user-agent"] || "");
 
     let location;
     try {

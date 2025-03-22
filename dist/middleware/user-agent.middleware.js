@@ -17,16 +17,11 @@ const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const request_ip_1 = __importDefault(require("request-ip"));
 const axios_1 = __importDefault(require("axios"));
 const env_1 = require("../constants/env");
+const device_detector_js_1 = __importDefault(require("device-detector-js"));
 exports.getUserAgent = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const ip = request_ip_1.default.getClientIp(req);
-    let userAgent;
-    try {
-        const apiRes = yield (0, axios_1.default)(`https://api.apicagent.com/?ua=` + req.headers["user-agent"] || "");
-        userAgent = apiRes.data;
-    }
-    catch (error) {
-        console.error(error);
-    }
+    const deviceDetector = new device_detector_js_1.default();
+    const userAgent = deviceDetector.parse(req.headers["user-agent"] || "");
     let location;
     try {
         const apiRes = yield axios_1.default.get(`https://apiip.net/api/check?ip=${ip}&accessKey=${env_1.apiip_accessKey}`);

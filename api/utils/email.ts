@@ -1,31 +1,5 @@
 import nodemailer from "nodemailer";
-import {brevo_api_key, email_host, email_password, email_sender, email_username,} from "../constants/env";
-
-export default async (options: {
-  from: string;
-  subject: string;
-  email: string;
-  message?: string;
-  html?: string;
-}) => {
-  const transporter = nodemailer.createTransport({
-    host: email_host,
-    auth: {
-      user: email_username,
-      pass: email_password,
-    },
-  });
-
-  const mailOptions = {
-    from: options.from,
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-    // html: options.html,
-  };
-
-  await transporter.sendMail(mailOptions);
-};
+import { brevo_api_key, email_sender } from "../constants/env";
 
 interface SendMailParams {
   to: [string];
@@ -50,6 +24,6 @@ export const sendMail = async ({ subject, text, to, html }: SendMailParams) => {
     to: [...to],
     subject,
     text,
-    html
+    html,
   });
 };

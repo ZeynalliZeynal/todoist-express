@@ -1,5 +1,6 @@
 import mongoose, { Query } from "mongoose";
 import slugify from "slugify";
+import { addDays, startOfDay } from "date-fns";
 
 export type Priorities =
   | "priority 1"
@@ -20,15 +21,6 @@ export interface TaskDocument extends mongoose.Document {
   user: mongoose.Types.ObjectId;
   project: mongoose.Types.ObjectId;
 }
-
-const dueDateToday = new Date(
-  new Date(new Date().setDate(new Date(new Date()).getDate() + 1)).setHours(
-    0,
-    0,
-    0,
-    0,
-  ),
-);
 
 const schema = new mongoose.Schema<TaskDocument>(
   {
@@ -72,7 +64,7 @@ const schema = new mongoose.Schema<TaskDocument>(
     },
     dueDate: {
       type: Date,
-      default: dueDateToday,
+      default: () => startOfDay(addDays(new Date(), 1)),
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

@@ -8,7 +8,7 @@ import Project from "../model/project.model";
 
 const getTasks = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const features = new ApiFeatures(
+    let features = new ApiFeatures(
       Task.find({
         user: req.userId,
       }),
@@ -19,7 +19,27 @@ const getTasks = catchAsync(
       .limitFields()
       .paginate();
 
-    const tasks = await features.query
+    let query = features.query;
+
+    if (req.query.project) {
+      const project = await Project.findOne({
+        user: req.userId,
+        slug: req.query.project,
+      });
+
+      if (!project) {
+        return next(
+          new AppError(
+            `No project found with the slug ${req.query.project}`,
+            404,
+          ),
+        );
+      }
+
+      query = query.find({ project: project._id });
+    }
+
+    const tasks = await query
       .populate("user")
       .populate("project")
       .populate("tags");

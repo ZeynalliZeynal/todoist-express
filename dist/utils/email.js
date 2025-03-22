@@ -15,23 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const env_1 = require("../constants/env");
-exports.default = (options) => __awaiter(void 0, void 0, void 0, function* () {
-    const transporter = nodemailer_1.default.createTransport({
-        host: env_1.email_host,
-        auth: {
-            user: env_1.email_username,
-            pass: env_1.email_password,
-        },
-    });
-    const mailOptions = {
-        from: options.from,
-        to: options.email,
-        subject: options.subject,
-        text: options.message,
-        // html: options.html,
-    };
-    yield transporter.sendMail(mailOptions);
-});
 const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ subject, text, to, html }) {
     const transporter = nodemailer_1.default.createTransport({
         host: "smtp-relay.brevo.com",
@@ -47,7 +30,7 @@ const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ subject, t
         to: [...to],
         subject,
         text,
-        html
+        html,
     });
 });
 exports.sendMail = sendMail;

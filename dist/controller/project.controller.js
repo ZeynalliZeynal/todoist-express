@@ -75,13 +75,10 @@ const createProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
 }));
 exports.createProject = createProject;
 const deleteProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const tasks = yield task_model_1.default.deleteMany({
+    yield task_model_1.default.deleteMany({
         user: req.userId,
         project: req.params.id,
     });
-    if (!tasks) {
-        return next(new app_error_1.default(`No tasks found with the project id ${req.params.id}`, 404));
-    }
     const project = yield project_model_1.default.findOneAndDelete({
         user: req.userId,
         _id: req.params.id,
