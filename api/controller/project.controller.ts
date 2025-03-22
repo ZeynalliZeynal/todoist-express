@@ -5,6 +5,7 @@ import catchAsync from "../utils/catch-errors";
 import AppError from "../utils/app-error";
 import { StatusCodes } from "http-status-codes";
 import Project from "../model/project.model";
+import slugify from "slugify";
 
 const getProjects = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -19,7 +20,11 @@ const getProjects = catchAsync(
       .limitFields()
       .paginate();
 
-    const projects = await features.query.populate("user");
+    let query = features.query;
+
+    if (req.query.slug) query = query.find({ slug: req.query.slug });
+
+    const projects = await query.populate("user");
 
     res.status(StatusCodes.OK).json({
       status: "success",
@@ -56,7 +61,7 @@ const createProject = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const existedProject = await Project.exists({
       user: req.userId,
-      name: req.body.name,
+      slug: slugify(req.body.name, { lower: true }),
     });
 
     if (existedProject)

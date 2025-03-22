@@ -19,6 +19,7 @@ const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const project_model_1 = __importDefault(require("../model/project.model"));
+const slugify_1 = __importDefault(require("slugify"));
 const getProjects = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const features = new api_features_1.default(project_model_1.default.find({
         user: req.userId,
@@ -27,7 +28,10 @@ const getProjects = (0, catch_errors_1.default)((req, res, next) => __awaiter(vo
         .sort()
         .limitFields()
         .paginate();
-    const projects = yield features.query.populate("user");
+    let query = features.query;
+    if (req.query.slug)
+        query = query.find({ slug: req.query.slug });
+    const projects = yield query.populate("user");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: {
@@ -55,7 +59,7 @@ exports.getProject = getProject;
 const createProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const existedProject = yield project_model_1.default.exists({
         user: req.userId,
-        name: req.body.name,
+        slug: (0, slugify_1.default)(req.body.name, { lower: true }),
     });
     if (existedProject)
         return next(new app_error_1.default(`Project with the name '${req.body.name}' already exists.`, http_status_codes_1.StatusCodes.CONFLICT));

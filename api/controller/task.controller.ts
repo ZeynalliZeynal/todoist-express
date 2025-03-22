@@ -5,6 +5,7 @@ import catchAsync from "../utils/catch-errors";
 import AppError from "../utils/app-error";
 import { StatusCodes } from "http-status-codes";
 import Project from "../model/project.model";
+import slugify from "slugify";
 
 const getTasks = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -99,7 +100,7 @@ const createTask = catchAsync(
 
     const existingTask = await Task.exists({
       user: req.userId,
-      name: req.body.name,
+      slug: slugify(req.body.name, { lower: true }),
       project: req.body.project,
     });
 

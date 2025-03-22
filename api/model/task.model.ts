@@ -1,6 +1,6 @@
 import mongoose, { Query } from "mongoose";
 import slugify from "slugify";
-import { addDays, startOfDay } from "date-fns";
+import { addDays, differenceInHours, endOfDay, startOfDay } from "date-fns";
 
 export type Priorities =
   | "priority 1"
@@ -34,7 +34,7 @@ const schema = new mongoose.Schema<TaskDocument>(
     name: {
       type: String,
       required: [true, "Name cannot be empty."],
-      minlength: [5, "Name must be at least 5 characters"],
+      minlength: [3, "Name must be at least 3 characters"],
       maxlength: [50, "Name must be at most 50 characters"],
       trim: true,
     },
@@ -64,7 +64,12 @@ const schema = new mongoose.Schema<TaskDocument>(
     },
     dueDate: {
       type: Date,
-      default: () => startOfDay(addDays(new Date(), 1)),
+      default: () => {
+        const now = new Date();
+        const hoursLeftToday = differenceInHours(endOfDay(now), now);
+        const daysToAdd = hoursLeftToday > 12 ? 1 : 2;
+        return startOfDay(addDays(now, daysToAdd));
+      },
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

@@ -19,6 +19,7 @@ const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const project_model_1 = __importDefault(require("../model/project.model"));
+const slugify_1 = __importDefault(require("slugify"));
 const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let features = new api_features_1.default(task_model_1.default.find({
         user: req.userId,
@@ -79,7 +80,7 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
         return next(new app_error_1.default(`Project with id ${req.body.project} not found.`, 404));
     const existingTask = yield task_model_1.default.exists({
         user: req.userId,
-        name: req.body.name,
+        slug: (0, slugify_1.default)(req.body.name, { lower: true }),
         project: req.body.project,
     });
     if (existingTask)

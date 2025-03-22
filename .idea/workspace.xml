@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controller/project.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/project.controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/controller/task.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/task.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/router/task.router.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/router/task.router.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/model/task.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/task.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/project.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/project.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/task.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/task.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/model/task.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/task.model.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +198,7 @@
       <workItem from="1742054785521" duration="5294000" />
       <workItem from="1742127342517" duration="5259000" />
       <workItem from="1742151536851" duration="2118000" />
-      <workItem from="1742636084424" duration="15333000" />
+      <workItem from="1742636084424" duration="18733000" />
     </task>
     <servers />
   </component>

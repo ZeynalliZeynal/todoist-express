@@ -17,7 +17,7 @@ const schema = new mongoose_1.default.Schema({
     name: {
         type: String,
         required: [true, "Name cannot be empty."],
-        minlength: [5, "Name must be at least 5 characters"],
+        minlength: [3, "Name must be at least 3 characters"],
         maxlength: [50, "Name must be at most 50 characters"],
         trim: true,
     },
@@ -47,7 +47,12 @@ const schema = new mongoose_1.default.Schema({
     },
     dueDate: {
         type: Date,
-        default: () => (0, date_fns_1.startOfDay)((0, date_fns_1.addDays)(new Date(), 1)),
+        default: () => {
+            const now = new Date();
+            const hoursLeftToday = (0, date_fns_1.differenceInHours)((0, date_fns_1.endOfDay)(now), now);
+            const daysToAdd = hoursLeftToday > 12 ? 1 : 2;
+            return (0, date_fns_1.startOfDay)((0, date_fns_1.addDays)(now, daysToAdd));
+        },
     },
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
