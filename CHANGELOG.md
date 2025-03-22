@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.3.0...v3.3.1) (2025-03-22)
+
+
+### Bug Fixes
+
+* update task default dueDate property ([fa8543c](https://github.com/ZeynalliZeynal/todoist-server/commit/fa8543c0613f2cc04868cd793a4006250ade24d1))
+
 ## [3.3.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.2.0...v3.3.0) (2025-03-22)
 
 
