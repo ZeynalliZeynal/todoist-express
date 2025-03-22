@@ -27,6 +27,7 @@ const app_assert_1 = __importDefault(require("../utils/app-assert"));
 const env_1 = require("../constants/env");
 const axios_1 = __importDefault(require("axios"));
 const request_ip_1 = __importDefault(require("request-ip"));
+const zod_1 = require("zod");
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { otp, plan } = req.body;
     if (!req.query.token)
@@ -87,6 +88,7 @@ exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, 
     });
 }));
 exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     const request = auth_schema_1.signupVerificationSchema.parse(req.body);
     const ip = req.headers["x-real-ip"] ||
         req.headers["x-forwarded-for"] ||
@@ -104,7 +106,20 @@ exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res,
         console.log("IP is invalid");
         location = { city: "Unknown", country: "Unknown", continent: "Unknown" };
     }
-    const token = yield (0, auth_service_1.sendSignupEmailVerification)(request, location);
+    let validName;
+    try {
+        validName = zod_1.z
+            .string()
+            .regex(/^[A-Za-z]+$/, {
+            message: "Name must contain only letters",
+        })
+            .parse(req.body.name);
+    }
+    catch (err) {
+        const message = (_b = (_a = err.errors) === null || _a === void 0 ? void 0 : _a.at(0)) === null || _b === void 0 ? void 0 : _b.message;
+        return next(new app_error_1.default(message || "", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    }
+    const token = yield (0, auth_service_1.sendSignupEmailVerification)({ name: validName, email: req.body.email }, location);
     return (0, cookies_1.setVerifyCookies)({
         res,
         verifyToken: token,

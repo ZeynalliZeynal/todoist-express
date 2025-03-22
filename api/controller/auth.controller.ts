@@ -30,6 +30,7 @@ import appAssert from "../utils/app-assert";
 import { apiip_accessKey } from "../constants/env";
 import axios from "axios";
 import requestIp from "request-ip";
+import { z, ZodError } from "zod";
 
 export const signup = catchErrors(async (req, res, next) => {
   const { otp, plan } = req.body;
@@ -155,7 +156,23 @@ export const sendSignupVerifyEmailController = catchErrors(
       location = { city: "Unknown", country: "Unknown", continent: "Unknown" };
     }
 
-    const token = await sendSignupEmailVerification(request, location);
+    let validName;
+    try {
+      validName = z
+        .string()
+        .regex(/^[A-Za-z]+$/, {
+          message: "Name must contain only letters",
+        })
+        .parse(req.body.name);
+    } catch (err) {
+      const message = (err as ZodError).errors?.at(0)?.message;
+      return next(new AppError(message || "", StatusCodes.BAD_REQUEST));
+    }
+
+    const token = await sendSignupEmailVerification(
+      { name: validName, email: req.body.email },
+      location,
+    );
 
     return setVerifyCookies({
       res,

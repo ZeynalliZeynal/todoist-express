@@ -44,6 +44,7 @@ const schema = new mongoose.Schema<UserDocument>(
       trim: true,
       minlength: [3, "Name must be at least 3 characters"],
       required: [true, "Name is required"],
+      match: [/^[A-Za-z]+$/, "Name must contain only letters"],
     },
     email: {
       type: String,
