@@ -116,7 +116,7 @@ const createTask = catchAsync(
       name: req.body.name,
       description: req.body.description,
       tags: req.body.tags,
-      dueDate: req.body.dueDate,
+      dueDate: req.body.dueDate || undefined,
       priority: req.body.priority,
       project: req.body.project,
       user: req.userId,

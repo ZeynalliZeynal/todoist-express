@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import catchErrors from "../utils/catch-errors";
 import requestIp from "request-ip";
 import axios from "axios";
-import { apiip_accessKey } from "../constants/env";
 import DeviceDetector from "device-detector-js";
 
 export const getUserAgent: RequestHandler = catchErrors(
@@ -13,11 +12,9 @@ export const getUserAgent: RequestHandler = catchErrors(
 
     let location;
     try {
-      const apiRes = await axios.get(
-        `https://apiip.net/api/check?ip=${ip}&accessKey=${apiip_accessKey}`,
-      );
+      const response = await axios.get(`https://ipapi.co/${ip}/json`);
 
-      location = apiRes.data;
+      location = response.data;
     } catch (err) {
       console.log("IP is invalid");
     }

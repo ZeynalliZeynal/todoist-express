@@ -16,7 +16,6 @@ exports.getUserAgent = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const request_ip_1 = __importDefault(require("request-ip"));
 const axios_1 = __importDefault(require("axios"));
-const env_1 = require("../constants/env");
 const device_detector_js_1 = __importDefault(require("device-detector-js"));
 exports.getUserAgent = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const ip = request_ip_1.default.getClientIp(req);
@@ -24,8 +23,8 @@ exports.getUserAgent = (0, catch_errors_1.default)((req, res, next) => __awaiter
     const userAgent = deviceDetector.parse(req.headers["user-agent"] || "");
     let location;
     try {
-        const apiRes = yield axios_1.default.get(`https://apiip.net/api/check?ip=${ip}&accessKey=${env_1.apiip_accessKey}`);
-        location = apiRes.data;
+        const response = yield axios_1.default.get(`https://ipapi.co/${ip}/json`);
+        location = response.data;
     }
     catch (err) {
         console.log("IP is invalid");

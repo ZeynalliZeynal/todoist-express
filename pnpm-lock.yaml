@@ -32,6 +32,12 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      date-fns-tz:
+        specifier: ^3.2.0
+        version: 3.2.0(date-fns@4.1.0)
+      deep-email-validator:
+        specifier: ^0.1.21
+        version: 0.1.21
       device-detector-js:
         specifier: ^3.0.3
         version: 3.0.3
@@ -604,6 +610,9 @@ packages:
   '@types/cors@2.8.17':
     resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
 
+  '@types/disposable-email-domains@1.0.6':
+    resolution: {integrity: sha512-+jHw0Q4ERuVYIChlUaoSm/VEuuNFeW7JgUU8Rwa9V1ym6q+gkGmBK5sGTDKqlfmsSdI5bFMHKlEatirPFvd8Xw==}
+
   '@types/express-serve-static-core@5.0.6':
     resolution: {integrity: sha512-3xhRnjJPkULekpSzgtoNYYcTWgEZkp4myc+Saevii5JPnHNvHMRlBSHDbs7Bh1iPPoVTERHEZXyhyLbMEsExsA==}
 
@@ -733,6 +742,9 @@ packages:
 
   aws4@1.13.2:
     resolution: {integrity: sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==}
+
+  axios@0.24.0:
+    resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
 
   axios@1.7.9:
     resolution: {integrity: sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==}
@@ -874,6 +886,11 @@ packages:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
     engines: {node: '>=0.10'}
 
+  date-fns-tz@3.2.0:
+    resolution: {integrity: sha512-sg8HqoTEulcbbbVXeg84u5UnlsQa8GS5QXMqjjYIhS4abEVVKIUwe0/l/UhrZdKaL/W5eWZNlbTeEIiOXTcsBQ==}
+    peerDependencies:
+      date-fns: ^3.0.0 || ^4.0.0
+
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
@@ -894,6 +911,9 @@ packages:
       supports-color:
         optional: true
 
+  deep-email-validator@0.1.21:
+    resolution: {integrity: sha512-DBAmMzbr+MAubXQ+TS9tZuPwLcdKscb8YzKZiwoLqF3NmaeEgXvSSHhZ0EXOFeKFE2FNWC4mNXCyiQ/JdFXUwg==}
+
   deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
@@ -913,6 +933,9 @@ packages:
   device-detector-js@3.0.3:
     resolution: {integrity: sha512-jM89LJAvP6uOd84at8OlD9dWP8KeYCCHUde0RT0HQo/stdoRH4b54Xl/fntx2nEXCmqiFhmo+/cJetS2VGUHPw==}
     engines: {node: '>= 8.11.4'}
+
+  disposable-email-domains@1.0.62:
+    resolution: {integrity: sha512-LBQvhRw7mznQTPoyZbsmYeNOZt1pN5aCsx4BAU/3siVFuiM9f2oyKzUaB8v1jbxFjE3aYqYiMo63kAL4pHgfWQ==}
 
   dom-serializer@2.0.0:
     resolution: {integrity: sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==}
@@ -1272,6 +1295,9 @@ packages:
 
   lru-cache@4.1.5:
     resolution: {integrity: sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==}
+
+  mailcheck@1.1.1:
+    resolution: {integrity: sha512-3WjL8+ZDouZwKlyJBMp/4LeziLFXgleOdsYu87piGcMLqhBzCsy2QFdbtAwv757TFC/rtqd738fgJw1tFQCSgA==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -2658,6 +2684,8 @@ snapshots:
     dependencies:
       '@types/node': 22.12.0
 
+  '@types/disposable-email-domains@1.0.6': {}
+
   '@types/express-serve-static-core@5.0.6':
     dependencies:
       '@types/node': 22.12.0
@@ -2797,6 +2825,12 @@ snapshots:
   aws-sign2@0.7.0: {}
 
   aws4@1.13.2: {}
+
+  axios@0.24.0:
+    dependencies:
+      follow-redirects: 1.15.9
+    transitivePeerDependencies:
+      - debug
 
   axios@1.7.9:
     dependencies:
@@ -2945,6 +2979,10 @@ snapshots:
     dependencies:
       assert-plus: 1.0.0
 
+  date-fns-tz@3.2.0(date-fns@4.1.0):
+    dependencies:
+      date-fns: 4.1.0
+
   date-fns@4.1.0: {}
 
   debug@2.6.9:
@@ -2955,6 +2993,15 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
+  deep-email-validator@0.1.21:
+    dependencies:
+      '@types/disposable-email-domains': 1.0.6
+      axios: 0.24.0
+      disposable-email-domains: 1.0.62
+      mailcheck: 1.1.1
+    transitivePeerDependencies:
+      - debug
+
   deepmerge@4.3.1: {}
 
   delayed-stream@1.0.0: {}
@@ -2964,6 +3011,8 @@ snapshots:
   destroy@1.2.0: {}
 
   device-detector-js@3.0.3: {}
+
+  disposable-email-domains@1.0.62: {}
 
   dom-serializer@2.0.0:
     dependencies:
@@ -3372,6 +3421,8 @@ snapshots:
     dependencies:
       pseudomap: 1.0.2
       yallist: 2.1.2
+
+  mailcheck@1.1.1: {}
 
   math-intrinsics@1.1.0: {}
 

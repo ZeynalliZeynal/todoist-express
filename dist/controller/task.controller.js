@@ -89,7 +89,7 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
         name: req.body.name,
         description: req.body.description,
         tags: req.body.tags,
-        dueDate: req.body.dueDate,
+        dueDate: req.body.dueDate || undefined,
         priority: req.body.priority,
         project: req.body.project,
         user: req.userId,

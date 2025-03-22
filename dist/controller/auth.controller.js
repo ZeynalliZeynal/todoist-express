@@ -24,10 +24,8 @@ const cookies_1 = require("../utils/cookies");
 const jwt_1 = require("../utils/jwt");
 const session_model_1 = __importDefault(require("../model/session.model"));
 const app_assert_1 = __importDefault(require("../utils/app-assert"));
-const env_1 = require("../constants/env");
-const axios_1 = __importDefault(require("axios"));
-const request_ip_1 = __importDefault(require("request-ip"));
 const zod_1 = require("zod");
+const deep_email_validator_1 = __importDefault(require("deep-email-validator"));
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { otp, plan } = req.body;
     if (!req.query.token)
@@ -88,24 +86,8 @@ exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, 
     });
 }));
 exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    const request = auth_schema_1.signupVerificationSchema.parse(req.body);
-    const ip = req.headers["x-real-ip"] ||
-        req.headers["x-forwarded-for"] ||
-        request_ip_1.default.getClientIp(req);
-    let location;
-    try {
-        const res = yield axios_1.default.get(`https://apiip.net/api/check?ip=${ip}&accessKey=${env_1.apiip_accessKey}`);
-        location = {
-            city: res.data.city,
-            country: res.data.countryName,
-            continent: res.data.continentName,
-        };
-    }
-    catch (err) {
-        console.log("IP is invalid");
-        location = { city: "Unknown", country: "Unknown", continent: "Unknown" };
-    }
+    var _a, _b, _c, _d, _e, _f, _g;
+    const validEmail = yield (0, deep_email_validator_1.default)(req.body.email);
     let validName;
     try {
         validName = zod_1.z
@@ -119,7 +101,14 @@ exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res,
         const message = (_b = (_a = err.errors) === null || _a === void 0 ? void 0 : _a.at(0)) === null || _b === void 0 ? void 0 : _b.message;
         return next(new app_error_1.default(message || "", http_status_codes_1.StatusCodes.BAD_REQUEST));
     }
-    const token = yield (0, auth_service_1.sendSignupEmailVerification)({ name: validName, email: req.body.email }, location);
+    if (!validEmail.valid)
+        return next(new app_error_1.default(((_c = validEmail.validators.regex) === null || _c === void 0 ? void 0 : _c.reason) ||
+            ((_d = validEmail.validators.typo) === null || _d === void 0 ? void 0 : _d.reason) ||
+            ((_e = validEmail.validators.mx) === null || _e === void 0 ? void 0 : _e.reason) ||
+            ((_f = validEmail.validators.smtp) === null || _f === void 0 ? void 0 : _f.reason) ||
+            ((_g = validEmail.validators.disposable) === null || _g === void 0 ? void 0 : _g.reason) ||
+            "Email is not valid.", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    const token = yield (0, auth_service_1.sendSignupEmailVerification)({ name: validName, email: req.body.email }, req.location);
     return (0, cookies_1.setVerifyCookies)({
         res,
         verifyToken: token,

@@ -7,7 +7,6 @@ import {
   emailSchema,
   loginSchema,
   signupSchema,
-  signupVerificationSchema,
 } from "../validator/auth.schema";
 import {
   createAccount,
@@ -27,10 +26,8 @@ import {
 import { verifyToken } from "../utils/jwt";
 import Session from "../model/session.model";
 import appAssert from "../utils/app-assert";
-import { apiip_accessKey } from "../constants/env";
-import axios from "axios";
-import requestIp from "request-ip";
 import { z, ZodError } from "zod";
+import validate from "deep-email-validator";
 
 export const signup = catchErrors(async (req, res, next) => {
   const { otp, plan } = req.body;
@@ -135,26 +132,7 @@ export const sendLoginVerifyEmailController = catchErrors(
 
 export const sendSignupVerifyEmailController = catchErrors(
   async (req, res, next) => {
-    const request = signupVerificationSchema.parse(req.body);
-    const ip =
-      req.headers["x-real-ip"] ||
-      req.headers["x-forwarded-for"] ||
-      requestIp.getClientIp(req);
-
-    let location;
-    try {
-      const res = await axios.get(
-        `https://apiip.net/api/check?ip=${ip}&accessKey=${apiip_accessKey}`,
-      );
-      location = {
-        city: res.data.city,
-        country: res.data.countryName,
-        continent: res.data.continentName,
-      };
-    } catch (err) {
-      console.log("IP is invalid");
-      location = { city: "Unknown", country: "Unknown", continent: "Unknown" };
-    }
+    const validEmail = await validate(req.body.email);
 
     let validName;
     try {
@@ -169,9 +147,22 @@ export const sendSignupVerifyEmailController = catchErrors(
       return next(new AppError(message || "", StatusCodes.BAD_REQUEST));
     }
 
+    if (!validEmail.valid)
+      return next(
+        new AppError(
+          validEmail.validators.regex?.reason ||
+            validEmail.validators.typo?.reason ||
+            validEmail.validators.mx?.reason ||
+            validEmail.validators.smtp?.reason ||
+            validEmail.validators.disposable?.reason ||
+            "Email is not valid.",
+          StatusCodes.BAD_REQUEST,
+        ),
+      );
+
     const token = await sendSignupEmailVerification(
       { name: validName, email: req.body.email },
-      location,
+      req.location,
     );
 
     return setVerifyCookies({

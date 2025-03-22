@@ -1,6 +1,7 @@
 import mongoose, { Query } from "mongoose";
 import slugify from "slugify";
 import { addDays, differenceInHours, endOfDay, startOfDay } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 
 export type Priorities =
   | "priority 1"
@@ -21,6 +22,8 @@ export interface TaskDocument extends mongoose.Document {
   user: mongoose.Types.ObjectId;
   project: mongoose.Types.ObjectId;
 }
+
+const TIMEZONE = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const schema = new mongoose.Schema<TaskDocument>(
   {
@@ -68,7 +71,7 @@ const schema = new mongoose.Schema<TaskDocument>(
         const now = new Date();
         const hoursLeftToday = differenceInHours(endOfDay(now), now);
         const daysToAdd = hoursLeftToday > 12 ? 1 : 2;
-        return startOfDay(addDays(now, daysToAdd));
+        return fromZonedTime(startOfDay(addDays(now, daysToAdd)), TIMEZONE);
       },
     },
     user: {
