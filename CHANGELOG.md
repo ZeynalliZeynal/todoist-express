@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.2](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.3.1...v3.3.2) (2025-03-22)
+
+
+### Bug Fixes
+
+* change ip api ([7b292ca](https://github.com/ZeynalliZeynal/todoist-server/commit/7b292ca6dbebad905e2c5ac1a2d0eae5686b1d51))
+* validate name property in user model to accept only letters, not symbols ([9805f8b](https://github.com/ZeynalliZeynal/todoist-server/commit/9805f8b5fc0a57009a92d1b2f31a6d934b87494d))
+
 ### [3.3.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.3.0...v3.3.1) (2025-03-22)
 
 
