@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.2.0...v3.3.0) (2025-03-22)
+
+
+### Features
+
+* add task to completed and remove from completed controllers ([1f89479](https://github.com/ZeynalliZeynal/todoist-server/commit/1f8947908d2c2af44bc8d281511fc20646a2cbe2))
+
 ## [3.2.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.1.0...v3.2.0) (2025-03-22)
 
 
