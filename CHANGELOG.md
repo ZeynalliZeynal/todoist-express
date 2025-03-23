@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.5.0...v3.5.1) (2025-03-23)
+
+
+### Bug Fixes
+
+* update use of getUserAgent middleware to prevent unnecessary request to ipapi api ([6b8bb52](https://github.com/ZeynalliZeynal/todoist-server/commit/6b8bb521434311676b424ac37ac5eb7807de88c6))
+
 ## [3.5.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.4.1...v3.5.0) (2025-03-23)
 
 
