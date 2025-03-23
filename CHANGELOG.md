@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.4.0...v3.4.1) (2025-03-23)
+
+
+### Bug Fixes
+
+* change updating way of projects and tasks to trigger the save middleware of models ([0c6e01a](https://github.com/ZeynalliZeynal/todoist-server/commit/0c6e01a8126c79ef22773ed6f977d96f651c1f86))
+
 ## [3.4.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.3.2...v3.4.0) (2025-03-23)
 
 
