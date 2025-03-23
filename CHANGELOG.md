@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.3.2...v3.4.0) (2025-03-23)
+
+
+### Features
+
+* delete existing file from the storage when uploading a new one. If there is an existing avatar stored in s3 bucket, delete it before uploading new one. ([8bc3cb9](https://github.com/ZeynalliZeynal/todoist-server/commit/8bc3cb956651d0322d68e0d6c85c6eacc1c93b6a))
+
 ### [3.3.2](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.3.1...v3.3.2) (2025-03-22)
 
 
