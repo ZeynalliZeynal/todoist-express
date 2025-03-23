@@ -117,11 +117,11 @@ const deleteProject = catchAsync(
 
 const updateProject = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const existingProject = await Project.exists({
+    const project = await Project.findOne({
       user: req.userId,
       _id: req.params.id,
     });
-    if (!existingProject) {
+    if (!project) {
       return next(
         new AppError(
           `No project found with the id ${req.params.id}`,
@@ -130,18 +130,24 @@ const updateProject = catchAsync(
       );
     }
 
-    const project = await Project.findOneAndUpdate(
-      {
-        user: req.userId,
-        _id: req.params.id,
-      },
-      {
-        name: req.body.name,
-        description: req.body.description,
-        logo: req.body.logo,
-        favorite: req.body.favorite,
-      },
-    );
+    // const project = await Project.findOneAndUpdate(
+    //   {
+    //     user: req.userId,
+    //     _id: req.params.id,
+    //   },
+    //   {
+    //     name: req.body.name,
+    //     description: req.body.description,
+    //     logo: req.body.logo,
+    //     favorite: req.body.favorite,
+    //   },
+    // );
+
+    project.name = req.body.name;
+    project.description = req.body.description;
+    project.logo = req.body.logo;
+
+    await project.save();
 
     res.status(StatusCodes.OK).json({
       status: "success",

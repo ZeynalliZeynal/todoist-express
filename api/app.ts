@@ -23,7 +23,7 @@ import sessionRouter from "./router/session.router";
 import planRouter from "./router/plan.router";
 import templateCategoriesRouter from "./router/template-categories.router";
 import projectRouter from "./router/project.router";
-import fileRouter from "./router/file.router";
+import storageRouter from "./router/storage.router";
 import taskTagRouter from "./router/task-tag.router";
 import { getUserAgent } from "./middleware/user-agent.middleware";
 
@@ -93,6 +93,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/profile/sessions", sessionRouter);
 app.use("/api/v1/plans", planRouter);
+app.use("/api/v1/storage", storageRouter);
 
 app.use("/api/v1/ping", async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({
@@ -104,7 +105,6 @@ app.use("/api/v1/ping", async (req: Request, res: Response) => {
     },
   });
 });
-app.use("/api/v1/files", fileRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
   next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),

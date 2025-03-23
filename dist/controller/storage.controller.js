@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteFile = exports.uploadFile = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const http_status_codes_1 = require("http-status-codes");
-const file_service_1 = require("../service/file.service");
+const storage_service_1 = require("../service/storage.service");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 exports.uploadFile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -23,13 +23,15 @@ exports.uploadFile = (0, catch_errors_1.default)((req, res, next) => __awaiter(v
     const user = yield user_model_1.default.findById(req.userId);
     if (!user)
         return next(new app_error_1.default("User does not exist", http_status_codes_1.StatusCodes.NOT_FOUND));
-    const fileUrl = yield (0, file_service_1.uploadFileService)({
+    if (!req.file)
+        return next(new app_error_1.default("No file was specified.", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    const fileUrl = yield (0, storage_service_1.uploadFileService)({
         buffer: (_a = req.file) === null || _a === void 0 ? void 0 : _a.buffer,
         contentType: (_b = req.file) === null || _b === void 0 ? void 0 : _b.mimetype,
         existingFilename: !user.avatar.includes("avatar.vercel.sh")
             ? (_c = user.avatar.split("/").at(-1)) === null || _c === void 0 ? void 0 : _c.split("?").at(0)
             : undefined,
-        prefix: "avatars" /* BUCKET_PREFIXES.AVATARS */,
+        prefix: req.params.prefix,
     });
     res.status(http_status_codes_1.StatusCodes.CREATED).json({
         status: "success",
@@ -40,24 +42,14 @@ exports.uploadFile = (0, catch_errors_1.default)((req, res, next) => __awaiter(v
     });
 }));
 exports.deleteFile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // const filename = req.file?.originalname.split(" ").join("_");
-    yield (0, file_service_1.deleteFileService)({
+    if (!req.params.prefix)
+        return next(new app_error_1.default("Prefix is required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    if (!req.params.filename)
+        return next(new app_error_1.default("File filename is required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
+    yield (0, storage_service_1.deleteFileService)({
         filename: req.params.filename,
-        prefix: "avatars" /* BUCKET_PREFIXES.AVATARS */,
+        prefix: req.params.prefix,
     });
-    // const user = await User.findById(req.userId);
-    // if (!user)
-    //   return next(new AppError("User does not exist", StatusCodes.NOT_FOUND));
-    // if (user.avatar.includes(req.params.filename))
-    //   await user.updateOne(
-    //     {
-    //       avatar: undefined,
-    //     },
-    //     {
-    //       new: true,
-    //       runValidators: false,
-    //     },
-    //   );
     res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
         message: "File deleted successfully",

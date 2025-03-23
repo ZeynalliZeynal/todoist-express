@@ -135,27 +135,40 @@ const createTask = catchAsync(
 const updateTask = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { body } = req;
-    const task = await Task.findOneAndUpdate(
-      { _id: req.params.id, user: req.userId },
-      {
-        name: body.name,
-        description: body.description,
-        tags: body.tags,
-        dueDate: body.dueDate,
-        priority: body.priority,
-        completed: body.completed,
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const task = await Task.findOne({
+      user: req.userId,
+      _id: req.params.id,
+    });
+
+    // const task = await Task.findOneAndUpdate(
+    //   { _id: req.params.id, user: req.userId },
+    //   {
+    //     name: body.name,
+    //     description: body.description,
+    //     tags: body.tags,
+    //     dueDate: body.dueDate,
+    //     priority: body.priority,
+    //     completed: body.completed,
+    //   },
+    //   {
+    //     new: true,
+    //     runValidators: true,
+    //   },
+    // );
 
     if (!task) {
       return next(
         new AppError(`No task found with the id ${req.params.id}`, 404),
       );
     }
+
+    task.name = body.name;
+    task.description = body.description;
+    task.tags = body.tags;
+    task.dueDate = body.dueDate || undefined;
+    task.priority = body.priority;
+
+    await task.save();
 
     res.status(StatusCodes.OK).json({
       status: "success",

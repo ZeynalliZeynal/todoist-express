@@ -105,20 +105,34 @@ const createTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
 exports.createTask = createTask;
 const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const task = yield task_model_1.default.findOneAndUpdate({ _id: req.params.id, user: req.userId }, {
-        name: body.name,
-        description: body.description,
-        tags: body.tags,
-        dueDate: body.dueDate,
-        priority: body.priority,
-        completed: body.completed,
-    }, {
-        new: true,
-        runValidators: true,
+    const task = yield task_model_1.default.findOne({
+        user: req.userId,
+        _id: req.params.id,
     });
+    // const task = await Task.findOneAndUpdate(
+    //   { _id: req.params.id, user: req.userId },
+    //   {
+    //     name: body.name,
+    //     description: body.description,
+    //     tags: body.tags,
+    //     dueDate: body.dueDate,
+    //     priority: body.priority,
+    //     completed: body.completed,
+    //   },
+    //   {
+    //     new: true,
+    //     runValidators: true,
+    //   },
+    // );
     if (!task) {
         return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
     }
+    task.name = body.name;
+    task.description = body.description;
+    task.tags = body.tags;
+    task.dueDate = body.dueDate || undefined;
+    task.priority = body.priority;
+    yield task.save();
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "Task successfully updated.",

@@ -98,22 +98,29 @@ const deleteProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
 }));
 exports.deleteProject = deleteProject;
 const updateProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const existingProject = yield project_model_1.default.exists({
+    const project = yield project_model_1.default.findOne({
         user: req.userId,
         _id: req.params.id,
     });
-    if (!existingProject) {
+    if (!project) {
         return next(new app_error_1.default(`No project found with the id ${req.params.id}`, http_status_codes_1.StatusCodes.NOT_FOUND));
     }
-    const project = yield project_model_1.default.findOneAndUpdate({
-        user: req.userId,
-        _id: req.params.id,
-    }, {
-        name: req.body.name,
-        description: req.body.description,
-        logo: req.body.logo,
-        favorite: req.body.favorite,
-    });
+    // const project = await Project.findOneAndUpdate(
+    //   {
+    //     user: req.userId,
+    //     _id: req.params.id,
+    //   },
+    //   {
+    //     name: req.body.name,
+    //     description: req.body.description,
+    //     logo: req.body.logo,
+    //     favorite: req.body.favorite,
+    //   },
+    // );
+    project.name = req.body.name;
+    project.description = req.body.description;
+    project.logo = req.body.logo;
+    yield project.save();
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "Project successfully updated.",

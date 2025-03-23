@@ -25,13 +25,16 @@ export const uploadFileService = async ({
   buffer,
   contentType,
   existingFilename,
+  prefix,
 }: {
   buffer?: Buffer;
   contentType?: string;
   existingFilename?: string;
+  prefix: string;
 }) => {
   if (existingFilename) {
     await deleteFileService({
+      prefix,
       filename: existingFilename,
     });
   }
@@ -39,14 +42,14 @@ export const uploadFileService = async ({
   const filename = generateName();
   const putCommand = new PutObjectCommand({
     Bucket: s3_bucket_name,
-    Key: `avatars/${filename}`,
+    Key: `${prefix}/${filename}`,
     Body: buffer,
     ContentType: contentType,
   });
 
   const getCommand = new GetObjectCommand({
     Bucket: s3_bucket_name,
-    Key: `avatars/${filename}`,
+    Key: `${prefix}/${filename}`,
   });
 
   const fileUrl = await getSignedUrl(s3, getCommand);
@@ -55,10 +58,16 @@ export const uploadFileService = async ({
   return fileUrl;
 };
 
-export const deleteFileService = async ({ filename }: { filename: string }) => {
+export const deleteFileService = async ({
+  filename,
+  prefix,
+}: {
+  filename: string;
+  prefix: string;
+}) => {
   const deleteCommand = new DeleteObjectCommand({
     Bucket: s3_bucket_name,
-    Key: `avatars/${filename}`,
+    Key: `${prefix}/${filename}`,
   });
 
   await s3.send(deleteCommand);

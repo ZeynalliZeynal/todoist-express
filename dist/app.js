@@ -33,7 +33,7 @@ const session_router_1 = __importDefault(require("./router/session.router"));
 const plan_router_1 = __importDefault(require("./router/plan.router"));
 const template_categories_router_1 = __importDefault(require("./router/template-categories.router"));
 const project_router_1 = __importDefault(require("./router/project.router"));
-const file_router_1 = __importDefault(require("./router/file.router"));
+const storage_router_1 = __importDefault(require("./router/storage.router"));
 const task_tag_router_1 = __importDefault(require("./router/task-tag.router"));
 const user_agent_middleware_1 = require("./middleware/user-agent.middleware");
 const app = (0, express_1.default)();
@@ -88,6 +88,7 @@ app.use("/api/v1/users", user_router_1.default);
 app.use("/api/v1/profile", profile_router_1.default);
 app.use("/api/v1/profile/sessions", session_router_1.default);
 app.use("/api/v1/plans", plan_router_1.default);
+app.use("/api/v1/storage", storage_router_1.default);
 app.use("/api/v1/ping", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
@@ -98,7 +99,6 @@ app.use("/api/v1/ping", (req, res) => __awaiter(void 0, void 0, void 0, function
         },
     });
 }));
-app.use("/api/v1/files", file_router_1.default);
 app.all("*", (req, res, next) => next(new app_error_1.default(`${req.originalUrl} not found`, http_status_codes_1.StatusCodes.NOT_FOUND)));
 app.use(error_handler_1.errorHandler);
 exports.default = app;
