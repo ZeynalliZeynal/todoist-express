@@ -24,7 +24,7 @@ const getProjects = catchAsync(
 
     if (req.query.slug) query = query.find({ slug: req.query.slug });
 
-    const projects = await query.populate("user");
+    const projects = await query.populate("user").populate("tasks");
 
     res.status(StatusCodes.OK).json({
       status: "success",

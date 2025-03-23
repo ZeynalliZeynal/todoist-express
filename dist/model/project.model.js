@@ -40,6 +40,11 @@ const schema = new mongoose_1.default.Schema({
     },
     timestamps: true,
 });
+schema.virtual("tasks", {
+    ref: "Task",
+    localField: "_id",
+    foreignField: "project",
+});
 schema.pre("save", function (next) {
     this.slug = (0, slugify_1.default)(this.name, { lower: true });
     next();

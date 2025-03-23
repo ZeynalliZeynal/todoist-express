@@ -31,7 +31,7 @@ const getProjects = (0, catch_errors_1.default)((req, res, next) => __awaiter(vo
     let query = features.query;
     if (req.query.slug)
         query = query.find({ slug: req.query.slug });
-    const projects = yield query.populate("user");
+    const projects = yield query.populate("user").populate("tasks");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         data: {

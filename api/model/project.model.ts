@@ -49,6 +49,12 @@ const schema = new mongoose.Schema<ProjectDocument>(
   },
 );
 
+schema.virtual("tasks", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "project",
+});
+
 schema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
