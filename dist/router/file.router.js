@@ -11,4 +11,5 @@ const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({ storage });
 const router = express_1.default.Router();
 router.post("/upload", auth_middleware_1.authenticate, upload.single("file"), file_controller_1.uploadFile);
+router.delete("/:filename", auth_middleware_1.authenticate, file_controller_1.deleteFile);
 exports.default = router;

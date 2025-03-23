@@ -1,46 +1,21 @@
 import catchErrors from "../utils/catch-errors";
-import {
-  GetObjectCommand,
-  PutObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3";
-import {
-  s3_access_key,
-  s3_bucket_name,
-  s3_bucket_region,
-  s3_secret_key,
-} from "../constants/env";
 import { StatusCodes } from "http-status-codes";
-import { generateName } from "../utils/generate-name";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: s3_access_key,
-    secretAccessKey: s3_secret_key,
-  },
-  region: s3_bucket_region,
-});
+import { deleteFileService, uploadFileService } from "../service/file.service";
+import User from "../model/user.model";
+import AppError from "../utils/app-error";
 
 export const uploadFile = catchErrors(async (req, res, next) => {
-  // const filename = req.file?.originalname.split(" ").join("_");
+  const user = await User.findById(req.userId);
+  if (!user)
+    return next(new AppError("User does not exist", StatusCodes.NOT_FOUND));
 
-  const filename = generateName();
-  const putCommand = new PutObjectCommand({
-    Bucket: s3_bucket_name,
-    Key: `avatars/${filename}`,
-    Body: req.file?.buffer,
-    ContentType: req.file?.mimetype,
+  const fileUrl = await uploadFileService({
+    buffer: req.file?.buffer,
+    contentType: req.file?.mimetype,
+    existingFilename: !user.avatar.includes("avatar.vercel.sh")
+      ? user.avatar.split("/").at(-1)?.split("?").at(0)
+      : undefined,
   });
-
-  const getCommand = new GetObjectCommand({
-    Bucket: s3_bucket_name,
-    Key: `avatars/${filename}`,
-  });
-
-  const fileUrl = await getSignedUrl(s3, getCommand);
-
-  await s3.send(putCommand);
 
   res.status(StatusCodes.CREATED).json({
     status: "success",
@@ -48,5 +23,15 @@ export const uploadFile = catchErrors(async (req, res, next) => {
     data: {
       fileUrl: fileUrl,
     },
+  });
+});
+
+export const deleteFile = catchErrors(async (req, res, next) => {
+  // const filename = req.file?.originalname.split(" ").join("_");
+
+  await deleteFileService({ filename: req.params.filename });
+  res.status(StatusCodes.NO_CONTENT).json({
+    status: "success",
+    message: "File deleted successfully",
   });
 });

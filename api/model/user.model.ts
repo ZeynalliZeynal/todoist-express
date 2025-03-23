@@ -21,7 +21,7 @@ export interface UserDocument extends mongoose.Document {
   verifiedAt?: Date;
   verified?: boolean;
   verificationToken?: string;
-  avatar?: string;
+  avatar: string;
   location?: any;
   plan: mongoose.Types.ObjectId;
 

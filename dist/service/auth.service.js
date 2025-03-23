@@ -149,6 +149,7 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield session_model_1.default.create({
         userId: user._id,
         userAgent: data.userAgent,
+        location: data.location,
     });
     const sessionInfo = {
         sessionId: session._id,

@@ -193,6 +193,7 @@ export const createAccount = async (data: CreateAccountParams) => {
   const session = await Session.create({
     userId: user._id,
     userAgent: data.userAgent,
+    location: data.location,
   });
 
   const sessionInfo = {
