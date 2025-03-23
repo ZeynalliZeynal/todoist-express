@@ -67,7 +67,7 @@ app.use(
 
 app.use(cookieParser());
 
-app.use(getUserAgent);
+// app.use(getUserAgent);
 
 app.get("/", (req, res) => {
   res.status(StatusCodes.OK).json({
@@ -95,7 +95,7 @@ app.use("/api/v1/profile/sessions", sessionRouter);
 app.use("/api/v1/plans", planRouter);
 app.use("/api/v1/storage", storageRouter);
 
-app.use("/api/v1/ping", async (req: Request, res: Response) => {
+app.use("/api/v1/ping", getUserAgent, async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({
     status: "success",
     message: "API is up and running.",

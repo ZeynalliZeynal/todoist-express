@@ -16,7 +16,7 @@ export const getUserAgent: RequestHandler = catchErrors(
 
       location = response.data;
     } catch (err) {
-      console.log("IP is invalid");
+      console.error(err, (err as any).message);
     }
 
     req.location = location || "unknown";

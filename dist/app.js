@@ -64,7 +64,7 @@ app.use((0, cors_1.default)({
     credentials: true,
 }));
 app.use((0, cookie_parser_1.default)());
-app.use(user_agent_middleware_1.getUserAgent);
+// app.use(getUserAgent);
 app.get("/", (req, res) => {
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
@@ -89,7 +89,7 @@ app.use("/api/v1/profile", profile_router_1.default);
 app.use("/api/v1/profile/sessions", session_router_1.default);
 app.use("/api/v1/plans", plan_router_1.default);
 app.use("/api/v1/storage", storage_router_1.default);
-app.use("/api/v1/ping", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.use("/api/v1/ping", user_agent_middleware_1.getUserAgent, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "API is up and running.",
