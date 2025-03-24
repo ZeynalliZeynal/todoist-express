@@ -27,7 +27,7 @@ exports.getUserAgent = (0, catch_errors_1.default)((req, res, next) => __awaiter
         location = response.data;
     }
     catch (err) {
-        console.error(err, err.message);
+        console.error(err.response.data);
     }
     req.location = location || "unknown";
     req.userAgent = userAgent;

@@ -16,11 +16,11 @@ export const getUserAgent: RequestHandler = catchErrors(
 
       location = response.data;
     } catch (err) {
-      console.error(err, (err as any).message);
+      console.error((err as any).response.data);
     }
 
     req.location = location || "unknown";
     req.userAgent = userAgent;
     next();
-  },
+  }
 );

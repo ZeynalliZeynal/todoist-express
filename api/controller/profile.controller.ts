@@ -25,8 +25,8 @@ export const getProfile: RequestHandler = catchErrors(
       return next(
         new AppError(
           "No user found. You may not be logged in.",
-          StatusCodes.NOT_FOUND,
-        ),
+          StatusCodes.NOT_FOUND
+        )
       );
 
     return res.status(StatusCodes.OK).json({
@@ -37,7 +37,7 @@ export const getProfile: RequestHandler = catchErrors(
         user,
       },
     });
-  },
+  }
 );
 
 export const updateProfile: RequestHandler = catchErrors(
@@ -48,15 +48,15 @@ export const updateProfile: RequestHandler = catchErrors(
         name: req.body.name,
         avatar: req.body.avatar,
       },
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     );
 
     if (!user)
       return next(
         new AppError(
           "No user found. You may not be logged in.",
-          StatusCodes.NOT_FOUND,
-        ),
+          StatusCodes.NOT_FOUND
+        )
       );
 
     return res.status(StatusCodes.OK).json({
@@ -66,5 +66,5 @@ export const updateProfile: RequestHandler = catchErrors(
         user,
       },
     });
-  },
+  }
 );
