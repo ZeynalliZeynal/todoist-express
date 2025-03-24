@@ -28,7 +28,7 @@ const handleDuplicateValueError = (res, error) => {
     var _a, _b;
     const value = (_b = (_a = error.errorResponse.errmsg) === null || _a === void 0 ? void 0 : _a.match(/(["'])(?:(?=(\\?))\2.)*?\1/)) === null || _b === void 0 ? void 0 : _b.at(0);
     const message = `Duplicate field value: ${value}. Please use another value.`;
-    res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+    return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
         status: "fail",
         message,
     });

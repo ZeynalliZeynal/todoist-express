@@ -26,7 +26,7 @@ exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter
         return next(new app_error_1.default("You must log in to perform this action", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     const { payload, error } = (0, jwt_1.verifyToken)(accessToken);
     if (error || !payload)
-        throw new app_error_1.default("Invalid or expired token. Try to log in again.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
+        return next(new app_error_1.default("Invalid or expired token. Try to log in again.", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     const currentSession = yield session_model_1.default.findById(payload.sessionId);
     const currentUser = yield user_model_1.default.findById(payload.userId).select("+role -__v");
     if (!currentUser)

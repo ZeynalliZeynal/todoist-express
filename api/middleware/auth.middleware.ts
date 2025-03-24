@@ -20,9 +20,11 @@ export const authenticate: RequestHandler = catchErrors(
       );
     const { payload, error } = verifyToken(accessToken);
     if (error || !payload)
-      throw new AppError(
-        "Invalid or expired token. Try to log in again.",
-        StatusCodes.UNAUTHORIZED,
+      return next(
+        new AppError(
+          "Invalid or expired token. Try to log in again.",
+          StatusCodes.UNAUTHORIZED,
+        ),
       );
 
     const currentSession = await Session.findById(payload.sessionId);

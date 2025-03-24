@@ -30,7 +30,7 @@ const handleDuplicateValueError = (res: Response, error: MongoServerError) => {
     ?.match(/(["'])(?:(?=(\\?))\2.)*?\1/)
     ?.at(0);
   const message = `Duplicate field value: ${value}. Please use another value.`;
-  res.status(StatusCodes.BAD_REQUEST).json({
+  return res.status(StatusCodes.BAD_REQUEST).json({
     status: "fail",
     message,
   });
@@ -64,7 +64,7 @@ type ErrorRequestHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => void;
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.log(err, err.name);

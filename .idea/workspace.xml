@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/middleware/user-agent.middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/user-agent.middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controller/profile.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/profile.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/middleware/auth.middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/auth.middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/utils/email-templates.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/utils/email-templates.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/middleware/user-agent.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/user-agent.middleware.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/profile.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/profile.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/service/auth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/auth.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/utils/email-templates.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/email-templates.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +203,10 @@
       <workItem from="1742673177486" duration="1519000" />
       <workItem from="1742675222313" duration="9312000" />
       <workItem from="1742730474509" duration="13084000" />
-      <workItem from="1742761690243" duration="361000" />
+      <workItem from="1742761690243" duration="790000" />
+      <workItem from="1742837161662" duration="630000" />
+      <workItem from="1742838324402" duration="4000" />
+      <workItem from="1742838409223" duration="4000" />
     </task>
     <servers />
   </component>
