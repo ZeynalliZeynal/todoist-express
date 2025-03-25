@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 const env_1 = require("./constants/env");
 const app_1 = __importDefault(require("./app"));
-const mongo_1 = __importDefault(require("./lib/mongo"));
+const mongo_1 = __importDefault(require("./lib/mongo/mongo"));
 process.on("uncaughtException", (error) => {
     console.log("Uncaught Exception!");
     console.log(error.name, error.message);

@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { MongoServerError } from "mongodb";
 import { clearAuthCookies, refresh_path } from "../utils/cookies";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import ResponseStatues from "../constants/response-statues";
 
 const handleZodError = (res: Response, error: z.ZodError) => {
   const errors = error.issues.map((err) => ({
@@ -20,7 +21,7 @@ const handleZodError = (res: Response, error: z.ZodError) => {
 
 const handleAppError = (res: Response, error: AppError) =>
   res.status(error.statusCode).json({
-    status: "fail",
+    status: ResponseStatues.FAIL,
     message: error.message,
     errorCode: error.errorCode,
   });
@@ -31,7 +32,7 @@ const handleDuplicateValueError = (res: Response, error: MongoServerError) => {
     ?.at(0);
   const message = `Duplicate field value: ${value}. Please use another value.`;
   return res.status(StatusCodes.BAD_REQUEST).json({
-    status: "fail",
+    status: ResponseStatues.FAIL,
     message,
   });
 };
@@ -43,20 +44,20 @@ const handleValidationError = (res: Response, error: MongoServerError) => {
   }));
 
   return res.status(StatusCodes.BAD_REQUEST).json({
-    status: "fail",
+    status: ResponseStatues.FAIL,
     message,
   });
 };
 
 const handleTokenExpiredError = (res: Response, error: TokenExpiredError) =>
   res.status(StatusCodes.UNAUTHORIZED).json({
-    status: "fail",
+    status: ResponseStatues.FAIL,
     message: "Token is expired. Try again.",
   });
 
 const handleInvalidSignatureError = (res: Response, error: JsonWebTokenError) =>
   res.status(StatusCodes.UNAUTHORIZED).json({
-    status: "fail",
+    status: ResponseStatues.FAIL,
     message: "Token is invalid.",
   });
 
@@ -64,7 +65,7 @@ type ErrorRequestHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => void;
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.log(err, err.name);
@@ -86,7 +87,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     handleInvalidSignatureError(res, err as JsonWebTokenError);
 
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    status: "error",
+    status: ResponseStatues.ERROR,
     message: "Initial server error",
   });
 };

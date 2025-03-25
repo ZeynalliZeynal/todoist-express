@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { database_password, database_uri } from "../constants/env";
+import { database_password, database_uri } from "../../constants/env";
 
 const database = database_uri.replace("<db_password>", database_password);
 const connectToDatabase = async () => {

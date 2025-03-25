@@ -20,7 +20,7 @@ const handleZodError = (res, error) => {
     });
 };
 const handleAppError = (res, error) => res.status(error.statusCode).json({
-    status: "fail",
+    status: "fail" /* ResponseStatues.FAIL */,
     message: error.message,
     errorCode: error.errorCode,
 });
@@ -29,7 +29,7 @@ const handleDuplicateValueError = (res, error) => {
     const value = (_b = (_a = error.errorResponse.errmsg) === null || _a === void 0 ? void 0 : _a.match(/(["'])(?:(?=(\\?))\2.)*?\1/)) === null || _b === void 0 ? void 0 : _b.at(0);
     const message = `Duplicate field value: ${value}. Please use another value.`;
     return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-        status: "fail",
+        status: "fail" /* ResponseStatues.FAIL */,
         message,
     });
 };
@@ -39,16 +39,16 @@ const handleValidationError = (res, error) => {
         path: value.path,
     }));
     return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-        status: "fail",
+        status: "fail" /* ResponseStatues.FAIL */,
         message,
     });
 };
 const handleTokenExpiredError = (res, error) => res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
-    status: "fail",
+    status: "fail" /* ResponseStatues.FAIL */,
     message: "Token is expired. Try again.",
 });
 const handleInvalidSignatureError = (res, error) => res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
-    status: "fail",
+    status: "fail" /* ResponseStatues.FAIL */,
     message: "Token is invalid.",
 });
 const errorHandler = (err, req, res, next) => {
@@ -68,7 +68,7 @@ const errorHandler = (err, req, res, next) => {
     if (err instanceof jsonwebtoken_1.JsonWebTokenError || err.name === "invalid signature")
         handleInvalidSignatureError(res, err);
     return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-        status: "error",
+        status: "error" /* ResponseStatues.ERROR */,
         message: "Initial server error",
     });
 };

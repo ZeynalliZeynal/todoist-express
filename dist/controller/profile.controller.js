@@ -19,15 +19,20 @@ const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const task_model_1 = __importDefault(require("../model/task.model"));
 const project_model_1 = __importDefault(require("../model/project.model"));
+const notification_model_1 = __importDefault(require("../model/notification.model"));
 exports.getProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findById(req.userId)
         .populate("plan")
         .populate("tasks")
+        .populate("notifications")
         .populate("projects");
     const taskCount = yield task_model_1.default.countDocuments({
         user: req.userId,
     });
     const projectCount = yield project_model_1.default.countDocuments({
+        user: req.userId,
+    });
+    const notificationCount = yield notification_model_1.default.countDocuments({
         user: req.userId,
     });
     if (!user)
@@ -37,6 +42,7 @@ exports.getProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(v
         data: {
             taskCount,
             projectCount,
+            notificationCount,
             user,
         },
     });

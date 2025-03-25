@@ -2,7 +2,7 @@ import "dotenv/config";
 import { node_env, port } from "./constants/env";
 import { Error } from "mongoose";
 import app from "./app";
-import connectToDatabase from "./lib/mongo";
+import connectToDatabase from "./lib/mongo/mongo";
 
 process.on("uncaughtException", (error: Error) => {
   console.log("Uncaught Exception!");

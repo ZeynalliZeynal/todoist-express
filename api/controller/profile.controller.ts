@@ -5,12 +5,14 @@ import AppError from "../utils/app-error";
 import { StatusCodes } from "http-status-codes";
 import Task from "../model/task.model";
 import Project from "../model/project.model";
+import Notification from "../model/notification.model";
 
 export const getProfile: RequestHandler = catchErrors(
   async (req, res, next) => {
     const user = await User.findById(req.userId)
       .populate("plan")
       .populate("tasks")
+      .populate("notifications")
       .populate("projects");
 
     const taskCount = await Task.countDocuments({
@@ -18,6 +20,10 @@ export const getProfile: RequestHandler = catchErrors(
     });
 
     const projectCount = await Project.countDocuments({
+      user: req.userId,
+    });
+
+    const notificationCount = await Notification.countDocuments({
       user: req.userId,
     });
 
@@ -34,6 +40,7 @@ export const getProfile: RequestHandler = catchErrors(
       data: {
         taskCount,
         projectCount,
+        notificationCount,
         user,
       },
     });

@@ -7,7 +7,7 @@ import {
   emailSchema,
   loginSchema,
   signupSchema,
-} from "../validator/auth.schema";
+} from "../validator/auth.validator";
 import {
   createAccount,
   loginUser,

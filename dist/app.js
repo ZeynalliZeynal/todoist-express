@@ -36,6 +36,8 @@ const project_router_1 = __importDefault(require("./router/project.router"));
 const storage_router_1 = __importDefault(require("./router/storage.router"));
 const task_tag_router_1 = __importDefault(require("./router/task-tag.router"));
 const user_agent_middleware_1 = require("./middleware/user-agent.middleware");
+const notification_router_1 = __importDefault(require("./router/notification.router"));
+const API_PREFIX = "/api/v1/";
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
 app.use((0, express_mongo_sanitize_1.default)());
@@ -72,24 +74,25 @@ app.get("/", (req, res) => {
         data: {
             routes: [
                 {
-                    ping: "/api/v1/ping",
+                    ping: API_PREFIX + "ping",
                 },
             ],
         },
     });
 });
-app.use("/api/v1/tasks", task_router_1.default);
-app.use("/api/v1/task-tags", task_tag_router_1.default);
-app.use("/api/v1/projects", project_router_1.default);
-app.use("/api/v1/templates", template_router_1.default);
-app.use("/api/v1/template-categories", template_categories_router_1.default);
-app.use("/api/v1/auth", auth_router_1.default);
-app.use("/api/v1/users", user_router_1.default);
-app.use("/api/v1/profile", profile_router_1.default);
-app.use("/api/v1/profile/sessions", session_router_1.default);
-app.use("/api/v1/plans", plan_router_1.default);
-app.use("/api/v1/storage", storage_router_1.default);
-app.use("/api/v1/ping", user_agent_middleware_1.getUserAgent, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.use(API_PREFIX + "tasks", task_router_1.default);
+app.use(API_PREFIX + "task-tags", task_tag_router_1.default);
+app.use(API_PREFIX + "projects", project_router_1.default);
+app.use(API_PREFIX + "templates", template_router_1.default);
+app.use(API_PREFIX + "template-categories", template_categories_router_1.default);
+app.use(API_PREFIX + "auth", auth_router_1.default);
+app.use(API_PREFIX + "users", user_router_1.default);
+app.use(API_PREFIX + "profile", profile_router_1.default);
+app.use(API_PREFIX + "profile/sessions", session_router_1.default);
+app.use(API_PREFIX + "plans", plan_router_1.default);
+app.use(API_PREFIX + "storage", storage_router_1.default);
+app.use(API_PREFIX + "notifications", notification_router_1.default);
+app.use(API_PREFIX + "ping", user_agent_middleware_1.getUserAgent, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "API is up and running.",

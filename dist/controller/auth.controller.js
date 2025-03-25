@@ -17,7 +17,7 @@ const user_model_1 = __importDefault(require("../model/user.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const catch_errors_2 = __importDefault(require("../utils/catch-errors"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
-const auth_schema_1 = require("../validator/auth.schema");
+const auth_validator_1 = require("../validator/auth.validator");
 const auth_service_1 = require("../service/auth.service");
 const http_status_codes_1 = require("http-status-codes");
 const cookies_1 = require("../utils/cookies");
@@ -30,7 +30,7 @@ exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     const { otp, plan } = req.body;
     if (!req.query.token)
         return next(new app_error_1.default("Token is param required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
-    const request = auth_schema_1.signupSchema.parse({
+    const request = auth_validator_1.signupSchema.parse({
         otp,
     });
     const { refreshToken, accessToken } = yield (0, auth_service_1.createAccount)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), location: req.location, userAgent: req.userAgent, plan }));
@@ -45,7 +45,7 @@ exports.login = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0
     const { otp } = req.body;
     if (!req.query.token)
         return next(new app_error_1.default("Token is param required.", http_status_codes_1.StatusCodes.BAD_REQUEST));
-    const request = auth_schema_1.loginSchema.parse({
+    const request = auth_validator_1.loginSchema.parse({
         otp,
     });
     const { accessToken, refreshToken } = yield (0, auth_service_1.loginUser)(Object.assign(Object.assign({}, request), { verifyToken: String(req.query.token), userAgent: req.userAgent, location: req.location }));
@@ -71,7 +71,7 @@ exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     });
 }));
 exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const email = auth_schema_1.emailSchema.parse(req.body.email);
+    const email = auth_validator_1.emailSchema.parse(req.body.email);
     const token = yield (0, auth_service_1.sendLoginEmailVerification)({
         email,
     });

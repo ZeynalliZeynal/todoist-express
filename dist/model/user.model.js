@@ -22,7 +22,7 @@ const schema = new mongoose_1.default.Schema({
         trim: true,
         minlength: [3, "Name must be at least 3 characters"],
         required: [true, "Name is required"],
-        match: [/^[A-Za-z]+$/, "Name must contain only letters"],
+        match: [/^[a-zA-Z0-9\s]+$/, "Name must contain only letters"],
     },
     email: {
         type: String,
@@ -98,6 +98,11 @@ schema.virtual("tasks", {
 });
 schema.virtual("projects", {
     ref: "Project",
+    foreignField: "user",
+    localField: "_id",
+});
+schema.virtual("notifications", {
+    ref: "Notification",
     foreignField: "user",
     localField: "_id",
 });

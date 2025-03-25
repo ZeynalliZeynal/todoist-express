@@ -164,7 +164,6 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.createAccount = createAccount;
 const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, verifyToken, userAgent, location, }) {
     // verify the user's email
-    console.log(userAgent);
     const { email } = yield (0, exports.verifyOTP)(otp, verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
     const user = yield user_model_1.default.findOneAndUpdate({ email }, {
         verified: true,

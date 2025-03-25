@@ -26,6 +26,9 @@ import projectRouter from "./router/project.router";
 import storageRouter from "./router/storage.router";
 import taskTagRouter from "./router/task-tag.router";
 import { getUserAgent } from "./middleware/user-agent.middleware";
+import notificationRouter from "./router/notification.router";
+
+const API_PREFIX = "/api/v1/";
 
 const app = express();
 
@@ -76,35 +79,40 @@ app.get("/", (req, res) => {
     data: {
       routes: [
         {
-          ping: "/api/v1/ping",
+          ping: API_PREFIX + "ping",
         },
       ],
     },
   });
 });
 
-app.use("/api/v1/tasks", taskRouter);
-app.use("/api/v1/task-tags", taskTagRouter);
-app.use("/api/v1/projects", projectRouter);
-app.use("/api/v1/templates", templateRouter);
-app.use("/api/v1/template-categories", templateCategoriesRouter);
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/profile", profileRouter);
-app.use("/api/v1/profile/sessions", sessionRouter);
-app.use("/api/v1/plans", planRouter);
-app.use("/api/v1/storage", storageRouter);
+app.use(API_PREFIX + "tasks", taskRouter);
+app.use(API_PREFIX + "task-tags", taskTagRouter);
+app.use(API_PREFIX + "projects", projectRouter);
+app.use(API_PREFIX + "templates", templateRouter);
+app.use(API_PREFIX + "template-categories", templateCategoriesRouter);
+app.use(API_PREFIX + "auth", authRouter);
+app.use(API_PREFIX + "users", userRouter);
+app.use(API_PREFIX + "profile", profileRouter);
+app.use(API_PREFIX + "profile/sessions", sessionRouter);
+app.use(API_PREFIX + "plans", planRouter);
+app.use(API_PREFIX + "storage", storageRouter);
+app.use(API_PREFIX + "notifications", notificationRouter);
 
-app.use("/api/v1/ping", getUserAgent, async (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json({
-    status: "success",
-    message: "API is up and running.",
-    data: {
-      location: req.location,
-      userAgent: req.userAgent,
-    },
-  });
-});
+app.use(
+  API_PREFIX + "ping",
+  getUserAgent,
+  async (req: Request, res: Response) => {
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      message: "API is up and running.",
+      data: {
+        location: req.location,
+        userAgent: req.userAgent,
+      },
+    });
+  },
+);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
   next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
