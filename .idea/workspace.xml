@@ -6,23 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/notification.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/notification.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/project.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/project.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/task.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/task.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/model/notification.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/notification.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/model/task.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/task.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/schedules/task.schedule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/schedules/task.schedule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/service/notification.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/notification.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/notification.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/notification.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/project.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/project.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/task.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/task.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/notification.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/notification.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/task.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/task.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/schedules/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/schedules/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/schedules/task.schedule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/schedules/task.schedule.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/service/notification.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/notification.service.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,7 +204,7 @@
       <workItem from="1742923733865" duration="1628000" />
       <workItem from="1742929055763" duration="29000" />
       <workItem from="1742929109630" duration="6279000" />
-      <workItem from="1743007062427" duration="12311000" />
+      <workItem from="1743007062427" duration="13053000" />
     </task>
     <servers />
   </component>

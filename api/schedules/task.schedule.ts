@@ -25,6 +25,7 @@ const taskOverdueSchedule = () => {
           console.log(kleur.green("0️⃣ overdue task found 👍"));
           return;
         }
+
         for (const task of overdueTasks) {
           const existingNotification = await Notification.findOne({
             value: task._id,
