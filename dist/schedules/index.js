@@ -12,17 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const env_1 = require("../constants/env");
-const database = env_1.database_uri.replace("<db_password>", env_1.database_password);
-const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield mongoose_1.default.connect(database);
-        console.log("Successfully connected to database");
-    }
-    catch (error) {
-        console.log("Could not connect to database", error);
-        process.exit(1);
-    }
+exports.initializeScheduler = void 0;
+const kleur_1 = __importDefault(require("kleur"));
+const task_schedule_1 = require("./task.schedule");
+const initializeScheduler = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(kleur_1.default.bgMagenta("Scheduler initialized!"));
+    (0, task_schedule_1.taskOverdueSchedule)();
 });
-exports.default = connectToDatabase;
+exports.initializeScheduler = initializeScheduler;

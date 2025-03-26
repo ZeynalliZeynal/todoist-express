@@ -14,6 +14,18 @@ export const NOTIFICATION_TYPES = [
   "project/updated",
 ] as const;
 
+export enum NotificationTypeEnum {
+  TASK_OVERDUE = "task/overdue",
+  TASK_DUE_SOON = "task/due-soon",
+  TASK_COMPLETED = "task/completed",
+  TASK_UPDATED = "task/updated",
+  TASK_DELETED = "task/deleted",
+  TASK_ASSIGNED = "task/assigned",
+
+  PROJECT_DELETED = "project/deleted",
+  PROJECT_UPDATED = "project/updated",
+}
+
 type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
 export type NotificationProps = ReadonlyArray<NotificationType>;

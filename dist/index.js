@@ -16,6 +16,7 @@ require("dotenv/config");
 const env_1 = require("./constants/env");
 const app_1 = __importDefault(require("./app"));
 const mongo_1 = __importDefault(require("./lib/mongo/mongo"));
+const schedules_1 = require("./schedules");
 process.on("uncaughtException", (error) => {
     console.log("Uncaught Exception!");
     console.log(error.name, error.message);
@@ -24,6 +25,7 @@ process.on("uncaughtException", (error) => {
 const server = app_1.default.listen(env_1.port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`[${env_1.node_env}] Server is running on port ${env_1.port}`);
     yield (0, mongo_1.default)();
+    (0, schedules_1.initializeScheduler)();
 }));
 process.on("unhandledRejection", (error) => {
     console.log("Unhandled Rejection!");

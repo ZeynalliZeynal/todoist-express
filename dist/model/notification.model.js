@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NOTIFICATION_TYPES = void 0;
+exports.NotificationTypeEnum = exports.NOTIFICATION_TYPES = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 exports.NOTIFICATION_TYPES = [
     // task notification types
@@ -17,6 +17,17 @@ exports.NOTIFICATION_TYPES = [
     "project/deleted",
     "project/updated",
 ];
+var NotificationTypeEnum;
+(function (NotificationTypeEnum) {
+    NotificationTypeEnum["TASK_OVERDUE"] = "task/overdue";
+    NotificationTypeEnum["TASK_DUE_SOON"] = "task/due-soon";
+    NotificationTypeEnum["TASK_COMPLETED"] = "task/completed";
+    NotificationTypeEnum["TASK_UPDATED"] = "task/updated";
+    NotificationTypeEnum["TASK_DELETED"] = "task/deleted";
+    NotificationTypeEnum["TASK_ASSIGNED"] = "task/assigned";
+    NotificationTypeEnum["PROJECT_DELETED"] = "project/deleted";
+    NotificationTypeEnum["PROJECT_UPDATED"] = "project/updated";
+})(NotificationTypeEnum || (exports.NotificationTypeEnum = NotificationTypeEnum = {}));
 const schema = new mongoose_1.default.Schema({
     name: {
         type: String,

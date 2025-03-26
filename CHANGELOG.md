@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.7.0
+
+### Minor Changes
+
+- Add a cron job to check every one minute whether a task is overdue or not for each user. If so, create a notification.
+
 ## 3.6.0
 
 ### Minor Changes

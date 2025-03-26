@@ -3,6 +3,7 @@ import { node_env, port } from "./constants/env";
 import { Error } from "mongoose";
 import app from "./app";
 import connectToDatabase from "./lib/mongo/mongo";
+import { initializeScheduler } from "./schedules";
 
 process.on("uncaughtException", (error: Error) => {
   console.log("Uncaught Exception!");
@@ -13,6 +14,7 @@ process.on("uncaughtException", (error: Error) => {
 const server = app.listen(port, async () => {
   console.log(`[${node_env}] Server is running on port ${port}`);
   await connectToDatabase();
+  initializeScheduler();
 });
 
 process.on("unhandledRejection", (error: Error) => {
