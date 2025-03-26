@@ -5,11 +5,12 @@ import Notification, {
 } from "../model/notification.model";
 import User from "../model/user.model";
 import kleur from "kleur";
+import { generateNotificationName } from "../constants/notification.constant";
 
 const taskOverdueSchedule = () => {
   schedule("* * * * *", async () => {
     try {
-      console.log("🔄 Running overdue task check...");
+      console.log(kleur.yellow("🔄 Running overdue task check..."));
 
       const users = await User.find();
 
@@ -20,16 +21,24 @@ const taskOverdueSchedule = () => {
           completed: false,
         });
 
+        if (overdueTasks.length === 0) {
+          console.log(kleur.green("0️⃣ overdue task found 👍"));
+          return;
+        }
         for (const task of overdueTasks) {
           const existingNotification = await Notification.findOne({
             value: task._id,
             type: NotificationTypeEnum.TASK_OVERDUE,
             user: user._id,
+            dismissed: { $ne: true },
           });
 
           if (!existingNotification) {
             await Notification.create({
-              name: "Task Overdue",
+              name: generateNotificationName(
+                NotificationTypeEnum.TASK_OVERDUE,
+                task.name,
+              ),
               description: `Your task "${task.name}" is overdue!`,
               data: task,
               value: task._id,
@@ -39,11 +48,11 @@ const taskOverdueSchedule = () => {
 
             console.log(
               kleur.magenta(
-                `✅ Notification created for ${user.email}: ${task.name}`
-              )
+                `✅ Notification created for ${user.email}: ${task.name}`,
+              ),
             );
           } else {
-            console.log(kleur.magenta("Notification already exists."));
+            console.log(kleur.blue("Notification already exists."));
           }
         }
       }

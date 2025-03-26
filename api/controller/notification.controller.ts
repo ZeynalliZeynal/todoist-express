@@ -1,6 +1,5 @@
 import catchErrors from "../utils/catch-errors";
 import { NextFunction, Request, Response } from "express";
-import Notification from "../model/notification.model";
 import { StatusCodes } from "http-status-codes";
 import AppError from "../utils/app-error";
 import {
@@ -9,6 +8,8 @@ import {
   clearNotificationsService,
   createNotificationService,
   deleteNotificationService,
+  getNotificationService,
+  getNotificationsService,
   readAllNotificationsService,
   readNotificationService,
   unarchiveAllNotificationsService,
@@ -20,9 +21,7 @@ import ResponseStatues from "../constants/response-statues";
 
 const getNotifications = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
-    const notifications = await Notification.find({
-      user: req.userId,
-    });
+    const notifications = await getNotificationsService(req.userId);
 
     res.status(StatusCodes.OK).json({
       status: ResponseStatues.SUCCESS,
@@ -31,7 +30,7 @@ const getNotifications = catchErrors(
         notifications,
       },
     });
-  }
+  },
 );
 
 const getNotification = catchErrors(
@@ -39,18 +38,10 @@ const getNotification = catchErrors(
     if (!req.params.id)
       return next(new AppError("ID is required", StatusCodes.BAD_REQUEST));
 
-    const notification = await Notification.findOne({
-      user: req.userId,
-      _id: req.params.id,
-    });
-
-    if (!notification)
-      return next(
-        new AppError(
-          `No notification found with the id ${req.params.id}`,
-          StatusCodes.NOT_FOUND
-        )
-      );
+    const notification = await getNotificationService(
+      req.params.id,
+      req.userId,
+    );
 
     res.status(StatusCodes.OK).json({
       status: ResponseStatues.SUCCESS,
@@ -59,7 +50,7 @@ const getNotification = catchErrors(
         notification,
       },
     });
-  }
+  },
 );
 
 const createNotification = catchErrors(
@@ -78,7 +69,7 @@ const createNotification = catchErrors(
         notification,
       },
     });
-  }
+  },
 );
 
 // archive
@@ -95,7 +86,7 @@ const archiveNotification = catchErrors(
         notification,
       },
     });
-  }
+  },
 );
 
 const unarchiveNotification = catchErrors(
@@ -111,7 +102,7 @@ const unarchiveNotification = catchErrors(
         notification,
       },
     });
-  }
+  },
 );
 
 const archiveAllNotifications = catchErrors(
@@ -122,7 +113,7 @@ const archiveAllNotifications = catchErrors(
       status: ResponseStatues.SUCCESS,
       message: "Notifications archived successfully",
     });
-  }
+  },
 );
 
 const unarchiveAllNotifications = catchErrors(
@@ -133,7 +124,7 @@ const unarchiveAllNotifications = catchErrors(
       status: ResponseStatues.SUCCESS,
       message: "Notifications unarchived successfully",
     });
-  }
+  },
 );
 
 // read
@@ -150,7 +141,7 @@ const readNotification = catchErrors(
         notification,
       },
     });
-  }
+  },
 );
 
 const unreadNotification = catchErrors(
@@ -166,7 +157,7 @@ const unreadNotification = catchErrors(
         notification,
       },
     });
-  }
+  },
 );
 
 const readAllNotifications = catchErrors(
@@ -177,7 +168,7 @@ const readAllNotifications = catchErrors(
       status: ResponseStatues.SUCCESS,
       message: "Notifications read successfully",
     });
-  }
+  },
 );
 
 const unreadAllNotifications = catchErrors(
@@ -188,7 +179,7 @@ const unreadAllNotifications = catchErrors(
       status: ResponseStatues.SUCCESS,
       message: "Notifications unread successfully",
     });
-  }
+  },
 );
 
 // delete
@@ -202,7 +193,7 @@ const deleteNotification = catchErrors(
       status: ResponseStatues.SUCCESS,
       message: "Notification deleted successfully",
     });
-  }
+  },
 );
 
 const clearNotifications = catchErrors(
@@ -213,7 +204,7 @@ const clearNotifications = catchErrors(
       status: ResponseStatues.SUCCESS,
       message: "Notifications cleared successfully",
     });
-  }
+  },
 );
 
 export {

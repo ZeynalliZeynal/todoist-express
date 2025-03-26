@@ -1,22 +1,58 @@
-import Notification, { NotificationProps } from "../model/notification.model";
+import Notification, {
+  NotificationTypeEnum,
+} from "../model/notification.model";
 import { notificationValidator } from "../validator/notification.validator";
 import { z } from "zod";
 import AppError from "../utils/app-error";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 
+// get services
+export const getNotificationsService = async (
+  user: mongoose.Types.ObjectId,
+) => {
+  try {
+    const notifications = await Notification.find({
+      user,
+      dismissed: { $ne: true },
+    });
+
+    return notifications;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getNotificationService = async (
+  id: string,
+  user: mongoose.Types.ObjectId,
+) => {
+  try {
+    const validId = z.string().min(1, "Id is required").parse(id);
+    const notification = await Notification.findOne({
+      user,
+      _id: validId,
+      dismissed: { $ne: true },
+    });
+
+    return notification;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // create service
 interface CreateNotificationProps {
   name: string;
   description?: string;
   data: object;
-  type: NotificationProps;
+  type: NotificationTypeEnum;
   value: string;
-  user: string;
+  user: mongoose.Types.ObjectId;
 }
 
 export const createNotificationService = async (
-  data: CreateNotificationProps
+  data: CreateNotificationProps,
 ) => {
   const validData = notificationValidator.parse(data);
 
@@ -35,20 +71,20 @@ export const createNotificationService = async (
 // archive services
 export const archiveNotificationService = async (
   id: string,
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const validId = z.string().parse(id);
 
   const updatedNotification = await Notification.findOneAndUpdate(
     { user, _id: validId },
     { archived: true },
-    { new: true }
+    { new: true },
   );
 
   if (!updatedNotification)
     throw new AppError(
       `No notification found with the id ${validId}`,
-      StatusCodes.NOT_FOUND
+      StatusCodes.NOT_FOUND,
     );
 
   return updatedNotification;
@@ -56,44 +92,44 @@ export const archiveNotificationService = async (
 
 export const unarchiveNotificationService = async (
   id: string,
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const validId = z.string().parse(id);
 
   const updatedNotification = await Notification.findOneAndUpdate(
     { user, _id: validId },
     { archived: false },
-    { new: true }
+    { new: true },
   );
 
   if (!updatedNotification)
     throw new AppError(
       `No notification found with the id ${validId}`,
-      StatusCodes.NOT_FOUND
+      StatusCodes.NOT_FOUND,
     );
 
   return updatedNotification;
 };
 
 export const archiveAllNotificationsService = async (
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const updatedNotification = await Notification.updateMany(
     { user },
     { archived: true },
-    { new: true }
+    { new: true },
   );
 
   return updatedNotification;
 };
 
 export const unarchiveAllNotificationsService = async (
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const updatedNotification = await Notification.updateMany(
     { user },
     { archived: false },
-    { new: true }
+    { new: true },
   );
 
   return updatedNotification;
@@ -102,20 +138,20 @@ export const unarchiveAllNotificationsService = async (
 // read services
 export const readNotificationService = async (
   id: string,
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const validId = z.string().parse(id);
 
   const updatedNotification = await Notification.findOneAndUpdate(
     { user, _id: validId },
     { read: true },
-    { new: true }
+    { new: true },
   );
 
   if (!updatedNotification)
     throw new AppError(
       `No notification found with the id ${validId}`,
-      StatusCodes.NOT_FOUND
+      StatusCodes.NOT_FOUND,
     );
 
   return updatedNotification;
@@ -123,44 +159,44 @@ export const readNotificationService = async (
 
 export const unreadNotificationService = async (
   id: string,
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const validId = z.string().parse(id);
 
   const updatedNotification = await Notification.findOneAndUpdate(
     { user, _id: validId },
     { read: false },
-    { new: true }
+    { new: true },
   );
 
   if (!updatedNotification)
     throw new AppError(
       `No notification found with the id ${validId}`,
-      StatusCodes.NOT_FOUND
+      StatusCodes.NOT_FOUND,
     );
 
   return updatedNotification;
 };
 
 export const readAllNotificationsService = async (
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const updatedNotification = await Notification.updateMany(
     { user },
     { read: true },
-    { new: true }
+    { new: true },
   );
 
   return updatedNotification;
 };
 
 export const unreadAllNotificationsService = async (
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const updatedNotification = await Notification.updateMany(
     { user },
     { read: false },
-    { new: true }
+    { new: true },
   );
 
   return updatedNotification;
@@ -169,28 +205,35 @@ export const unreadAllNotificationsService = async (
 // delete services
 export const deleteNotificationService = async (
   id: string,
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
   const validId = z.string().parse(id);
 
-  const notification = await Notification.findOneAndDelete({
-    user,
-    _id: validId,
-  });
+  const notification = await Notification.findOneAndUpdate(
+    {
+      user,
+      _id: validId,
+    },
+    { dismissed: true },
+    { new: true },
+  );
 
   if (!notification)
     throw new AppError(
       `No notification found with the id ${validId}`,
-      StatusCodes.NOT_FOUND
+      StatusCodes.NOT_FOUND,
     );
 
   return notification;
 };
 
 export const clearNotificationsService = async (
-  user: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId,
 ) => {
-  await Notification.deleteMany({
-    user,
-  });
+  await Notification.updateMany(
+    {
+      user,
+    },
+    { dismissed: true },
+  );
 };

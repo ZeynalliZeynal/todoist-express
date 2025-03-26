@@ -19,12 +19,13 @@ exports.NOTIFICATION_TYPES = [
 ];
 var NotificationTypeEnum;
 (function (NotificationTypeEnum) {
-    NotificationTypeEnum["TASK_OVERDUE"] = "task/overdue";
     NotificationTypeEnum["TASK_DUE_SOON"] = "task/due-soon";
+    NotificationTypeEnum["TASK_ASSIGNED"] = "task/assigned";
+    NotificationTypeEnum["TASK_OVERDUE"] = "task/overdue";
     NotificationTypeEnum["TASK_COMPLETED"] = "task/completed";
     NotificationTypeEnum["TASK_UPDATED"] = "task/updated";
     NotificationTypeEnum["TASK_DELETED"] = "task/deleted";
-    NotificationTypeEnum["TASK_ASSIGNED"] = "task/assigned";
+    NotificationTypeEnum["TASK_CLEARED"] = "task/cleared";
     NotificationTypeEnum["PROJECT_DELETED"] = "project/deleted";
     NotificationTypeEnum["PROJECT_UPDATED"] = "project/updated";
 })(NotificationTypeEnum || (exports.NotificationTypeEnum = NotificationTypeEnum = {}));
@@ -70,6 +71,11 @@ const schema = new mongoose_1.default.Schema({
         type: mongoose_1.default.Schema.Types.ObjectId,
         required: [true, "A notification must contain the related id as value"],
     },
+    dismissed: {
+        type: Boolean,
+        default: false,
+        select: false,
+    },
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User",
@@ -84,5 +90,9 @@ const schema = new mongoose_1.default.Schema({
         virtuals: true,
     },
     timestamps: true,
+});
+schema.pre(/^find/, function (next) {
+    this.select("-__v");
+    next();
 });
 exports.default = mongoose_1.default.model("Notification", schema);

@@ -51,10 +51,11 @@ const task_model_1 = __importDefault(require("../model/task.model"));
 const notification_model_1 = __importStar(require("../model/notification.model"));
 const user_model_1 = __importDefault(require("../model/user.model"));
 const kleur_1 = __importDefault(require("kleur"));
+const notification_constant_1 = require("../constants/notification.constant");
 const taskOverdueSchedule = () => {
     (0, node_cron_1.schedule)("* * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            console.log("🔄 Running overdue task check...");
+            console.log(kleur_1.default.yellow("🔄 Running overdue task check..."));
             const users = yield user_model_1.default.find();
             for (const user of users) {
                 const now = new Date();
@@ -62,15 +63,20 @@ const taskOverdueSchedule = () => {
                     dueDate: { $lt: now },
                     completed: false,
                 });
+                if (overdueTasks.length === 0) {
+                    console.log(kleur_1.default.green("0️⃣ overdue task found 👍"));
+                    return;
+                }
                 for (const task of overdueTasks) {
                     const existingNotification = yield notification_model_1.default.findOne({
                         value: task._id,
                         type: notification_model_1.NotificationTypeEnum.TASK_OVERDUE,
                         user: user._id,
+                        dismissed: { $ne: true },
                     });
                     if (!existingNotification) {
                         yield notification_model_1.default.create({
-                            name: "Task Overdue",
+                            name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_OVERDUE, task.name),
                             description: `Your task "${task.name}" is overdue!`,
                             data: task,
                             value: task._id,
@@ -80,7 +86,7 @@ const taskOverdueSchedule = () => {
                         console.log(kleur_1.default.magenta(`✅ Notification created for ${user.email}: ${task.name}`));
                     }
                     else {
-                        console.log(kleur_1.default.magenta("Notification already exists."));
+                        console.log(kleur_1.default.blue("Notification already exists."));
                     }
                 }
             }

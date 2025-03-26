@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 export const NOTIFICATION_TYPES = [
   // task notification types
@@ -15,12 +15,13 @@ export const NOTIFICATION_TYPES = [
 ] as const;
 
 export enum NotificationTypeEnum {
-  TASK_OVERDUE = "task/overdue",
   TASK_DUE_SOON = "task/due-soon",
+  TASK_ASSIGNED = "task/assigned",
+  TASK_OVERDUE = "task/overdue",
   TASK_COMPLETED = "task/completed",
   TASK_UPDATED = "task/updated",
   TASK_DELETED = "task/deleted",
-  TASK_ASSIGNED = "task/assigned",
+  TASK_CLEARED = "task/cleared",
 
   PROJECT_DELETED = "project/deleted",
   PROJECT_UPDATED = "project/updated",
@@ -37,6 +38,7 @@ export interface NotificationDocument extends mongoose.Document {
   data: object;
   archived: boolean;
   read: boolean;
+  dismissed: boolean;
 
   value: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId;
@@ -85,6 +87,11 @@ const schema = new mongoose.Schema<NotificationDocument>(
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "A notification must contain the related id as value"],
     },
+    dismissed: {
+      type: Boolean,
+      default: false,
+      select: false,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -100,7 +107,12 @@ const schema = new mongoose.Schema<NotificationDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
+
+schema.pre(/^find/, function (this: Query<any, any>, next) {
+  this.select("-__v");
+  next();
+});
 
 export default mongoose.model<NotificationDocument>("Notification", schema);

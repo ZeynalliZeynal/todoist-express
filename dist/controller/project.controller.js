@@ -20,6 +20,9 @@ const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const project_model_1 = __importDefault(require("../model/project.model"));
 const slugify_1 = __importDefault(require("slugify"));
+const notification_service_1 = require("../service/notification.service");
+const notification_constant_1 = require("../constants/notification.constant");
+const notification_model_1 = require("../model/notification.model");
 const getProjects = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const features = new api_features_1.default(project_model_1.default.find({
         user: req.userId,
@@ -90,6 +93,13 @@ const deleteProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     if (!project) {
         return next(new app_error_1.default(`No project found with the id ${req.params.id}`, 404));
     }
+    yield (0, notification_service_1.createNotificationService)({
+        name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.PROJECT_DELETED, project.name),
+        data: project,
+        value: project.id,
+        type: notification_model_1.NotificationTypeEnum.PROJECT_DELETED,
+        user: req.userId,
+    });
     res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
         message: "Project successfully deleted.",
@@ -105,6 +115,13 @@ const updateProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     if (!project) {
         return next(new app_error_1.default(`No project found with the id ${req.params.id}`, http_status_codes_1.StatusCodes.NOT_FOUND));
     }
+    yield (0, notification_service_1.createNotificationService)({
+        name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.PROJECT_UPDATED, project.name),
+        data: project,
+        value: project.id,
+        type: notification_model_1.NotificationTypeEnum.PROJECT_UPDATED,
+        user: req.userId,
+    });
     // const project = await Project.findOneAndUpdate(
     //   {
     //     user: req.userId,

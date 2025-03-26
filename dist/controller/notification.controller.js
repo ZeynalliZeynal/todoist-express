@@ -14,14 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clearNotifications = exports.deleteNotification = exports.unreadNotification = exports.unreadAllNotifications = exports.readNotification = exports.readAllNotifications = exports.unarchiveNotification = exports.unarchiveAllNotifications = exports.archiveNotification = exports.archiveAllNotifications = exports.getNotification = exports.getNotifications = exports.createNotification = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
-const notification_model_1 = __importDefault(require("../model/notification.model"));
 const http_status_codes_1 = require("http-status-codes");
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const notification_service_1 = require("../service/notification.service");
 const getNotifications = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const notifications = yield notification_model_1.default.find({
-        user: req.userId,
-    });
+    const notifications = yield (0, notification_service_1.getNotificationsService)(req.userId);
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         message: "Notifications fetched successfully",
@@ -34,12 +31,7 @@ exports.getNotifications = getNotifications;
 const getNotification = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.params.id)
         return next(new app_error_1.default("ID is required", http_status_codes_1.StatusCodes.BAD_REQUEST));
-    const notification = yield notification_model_1.default.findOne({
-        user: req.userId,
-        _id: req.params.id,
-    });
-    if (!notification)
-        return next(new app_error_1.default(`No notification found with the id ${req.params.id}`, http_status_codes_1.StatusCodes.NOT_FOUND));
+    const notification = yield (0, notification_service_1.getNotificationService)(req.params.id, req.userId);
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         message: "Notification fetched successfully",

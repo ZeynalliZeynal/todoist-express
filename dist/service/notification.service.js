@@ -12,12 +12,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearNotificationsService = exports.deleteNotificationService = exports.unreadAllNotificationsService = exports.readAllNotificationsService = exports.unreadNotificationService = exports.readNotificationService = exports.unarchiveAllNotificationsService = exports.archiveAllNotificationsService = exports.unarchiveNotificationService = exports.archiveNotificationService = exports.createNotificationService = void 0;
+exports.clearNotificationsService = exports.deleteNotificationService = exports.unreadAllNotificationsService = exports.readAllNotificationsService = exports.unreadNotificationService = exports.readNotificationService = exports.unarchiveAllNotificationsService = exports.archiveAllNotificationsService = exports.unarchiveNotificationService = exports.archiveNotificationService = exports.createNotificationService = exports.getNotificationService = exports.getNotificationsService = void 0;
 const notification_model_1 = __importDefault(require("../model/notification.model"));
 const notification_validator_1 = require("../validator/notification.validator");
 const zod_1 = require("zod");
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
+// get services
+const getNotificationsService = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const notifications = yield notification_model_1.default.find({
+            user,
+            dismissed: { $ne: true },
+        });
+        return notifications;
+    }
+    catch (error) {
+        throw error;
+    }
+});
+exports.getNotificationsService = getNotificationsService;
+const getNotificationService = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const validId = zod_1.z.string().min(1, "Id is required").parse(id);
+        const notification = yield notification_model_1.default.findOne({
+            user,
+            _id: validId,
+            dismissed: { $ne: true },
+        });
+        return notification;
+    }
+    catch (error) {
+        throw error;
+    }
+});
+exports.getNotificationService = getNotificationService;
 const createNotificationService = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = notification_validator_1.notificationValidator.parse(data);
     const notification = yield notification_model_1.default.create({
@@ -88,18 +117,18 @@ exports.unreadAllNotificationsService = unreadAllNotificationsService;
 // delete services
 const deleteNotificationService = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
     const validId = zod_1.z.string().parse(id);
-    const notification = yield notification_model_1.default.findOneAndDelete({
+    const notification = yield notification_model_1.default.findOneAndUpdate({
         user,
         _id: validId,
-    });
+    }, { dismissed: true }, { new: true });
     if (!notification)
         throw new app_error_1.default(`No notification found with the id ${validId}`, http_status_codes_1.StatusCodes.NOT_FOUND);
     return notification;
 });
 exports.deleteNotificationService = deleteNotificationService;
 const clearNotificationsService = (user) => __awaiter(void 0, void 0, void 0, function* () {
-    yield notification_model_1.default.deleteMany({
+    yield notification_model_1.default.updateMany({
         user,
-    });
+    }, { dismissed: true });
 });
 exports.clearNotificationsService = clearNotificationsService;

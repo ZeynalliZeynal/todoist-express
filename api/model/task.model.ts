@@ -104,12 +104,17 @@ schema.pre("save", function (next) {
 });
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {
-  // this.populate({
-  //   path: "user",
-  //   select: "-__v",
-  // });
+  this.select("-__v");
   next();
 });
+
+// schema.pre(/^find/, function (this: Query<any, any>, next) {
+//   // this.populate({
+//   //   path: "user",
+//   //   select: "-__v",
+//   // });
+//   next();
+// });
 
 const Task = mongoose.model<TaskDocument>("Task", schema);
 

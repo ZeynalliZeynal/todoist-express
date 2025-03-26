@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.8.0
+
+### Minor Changes
+
+- Create notifications on task actions
+- Update deleting notification strategy: Deleting or clearing notifications is not actually deleting them from the database. Instead update a property called "dismissed", so the scheduler doesn't create new notification after deleting one.
+- Create notifications on project actions
+
 ## 3.7.0
 
 ### Minor Changes
