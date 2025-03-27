@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.9.0
+
+### Minor Changes
+
+- Fix sending data property to createNotificationService. Data was empty due to the zod validation. Now it is set to .passthrough to read all properties. Data is sent after converting to a readable object.
+
 ## 3.8.0
 
 ### Minor Changes

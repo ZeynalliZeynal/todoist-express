@@ -81,6 +81,14 @@ schema.pre("save", function (next) {
     this.slug = (0, slugify_1.default)(this.name, { lower: true });
     next();
 });
+schema.pre("findOneAndUpdate", function (next) {
+    const update = this.getUpdate();
+    if (update === null || update === void 0 ? void 0 : update.name) {
+        update.slug = (0, slugify_1.default)(update.name, { lower: true });
+        this.set(update);
+    }
+    next();
+});
 schema.pre(/^find/, function (next) {
     this.select("-__v");
     next();

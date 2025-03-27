@@ -95,7 +95,7 @@ const deleteProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     }
     yield (0, notification_service_1.createNotificationService)({
         name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.PROJECT_DELETED, project.name),
-        data: project,
+        data: project.toObject(),
         value: project.id,
         type: notification_model_1.NotificationTypeEnum.PROJECT_DELETED,
         user: req.userId,
@@ -115,28 +115,23 @@ const updateProject = (0, catch_errors_1.default)((req, res, next) => __awaiter(
     if (!project) {
         return next(new app_error_1.default(`No project found with the id ${req.params.id}`, http_status_codes_1.StatusCodes.NOT_FOUND));
     }
+    project.name = req.body.name;
+    project.description = req.body.description;
+    project.logo = req.body.logo;
+    const existedProject = yield project_model_1.default.exists({
+        user: req.userId,
+        slug: (0, slugify_1.default)(project.name, { lower: true }),
+        _id: { $ne: project._id },
+    });
+    if (existedProject)
+        return next(new app_error_1.default(`Project with the name '${req.body.name}' already exists.`, http_status_codes_1.StatusCodes.CONFLICT));
     yield (0, notification_service_1.createNotificationService)({
         name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.PROJECT_UPDATED, project.name),
-        data: project,
+        data: project.toObject(),
         value: project.id,
         type: notification_model_1.NotificationTypeEnum.PROJECT_UPDATED,
         user: req.userId,
     });
-    // const project = await Project.findOneAndUpdate(
-    //   {
-    //     user: req.userId,
-    //     _id: req.params.id,
-    //   },
-    //   {
-    //     name: req.body.name,
-    //     description: req.body.description,
-    //     logo: req.body.logo,
-    //     favorite: req.body.favorite,
-    //   },
-    // );
-    project.name = req.body.name;
-    project.description = req.body.description;
-    project.logo = req.body.logo;
     yield project.save();
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",

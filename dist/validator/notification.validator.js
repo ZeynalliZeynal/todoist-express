@@ -10,7 +10,7 @@ exports.notificationValidator = zod_1.z.object({
         .min(3, "Name should be at least 3 characters")
         .trim(),
     description: zod_1.z.string().optional(),
-    data: zod_1.z.object({}).required(),
+    data: zod_1.z.object({}).passthrough().required(),
     type: zod_1.z.enum(notification_model_1.NOTIFICATION_TYPES, {
         message: `Please provide one of the following type: [${notification_model_1.NOTIFICATION_TYPES.join(", ")}]`,
     }),

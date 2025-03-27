@@ -95,11 +95,22 @@ const schema = new mongoose.Schema<TaskDocument>(
       virtuals: true,
     },
     timestamps: true,
-  },
+  }
 );
 
 schema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+schema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate() as any;
+
+  if (update?.name) {
+    update.slug = slugify(update.name, { lower: true });
+    this.set(update);
+  }
+
   next();
 });
 

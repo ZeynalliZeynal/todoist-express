@@ -116,19 +116,27 @@ const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     if (!task) {
         return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
     }
-    // create a notification
-    yield (0, notification_service_1.createNotificationService)({
-        name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_UPDATED, task.name),
-        data: task,
-        value: task.id,
-        type: notification_model_1.NotificationTypeEnum.TASK_UPDATED,
-        user: req.userId,
-    });
     task.name = body.name;
     task.description = body.description;
     task.tags = body.tags;
     task.dueDate = body.dueDate || undefined;
     task.priority = body.priority;
+    const existingTask = yield task_model_1.default.exists({
+        user: task.user,
+        slug: (0, slugify_1.default)(task.name, { lower: true }),
+        project: task.project,
+        _id: { $ne: task._id },
+    });
+    if (existingTask)
+        return next(new app_error_1.default(`Task with the name '${req.body.name}' already exists. Try another project or change the name.`, http_status_codes_1.StatusCodes.CONFLICT));
+    // create a notification
+    yield (0, notification_service_1.createNotificationService)({
+        name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_UPDATED, task.name),
+        data: task.toObject(),
+        value: task.id,
+        type: notification_model_1.NotificationTypeEnum.TASK_UPDATED,
+        user: req.userId,
+    });
     yield task.save();
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
@@ -187,7 +195,7 @@ const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     }
     yield (0, notification_service_1.createNotificationService)({
         name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_DELETED, task.name),
-        data: task,
+        data: task.toObject(),
         value: task.id,
         type: notification_model_1.NotificationTypeEnum.TASK_DELETED,
         user: req.userId,
