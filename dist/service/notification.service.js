@@ -24,7 +24,7 @@ const getNotificationsService = (user) => __awaiter(void 0, void 0, void 0, func
         const notifications = yield notification_model_1.default.find({
             user,
             dismissed: { $ne: true },
-        });
+        }).sort("-createdAt");
         return notifications;
     }
     catch (error) {
