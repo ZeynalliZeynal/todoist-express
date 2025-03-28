@@ -58,6 +58,8 @@ const date_fns_1 = require("date-fns");
 const otp_model_1 = __importStar(require("../model/otp.model"));
 const crypto_1 = __importDefault(require("crypto"));
 const plan_model_1 = __importDefault(require("../model/plan.model"));
+const notification_type_model_1 = __importDefault(require("../model/notification-type.model"));
+const notification_settings_model_1 = __importDefault(require("../model/notification-settings.model"));
 const appOrigin = env_1.node_env === "development" ? env_1.client_dev_origin : env_1.client_prod_origin;
 const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, void 0, function* () {
     const existingOtp = yield otp_model_1.default.exists({ email: data.email, isUsed: false });
@@ -126,40 +128,53 @@ const sendSignupEmailVerification = (_a, location_1) => __awaiter(void 0, [_a, l
 });
 exports.sendSignupEmailVerification = sendSignupEmailVerification;
 const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    // verify entered email. if not verified, the error will be thrown
-    const { name, email } = yield (0, exports.verifyOTP)(data.otp, data.verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    const plan = yield plan_model_1.default.findOne({
-        name: {
-            $regex: data.plan,
-            $options: "i",
-        },
-    });
-    if (!plan)
-        throw new app_error_1.default("Plan name is incorrect", http_status_codes_1.StatusCodes.NOT_FOUND);
-    const user = yield user_model_1.default.create({
-        email,
-        name,
-        verified: true,
-        verifiedAt: new Date(),
-        location: data.location,
-        role: env_1.admin_email === email ? "admin" : "user",
-        plan: plan._id,
-    });
-    // create session
-    const session = yield session_model_1.default.create({
-        userId: user._id,
-        userAgent: data.userAgent,
-        location: data.location,
-    });
-    const sessionInfo = {
-        sessionId: session._id,
-    };
-    const refreshToken = (0, jwt_1.signToken)(sessionInfo, jwt_1.refreshTokenSignOptions);
-    const accessToken = (0, jwt_1.signToken)(Object.assign({ userId: user._id }, sessionInfo));
-    return {
-        accessToken,
-        refreshToken,
-    };
+    try {
+        // verify entered email. if not verified, the error will be thrown
+        const { name, email } = yield (0, exports.verifyOTP)(data.otp, data.verifyToken, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
+        const plan = yield plan_model_1.default.findOne({
+            name: {
+                $regex: data.plan,
+                $options: "i",
+            },
+        });
+        if (!plan)
+            throw new app_error_1.default("Plan name is incorrect", http_status_codes_1.StatusCodes.NOT_FOUND);
+        const user = yield user_model_1.default.create({
+            email,
+            name,
+            verified: true,
+            verifiedAt: new Date(),
+            location: data.location,
+            role: env_1.admin_email === email ? "admin" : "user",
+            plan: plan._id,
+        });
+        const notificationTypes = yield notification_type_model_1.default.find();
+        yield notification_settings_model_1.default.create({
+            user: user._id,
+            preferences: notificationTypes.map((type) => ({
+                type: type._id,
+                enabled: true,
+            })),
+        });
+        // create session
+        const session = yield session_model_1.default.create({
+            userId: user._id,
+            userAgent: data.userAgent,
+            location: data.location,
+        });
+        const sessionInfo = {
+            sessionId: session._id,
+        };
+        const refreshToken = (0, jwt_1.signToken)(sessionInfo, jwt_1.refreshTokenSignOptions);
+        const accessToken = (0, jwt_1.signToken)(Object.assign({ userId: user._id }, sessionInfo));
+        return {
+            accessToken,
+            refreshToken,
+        };
+    }
+    catch (error) {
+        throw error;
+    }
 });
 exports.createAccount = createAccount;
 const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ otp, verifyToken, userAgent, location, }) {

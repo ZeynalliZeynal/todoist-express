@@ -6,21 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/auth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/project.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/project.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/task.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/task.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/middleware/error-handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/error-handler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/model/notification.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/notification.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/schedules/task.schedule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/schedules/task.schedule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/service/notification.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/notification.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/validator/notification.validator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/validator/notification.validator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/auth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/auth.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/middleware/error-handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/error-handler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/notification.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/notification.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/schedules/task.schedule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/schedules/task.schedule.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/service/notification.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/notification.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/service/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/service/auth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/auth.service.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -221,7 +208,7 @@
       <workItem from="1743007062427" duration="13053000" />
       <workItem from="1743096678122" duration="3797000" />
       <workItem from="1743182302102" duration="298000" />
-      <workItem from="1743182612816" duration="9111000" />
+      <workItem from="1743182612816" duration="12532000" />
     </task>
     <servers />
   </component>

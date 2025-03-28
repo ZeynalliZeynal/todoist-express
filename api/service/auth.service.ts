@@ -25,6 +25,8 @@ import OTP, { OTPPurpose } from "../model/otp.model";
 import crypto from "crypto";
 import Plan from "../model/plan.model";
 import ErrorCodes from "../constants/error-codes";
+import NotificationTypeModel from "../model/notification-type.model";
+import NotificationSettingsModel from "../model/notification-settings.model";
 
 export interface CreateAccountParams {
   otp: string;
@@ -162,55 +164,69 @@ export const sendSignupEmailVerification = async (
 };
 
 export const createAccount = async (data: CreateAccountParams) => {
-  // verify entered email. if not verified, the error will be thrown
-  const { name, email } = await verifyOTP(
-    data.otp,
-    data.verifyToken,
-    OTPPurpose.EMAIL_VERIFICATION,
-  );
+  try {
+    // verify entered email. if not verified, the error will be thrown
+    const { name, email } = await verifyOTP(
+      data.otp,
+      data.verifyToken,
+      OTPPurpose.EMAIL_VERIFICATION,
+    );
 
-  const plan = await Plan.findOne({
-    name: {
-      $regex: data.plan,
-      $options: "i",
-    },
-  });
+    const plan = await Plan.findOne({
+      name: {
+        $regex: data.plan,
+        $options: "i",
+      },
+    });
 
-  if (!plan)
-    throw new AppError("Plan name is incorrect", StatusCodes.NOT_FOUND);
+    if (!plan)
+      throw new AppError("Plan name is incorrect", StatusCodes.NOT_FOUND);
 
-  const user = await User.create({
-    email,
-    name,
-    verified: true,
-    verifiedAt: new Date(),
-    location: data.location,
-    role: admin_email === email ? "admin" : "user",
-    plan: plan._id,
-  });
+    const user = await User.create({
+      email,
+      name,
+      verified: true,
+      verifiedAt: new Date(),
+      location: data.location,
+      role: admin_email === email ? "admin" : "user",
+      plan: plan._id,
+    });
 
-  // create session
-  const session = await Session.create({
-    userId: user._id,
-    userAgent: data.userAgent,
-    location: data.location,
-  });
+    const notificationTypes = await NotificationTypeModel.find();
 
-  const sessionInfo = {
-    sessionId: session._id,
-  };
+    await NotificationSettingsModel.create({
+      user: user._id,
+      preferences: notificationTypes.map((type) => ({
+        type: type._id,
+        enabled: true,
+      })),
+    });
 
-  const refreshToken = signToken(sessionInfo, refreshTokenSignOptions);
+    // create session
+    const session = await Session.create({
+      userId: user._id,
+      userAgent: data.userAgent,
+      location: data.location,
+    });
 
-  const accessToken = signToken({
-    userId: user._id,
-    ...sessionInfo,
-  });
+    const sessionInfo = {
+      sessionId: session._id,
+    };
 
-  return {
-    accessToken,
-    refreshToken,
-  };
+    const refreshToken = signToken(sessionInfo, refreshTokenSignOptions);
+
+    const accessToken = signToken({
+      userId: user._id,
+      ...sessionInfo,
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const loginUser = async ({
