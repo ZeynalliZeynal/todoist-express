@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.11.0
+
+### Minor Changes
+
+- Create notification settings on creating account
+
 ## 3.10.0
 
 ### Minor Changes
