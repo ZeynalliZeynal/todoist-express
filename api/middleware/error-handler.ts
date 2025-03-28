@@ -8,6 +8,7 @@ import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import ResponseStatues from "../constants/response-statues";
 
 const handleZodError = (res: Response, error: z.ZodError) => {
+  console.log("zod error occurred");
   const errors = error.issues.map((err) => ({
     path: err.path.join("."),
     message: err.message,
@@ -15,7 +16,7 @@ const handleZodError = (res: Response, error: z.ZodError) => {
 
   return res.status(StatusCodes.BAD_REQUEST).json({
     errors,
-    message: error.message,
+    message: errors.map((err) => `${err.path}: ${err.message}`).join("; "),
   });
 };
 

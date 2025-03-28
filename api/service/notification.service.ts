@@ -6,6 +6,7 @@ import { z } from "zod";
 import AppError from "../utils/app-error";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
+import NotificationTypeModel from "../model/notification-type.model";
 
 // get services
 export const getNotificationsService = async (
@@ -15,7 +16,9 @@ export const getNotificationsService = async (
     const notifications = await Notification.find({
       user,
       dismissed: { $ne: true },
-    }).sort("-createdAt");
+    })
+      .populate("type")
+      .sort("-createdAt");
 
     return notifications;
   } catch (error) {
@@ -46,8 +49,9 @@ interface CreateNotificationProps {
   name: string;
   description?: string;
   data: object;
-  type: NotificationTypeEnum;
   value: string;
+
+  type: NotificationTypeEnum;
   user: mongoose.Types.ObjectId;
 }
 
@@ -56,11 +60,21 @@ export const createNotificationService = async (
 ) => {
   const validData = notificationValidator.parse(data);
 
+  const type = await NotificationTypeModel.findOne({
+    name: validData.type,
+  });
+
+  if (!type)
+    throw new AppError(
+      `No notification type found with the name "${validData.type}"`,
+      StatusCodes.NOT_FOUND,
+    );
+
   const notification = await Notification.create({
     name: validData.name,
     description: validData.description,
     data: validData.data,
-    type: validData.type,
+    type: type.id,
     value: validData.value,
     user: data.user,
   });

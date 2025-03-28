@@ -10,13 +10,14 @@ const http_status_codes_1 = require("http-status-codes");
 const cookies_1 = require("../utils/cookies");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const handleZodError = (res, error) => {
+    console.log("zod error occurred");
     const errors = error.issues.map((err) => ({
         path: err.path.join("."),
         message: err.message,
     }));
     return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
         errors,
-        message: error.message,
+        message: errors.map((err) => `${err.path}: ${err.message}`).join("; "),
     });
 };
 const handleAppError = (res, error) => res.status(error.statusCode).json({

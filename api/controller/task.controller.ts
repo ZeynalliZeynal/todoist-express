@@ -17,7 +17,7 @@ const getTasks = catchAsync(
       Task.find({
         user: req.userId,
       }),
-      req.query
+      req.query,
     )
       .filter()
       .sort()
@@ -36,8 +36,8 @@ const getTasks = catchAsync(
         return next(
           new AppError(
             `No project found with the slug ${req.query.project}`,
-            404
-          )
+            404,
+          ),
         );
       }
 
@@ -55,7 +55,7 @@ const getTasks = catchAsync(
         tasks,
       },
     });
-  }
+  },
 );
 
 const getTask = catchAsync(
@@ -69,7 +69,7 @@ const getTask = catchAsync(
 
     if (!task) {
       return next(
-        new AppError(`No task found with the id ${req.params.id}`, 404)
+        new AppError(`No task found with the id ${req.params.id}`, 404),
       );
     }
 
@@ -79,7 +79,7 @@ const getTask = catchAsync(
         task,
       },
     });
-  }
+  },
 );
 
 const createTask = catchAsync(
@@ -88,8 +88,8 @@ const createTask = catchAsync(
       return next(
         new AppError(
           "A task must be belong to a project.",
-          StatusCodes.BAD_REQUEST
-        )
+          StatusCodes.BAD_REQUEST,
+        ),
       );
 
     const project = await Project.exists({
@@ -99,7 +99,7 @@ const createTask = catchAsync(
 
     if (!project)
       return next(
-        new AppError(`Project with id ${req.body.project} not found.`, 404)
+        new AppError(`Project with id ${req.body.project} not found.`, 404),
       );
 
     const existingTask = await Task.exists({
@@ -112,8 +112,8 @@ const createTask = catchAsync(
       return next(
         new AppError(
           `Task with the name '${req.body.name}' already exists. Try another project or change the name.`,
-          StatusCodes.CONFLICT
-        )
+          StatusCodes.CONFLICT,
+        ),
       );
 
     const task = await Task.create({
@@ -133,7 +133,7 @@ const createTask = catchAsync(
         task,
       },
     });
-  }
+  },
 );
 
 const updateTask = catchAsync(
@@ -146,7 +146,7 @@ const updateTask = catchAsync(
 
     if (!task) {
       return next(
-        new AppError(`No task found with the id ${req.params.id}`, 404)
+        new AppError(`No task found with the id ${req.params.id}`, 404),
       );
     }
 
@@ -167,15 +167,15 @@ const updateTask = catchAsync(
       return next(
         new AppError(
           `Task with the name '${req.body.name}' already exists. Try another project or change the name.`,
-          StatusCodes.CONFLICT
-        )
+          StatusCodes.CONFLICT,
+        ),
       );
 
     // create a notification
     await createNotificationService({
       name: generateNotificationName(
         NotificationTypeEnum.TASK_UPDATED,
-        task.name
+        task.name,
       )!,
       data: task.toObject(),
       value: task.id,
@@ -192,7 +192,7 @@ const updateTask = catchAsync(
         task,
       },
     });
-  }
+  },
 );
 
 const addTaskToCompleted = catchAsync(
@@ -205,12 +205,12 @@ const addTaskToCompleted = catchAsync(
       {
         new: true,
         runValidators: false,
-      }
+      },
     );
 
     if (!task) {
       return next(
-        new AppError(`No task found with the id ${req.params.id}`, 404)
+        new AppError(`No task found with the id ${req.params.id}`, 404),
       );
     }
 
@@ -221,7 +221,7 @@ const addTaskToCompleted = catchAsync(
         task,
       },
     });
-  }
+  },
 );
 
 const removeTaskFromCompleted = catchAsync(
@@ -234,12 +234,12 @@ const removeTaskFromCompleted = catchAsync(
       {
         new: true,
         runValidators: false,
-      }
+      },
     );
 
     if (!task) {
       return next(
-        new AppError(`No task found with the id ${req.params.id}`, 404)
+        new AppError(`No task found with the id ${req.params.id}`, 404),
       );
     }
 
@@ -250,7 +250,7 @@ const removeTaskFromCompleted = catchAsync(
         task,
       },
     });
-  }
+  },
 );
 
 const deleteTask = catchAsync(
@@ -262,14 +262,14 @@ const deleteTask = catchAsync(
 
     if (!task) {
       return next(
-        new AppError(`No task found with the id ${req.params.id}`, 404)
+        new AppError(`No task found with the id ${req.params.id}`, 404),
       );
     }
 
     await createNotificationService({
       name: generateNotificationName(
         NotificationTypeEnum.TASK_DELETED,
-        task.name
+        task.name,
       )!,
       data: task.toObject(),
       value: task.id,
@@ -281,7 +281,7 @@ const deleteTask = catchAsync(
       status: "success",
       message: "Task successfully deleted.",
     });
-  }
+  },
 );
 
 const clearTasks = catchAsync(
@@ -299,8 +299,8 @@ const clearTasks = catchAsync(
       return next(
         new AppError(
           `No project found with the id ${req.body.project}`,
-          StatusCodes.NOT_FOUND
-        )
+          StatusCodes.NOT_FOUND,
+        ),
       );
 
     await createNotificationService({
@@ -316,7 +316,7 @@ const clearTasks = catchAsync(
       message: "Tasks successfully cleared.",
       data: null,
     });
-  }
+  },
 );
 
 export {

@@ -37,6 +37,7 @@ const storage_router_1 = __importDefault(require("./router/storage.router"));
 const task_tag_router_1 = __importDefault(require("./router/task-tag.router"));
 const user_agent_middleware_1 = require("./middleware/user-agent.middleware");
 const notification_router_1 = __importDefault(require("./router/notification.router"));
+const notification_type_router_1 = __importDefault(require("./router/notification-type.router"));
 const API_PREFIX = "/api/v1/";
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
@@ -92,6 +93,7 @@ app.use(API_PREFIX + "profile/sessions", session_router_1.default);
 app.use(API_PREFIX + "plans", plan_router_1.default);
 app.use(API_PREFIX + "storage", storage_router_1.default);
 app.use(API_PREFIX + "notifications", notification_router_1.default);
+app.use(API_PREFIX + "notification-types", notification_type_router_1.default);
 app.use(API_PREFIX + "ping", user_agent_middleware_1.getUserAgent, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",

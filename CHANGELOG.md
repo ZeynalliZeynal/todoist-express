@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.10.0
+
+### Minor Changes
+
+- Fix task overdue scheduler. It was creating notification for all users. It is resolved by not looping through the users and instead, passing user id from the task itself
+- Do not return dates in notification type as it is not needed
+- Implement notification type model
+- Fix regex error in sending signup verification controller
+- Update creating notifications
+
 ## 3.9.0
 
 ### Minor Changes

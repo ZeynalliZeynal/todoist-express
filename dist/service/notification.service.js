@@ -18,13 +18,16 @@ const notification_validator_1 = require("../validator/notification.validator");
 const zod_1 = require("zod");
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
+const notification_type_model_1 = __importDefault(require("../model/notification-type.model"));
 // get services
 const getNotificationsService = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const notifications = yield notification_model_1.default.find({
             user,
             dismissed: { $ne: true },
-        }).sort("-createdAt");
+        })
+            .populate("type")
+            .sort("-createdAt");
         return notifications;
     }
     catch (error) {
@@ -49,11 +52,16 @@ const getNotificationService = (id, user) => __awaiter(void 0, void 0, void 0, f
 exports.getNotificationService = getNotificationService;
 const createNotificationService = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = notification_validator_1.notificationValidator.parse(data);
+    const type = yield notification_type_model_1.default.findOne({
+        name: validData.type,
+    });
+    if (!type)
+        throw new app_error_1.default(`No notification type found with the name "${validData.type}"`, http_status_codes_1.StatusCodes.NOT_FOUND);
     const notification = yield notification_model_1.default.create({
         name: validData.name,
         description: validData.description,
         data: validData.data,
-        type: validData.type,
+        type: type.id,
         value: validData.value,
         user: data.user,
     });

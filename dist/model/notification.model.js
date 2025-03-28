@@ -46,17 +46,8 @@ const schema = new mongoose_1.default.Schema({
         required: [true, "A notification must have data"],
     },
     type: {
-        type: String,
-        enum: [
-            "task/overdue",
-            "task/due-soon",
-            "task/completed",
-            "task/updated",
-            "task/deleted",
-            "task/assigned",
-            "project/deleted",
-            "project/updated",
-        ],
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "NotificationType",
         required: [true, "A notification must have a type"],
     },
     archived: {
@@ -92,7 +83,7 @@ const schema = new mongoose_1.default.Schema({
     timestamps: true,
 });
 schema.pre(/^find/, function (next) {
-    this.select("-__v");
+    this.select("-__v -updatedAt");
     next();
 });
 exports.default = mongoose_1.default.model("Notification", schema);

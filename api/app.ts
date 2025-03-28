@@ -27,6 +27,7 @@ import storageRouter from "./router/storage.router";
 import taskTagRouter from "./router/task-tag.router";
 import { getUserAgent } from "./middleware/user-agent.middleware";
 import notificationRouter from "./router/notification.router";
+import notificationTypeRouter from "./router/notification-type.router";
 
 const API_PREFIX = "/api/v1/";
 
@@ -98,6 +99,7 @@ app.use(API_PREFIX + "profile/sessions", sessionRouter);
 app.use(API_PREFIX + "plans", planRouter);
 app.use(API_PREFIX + "storage", storageRouter);
 app.use(API_PREFIX + "notifications", notificationRouter);
+app.use(API_PREFIX + "notification-types", notificationTypeRouter);
 
 app.use(
   API_PREFIX + "ping",

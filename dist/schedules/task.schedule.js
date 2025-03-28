@@ -49,45 +49,53 @@ exports.taskOverdueSchedule = void 0;
 const node_cron_1 = require("node-cron");
 const task_model_1 = __importDefault(require("../model/task.model"));
 const notification_model_1 = __importStar(require("../model/notification.model"));
-const user_model_1 = __importDefault(require("../model/user.model"));
 const kleur_1 = __importDefault(require("kleur"));
 const notification_constant_1 = require("../constants/notification.constant");
+const notification_type_model_1 = __importDefault(require("../model/notification-type.model"));
+const app_error_1 = __importDefault(require("../utils/app-error"));
+const http_status_codes_1 = require("http-status-codes");
 const taskOverdueSchedule = () => {
     (0, node_cron_1.schedule)("* * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             console.log(kleur_1.default.yellow("🔄 Running overdue task check..."));
-            const users = yield user_model_1.default.find();
-            for (const user of users) {
-                const now = new Date();
-                const overdueTasks = yield task_model_1.default.find({
-                    dueDate: { $lt: now },
-                    completed: false,
-                });
-                if (overdueTasks.length === 0) {
-                    console.log(kleur_1.default.green("0️⃣ overdue task found 👍"));
-                    return;
+            const now = new Date();
+            const overdueTasks = yield task_model_1.default.find({
+                dueDate: { $lt: now },
+                completed: false,
+            }).populate("user");
+            if (overdueTasks.length === 0) {
+                console.log(kleur_1.default.green("0️⃣ overdue task found 👍"));
+                return;
+            }
+            for (const task of overdueTasks) {
+                if (!task.user) {
+                    console.log(kleur_1.default.red(`⚠️ Task "${task.name}" has no assigned user.`));
+                    continue;
                 }
-                for (const task of overdueTasks) {
-                    const existingNotification = yield notification_model_1.default.findOne({
+                const type = yield notification_type_model_1.default.findOne({
+                    name: notification_model_1.NotificationTypeEnum.TASK_OVERDUE,
+                });
+                if (!type)
+                    throw new app_error_1.default(`No notification type found with the name NotificationTypeEnum.TASK_OVERDUE`, http_status_codes_1.StatusCodes.NOT_FOUND);
+                const existingNotification = yield notification_model_1.default.findOne({
+                    value: task._id,
+                    type: type._id,
+                    user: task.user._id,
+                    dismissed: { $ne: true },
+                });
+                if (!existingNotification) {
+                    yield notification_model_1.default.create({
+                        name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_OVERDUE, task.name),
+                        description: `Your task "${task.name}" is overdue!`,
+                        data: task,
                         value: task._id,
-                        type: notification_model_1.NotificationTypeEnum.TASK_OVERDUE,
-                        user: user._id,
-                        dismissed: { $ne: true },
+                        user: task.user._id,
+                        type: type._id,
                     });
-                    if (!existingNotification) {
-                        yield notification_model_1.default.create({
-                            name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_OVERDUE, task.name),
-                            description: `Your task "${task.name}" is overdue!`,
-                            data: task,
-                            value: task._id,
-                            user: user._id,
-                            type: notification_model_1.NotificationTypeEnum.TASK_OVERDUE,
-                        });
-                        console.log(kleur_1.default.magenta(`✅ Notification created for ${user.email}: ${task.name}`));
-                    }
-                    else {
-                        console.log(kleur_1.default.blue("Notification already exists."));
-                    }
+                    console.log(kleur_1.default.magenta(`✅ Notification created for ${task.user.email}: ${task.name}`));
+                }
+                else {
+                    console.log(kleur_1.default.blue(`🔹 Notification already exists for ${task.user.email}.`));
                 }
             }
         }

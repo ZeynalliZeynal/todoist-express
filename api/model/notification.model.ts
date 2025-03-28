@@ -34,12 +34,12 @@ export type NotificationProps = ReadonlyArray<NotificationType>;
 export interface NotificationDocument extends mongoose.Document {
   name: string;
   description: string;
-  type: NotificationType;
   data: object;
   archived: boolean;
   read: boolean;
   dismissed: boolean;
 
+  type: mongoose.Types.ObjectId;
   value: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId;
 }
@@ -62,17 +62,8 @@ const schema = new mongoose.Schema<NotificationDocument>(
       required: [true, "A notification must have data"],
     },
     type: {
-      type: String,
-      enum: [
-        "task/overdue",
-        "task/due-soon",
-        "task/completed",
-        "task/updated",
-        "task/deleted",
-        "task/assigned",
-        "project/deleted",
-        "project/updated",
-      ],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "NotificationType",
       required: [true, "A notification must have a type"],
     },
     archived: {
@@ -111,7 +102,7 @@ const schema = new mongoose.Schema<NotificationDocument>(
 );
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {
-  this.select("-__v");
+  this.select("-__v -updatedAt");
   next();
 });
 

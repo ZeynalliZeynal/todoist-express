@@ -92,7 +92,8 @@ exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res,
     try {
         validName = zod_1.z
             .string()
-            .regex(/^[A-Za-z]+$/, {
+            .trim()
+            .regex(/^[A-Za-z\s]+$/, {
             message: "Name must contain only letters",
         })
             .parse(req.body.name);

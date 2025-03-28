@@ -138,7 +138,8 @@ export const sendSignupVerifyEmailController = catchErrors(
     try {
       validName = z
         .string()
-        .regex(/^[A-Za-z]+$/, {
+        .trim()
+        .regex(/^[A-Za-z\s]+$/, {
           message: "Name must contain only letters",
         })
         .parse(req.body.name);
