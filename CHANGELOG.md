@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.13.0
+
+### Minor Changes
+
+- Enabling and disabling notifications
+
+## 3.12.0
+
+### Minor Changes
+
+- don't create a new notification if it is disabled for the user.
+- Update notification settings for all users when creating a new notification type
+
 ## 3.11.0
 
 ### Minor Changes

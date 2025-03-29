@@ -28,6 +28,7 @@ import taskTagRouter from "./router/task-tag.router";
 import { getUserAgent } from "./middleware/user-agent.middleware";
 import notificationRouter from "./router/notification.router";
 import notificationTypeRouter from "./router/notification-type.router";
+import notificationSettingsRouter from "./router/notification-settings.router";
 
 const API_PREFIX = "/api/v1/";
 
@@ -53,7 +54,7 @@ if (node_env === "production") app.use("/api/auth", limiter);
 app.use(
   express.json({
     limit: "10mb",
-  }),
+  })
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -63,10 +64,10 @@ app.use(
       node_env === "development"
         ? client_dev_origin
         : node_env === "production"
-          ? client_prod_origin
-          : "*",
+        ? client_prod_origin
+        : "*",
     credentials: true,
-  }),
+  })
 );
 
 app.use(cookieParser());
@@ -100,6 +101,7 @@ app.use(API_PREFIX + "plans", planRouter);
 app.use(API_PREFIX + "storage", storageRouter);
 app.use(API_PREFIX + "notifications", notificationRouter);
 app.use(API_PREFIX + "notification-types", notificationTypeRouter);
+app.use(API_PREFIX + "notification-settings", notificationSettingsRouter);
 
 app.use(
   API_PREFIX + "ping",
@@ -113,11 +115,11 @@ app.use(
         userAgent: req.userAgent,
       },
     });
-  },
+  }
 );
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
-  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
+  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND))
 );
 
 app.use(errorHandler);

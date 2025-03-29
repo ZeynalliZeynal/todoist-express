@@ -9,10 +9,6 @@ export const notificationValidator = z.object({
     .trim(),
   description: z.string().optional(),
   data: z.object({}).passthrough().required(),
-  type: z.enum(NOTIFICATION_TYPES, {
-    message: `Please provide one of the following type: [${NOTIFICATION_TYPES.join(
-      ", "
-    )}]`,
-  }),
+  type: z.string(),
   value: z.string().trim(),
 });

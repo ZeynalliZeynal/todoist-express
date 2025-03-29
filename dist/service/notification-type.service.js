@@ -17,9 +17,10 @@ const notification_type_model_1 = __importDefault(require("../model/notification
 const zod_1 = require("zod");
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
+const notification_settings_model_1 = __importDefault(require("../model/notification-settings.model"));
 const getNotificationTypesService = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return yield notification_type_model_1.default.find().sort("-createdAt");
+        return yield notification_type_model_1.default.find().sort("-name");
     }
     catch (error) {
         throw error;
@@ -39,10 +40,20 @@ const createNotificationTypeService = (data) => __awaiter(void 0, void 0, void 0
         });
         if (existingData)
             throw new app_error_1.default(`Notification type with the name ${validData.name} already exists. Please use another name.`, http_status_codes_1.StatusCodes.BAD_REQUEST);
-        return yield notification_type_model_1.default.create({
+        const type = yield notification_type_model_1.default.create({
             name: validData.name,
             description: validData.description,
         });
+        // update settings for all users
+        yield notification_settings_model_1.default.updateMany({}, {
+            $push: {
+                preferences: {
+                    type: type._id,
+                    enabled: true,
+                },
+            },
+        });
+        return type;
     }
     catch (error) {
         throw error;

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 export interface NotificationSettingsDocument extends mongoose.Document {
   user: mongoose.Types.ObjectId;
@@ -30,7 +30,12 @@ const schema = new mongoose.Schema<NotificationSettingsDocument>({
   ],
 });
 
+schema.pre(/^find/, function (this: Query<any, any>, next) {
+  this.select("-__v -createdAt -updatedAt");
+  next();
+});
+
 export default mongoose.model<NotificationSettingsDocument>(
   "NotificationSettings",
-  schema,
+  schema
 );

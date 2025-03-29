@@ -19,6 +19,7 @@ const zod_1 = require("zod");
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const notification_type_model_1 = __importDefault(require("../model/notification-type.model"));
+const notification_settings_model_1 = __importDefault(require("../model/notification-settings.model"));
 // get services
 const getNotificationsService = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -52,11 +53,22 @@ const getNotificationService = (id, user) => __awaiter(void 0, void 0, void 0, f
 exports.getNotificationService = getNotificationService;
 const createNotificationService = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = notification_validator_1.notificationValidator.parse(data);
-    const type = yield notification_type_model_1.default.findOne({
-        name: validData.type,
-    });
+    const [type, setting] = yield Promise.all([
+        notification_type_model_1.default.findOne({
+            name: validData.type,
+        }),
+        notification_settings_model_1.default.findOne({
+            user: data.user,
+        }).populate("user"),
+    ]);
     if (!type)
         throw new app_error_1.default(`No notification type found with the name "${validData.type}"`, http_status_codes_1.StatusCodes.NOT_FOUND);
+    if (setting) {
+        const preference = setting.preferences.find((p) => p.type.toString() === type.id.toString());
+        if (preference && !preference.enabled) {
+            throw new app_error_1.default(`The notification type ${validData.type} is disabled for the user ${setting.user.email}`, http_status_codes_1.StatusCodes.BAD_REQUEST);
+        }
+    }
     const notification = yield notification_model_1.default.create({
         name: validData.name,
         description: validData.description,

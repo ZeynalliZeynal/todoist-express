@@ -25,4 +25,8 @@ const schema = new mongoose_1.default.Schema({
         },
     ],
 });
+schema.pre(/^find/, function (next) {
+    this.select("-__v -createdAt -updatedAt");
+    next();
+});
 exports.default = mongoose_1.default.model("NotificationSettings", schema);
