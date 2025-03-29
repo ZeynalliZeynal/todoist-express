@@ -12,6 +12,13 @@ const schema = new mongoose_1.default.Schema({
         required: true,
         unique: [true, "Name must be unique"],
     },
+    label: {
+        type: String,
+        trim: true,
+        minLength: [3, "Label must be at least 3 characters long"],
+        match: [/^[A-Za-z\s]+$/, "Label must contain only letters"],
+        required: true,
+    },
     description: {
         type: String,
         trim: true,

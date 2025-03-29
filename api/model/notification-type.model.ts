@@ -3,6 +3,7 @@ import mongoose, { Query } from "mongoose";
 export interface NotificationTypeDocument extends mongoose.Document {
   name: string;
   description: string;
+  label: string;
 }
 
 const schema = new mongoose.Schema<NotificationTypeDocument>(
@@ -14,6 +15,13 @@ const schema = new mongoose.Schema<NotificationTypeDocument>(
       required: true,
       unique: [true, "Name must be unique"],
     },
+    label: {
+      type: String,
+      trim: true,
+      minLength: [3, "Label must be at least 3 characters long"],
+      match: [/^[A-Za-z\s]+$/, "Label must contain only letters"],
+      required: true,
+    },
     description: {
       type: String,
       trim: true,
@@ -23,7 +31,7 @@ const schema = new mongoose.Schema<NotificationTypeDocument>(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
+  }
 );
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {

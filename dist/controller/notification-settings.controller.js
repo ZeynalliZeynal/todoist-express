@@ -12,24 +12,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disableNotification = exports.enableNotification = exports.getAllNotificationSettings = void 0;
+exports.disableNotification = exports.enableNotification = exports.getNotificationSettings = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const notification_settings_model_1 = __importDefault(require("../model/notification-settings.model"));
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const notification_settings_service_1 = require("../service/notification-settings.service");
-const getAllNotificationSettings = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const settings = yield notification_settings_model_1.default.find({
+const getNotificationSettings = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const settings = yield notification_settings_model_1.default.findOne({
         user: req.userId,
     }).populate("preferences.type");
+    const groupedSettings = {};
+    settings === null || settings === void 0 ? void 0 : settings.preferences.forEach((pref) => {
+        var _a;
+        const category = (_a = pref.type) === null || _a === void 0 ? void 0 : _a.name.split("/")[0];
+        if (!groupedSettings[category]) {
+            groupedSettings[category] = [];
+        }
+        groupedSettings[category].push(pref);
+    });
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         message: "Notification settings fetched successfully",
         data: {
-            settings,
+            settings: groupedSettings,
         },
     });
 }));
-exports.getAllNotificationSettings = getAllNotificationSettings;
+exports.getNotificationSettings = getNotificationSettings;
 const enableNotification = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const setting = yield (0, notification_settings_service_1.enableNotificationService)({
         userId: req.userId,
@@ -37,7 +46,7 @@ const enableNotification = (0, catch_errors_1.default)((req, res, next) => __awa
     });
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
-        message: `${setting.name} notification type enabled`,
+        message: `${setting.label} notification type enabled`,
     });
 }));
 exports.enableNotification = enableNotification;
@@ -48,7 +57,7 @@ const disableNotification = (0, catch_errors_1.default)((req, res, next) => __aw
     });
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
-        message: `${setting.name} notification type enabled`,
+        message: `${setting.label} notification type disabled`,
     });
 }));
 exports.disableNotification = disableNotification;

@@ -15,11 +15,19 @@ export const getNotificationTypesService = async () => {
 export const createNotificationTypeService = async (data: {
   name: string;
   description: string;
+  label: string;
 }) => {
   try {
     const validData = z
       .object({
         name: z.string().min(3, "Minimum 3 characters required").trim(),
+        label: z
+          .string()
+          .min(3, "Minimum 3 characters required")
+          .regex(/^[A-Za-z\s]+$/, {
+            message: "Label must contain only letters",
+          })
+          .trim(),
         description: z.string().trim().optional(),
       })
       .parse(data);
@@ -36,6 +44,7 @@ export const createNotificationTypeService = async (data: {
 
     const type = await NotificationTypeModel.create({
       name: validData.name,
+      label: validData.label,
       description: validData.description,
     });
 

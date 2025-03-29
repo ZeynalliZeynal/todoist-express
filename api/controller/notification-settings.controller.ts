@@ -7,16 +7,28 @@ import {
   enableNotificationService,
 } from "../service/notification-settings.service";
 
-const getAllNotificationSettings = catchErrors(async (req, res, next) => {
-  const settings = await NotificationSettingsModel.find({
+const getNotificationSettings = catchErrors(async (req, res, next) => {
+  const settings = await NotificationSettingsModel.findOne({
     user: req.userId,
   }).populate("preferences.type");
+
+  const groupedSettings: Record<string, any[]> = {};
+
+  settings?.preferences.forEach((pref) => {
+    const category = (pref.type as any)?.name.split("/")[0];
+
+    if (!groupedSettings[category]) {
+      groupedSettings[category] = [];
+    }
+
+    groupedSettings[category].push(pref);
+  });
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,
     message: "Notification settings fetched successfully",
     data: {
-      settings,
+      settings: groupedSettings,
     },
   });
 });
@@ -29,7 +41,7 @@ const enableNotification = catchErrors(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,
-    message: `${setting.name} notification type enabled`,
+    message: `${setting.label} notification type enabled`,
   });
 });
 
@@ -41,8 +53,8 @@ const disableNotification = catchErrors(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,
-    message: `${setting.name} notification type enabled`,
+    message: `${setting.label} notification type disabled`,
   });
 });
 
-export { getAllNotificationSettings, enableNotification, disableNotification };
+export { getNotificationSettings, enableNotification, disableNotification };

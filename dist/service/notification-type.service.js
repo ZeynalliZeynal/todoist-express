@@ -32,6 +32,13 @@ const createNotificationTypeService = (data) => __awaiter(void 0, void 0, void 0
         const validData = zod_1.z
             .object({
             name: zod_1.z.string().min(3, "Minimum 3 characters required").trim(),
+            label: zod_1.z
+                .string()
+                .min(3, "Minimum 3 characters required")
+                .regex(/^[A-Za-z\s]+$/, {
+                message: "Label must contain only letters",
+            })
+                .trim(),
             description: zod_1.z.string().trim().optional(),
         })
             .parse(data);
@@ -42,6 +49,7 @@ const createNotificationTypeService = (data) => __awaiter(void 0, void 0, void 0
             throw new app_error_1.default(`Notification type with the name ${validData.name} already exists. Please use another name.`, http_status_codes_1.StatusCodes.BAD_REQUEST);
         const type = yield notification_type_model_1.default.create({
             name: validData.name,
+            label: validData.label,
             description: validData.description,
         });
         // update settings for all users

@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const notification_settings_controller_1 = require("../controller/notification-settings.controller");
 const router = express_1.default.Router();
-router.route("/").get(auth_middleware_1.authenticate, notification_settings_controller_1.getAllNotificationSettings);
+router.route("/").get(auth_middleware_1.authenticate, notification_settings_controller_1.getNotificationSettings);
 router.route("/:id/enable").post(auth_middleware_1.authenticate, notification_settings_controller_1.enableNotification);
 router.route("/:id/disable").post(auth_middleware_1.authenticate, notification_settings_controller_1.disableNotification);
 exports.default = router;
