@@ -1,5 +1,14 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [3.14.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.5.1...v3.14.0) (2025-03-29)
+
+
+### Features
+
+* implement notification settings router, controller, and services ([5d67302](https://github.com/ZeynalliZeynal/todoist-server/commit/5d67302f2d859926100cbd2910d6ce7d6284f29c))
+
 ## 3.13.0
 
 ### Minor Changes
