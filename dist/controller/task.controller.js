@@ -24,6 +24,7 @@ const notification_service_1 = require("../service/notification.service");
 const notification_constant_1 = require("../constants/notification.constant");
 const notification_model_1 = require("../model/notification.model");
 const zod_1 = require("zod");
+const kleur_1 = __importDefault(require("kleur"));
 const getTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let features = new api_features_1.default(task_model_1.default.find({
         user: req.userId,
@@ -129,15 +130,20 @@ const updateTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     });
     if (existingTask)
         return next(new app_error_1.default(`Task with the name '${req.body.name}' already exists. Try another project or change the name.`, http_status_codes_1.StatusCodes.CONFLICT));
-    // create a notification
-    yield (0, notification_service_1.createNotificationService)({
-        name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_UPDATED, task.name),
-        data: task.toObject(),
-        value: task.id,
-        type: notification_model_1.NotificationTypeEnum.TASK_UPDATED,
-        user: req.userId,
-    });
     yield task.save();
+    // create a notification
+    try {
+        yield (0, notification_service_1.createNotificationService)({
+            name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_UPDATED, task.name),
+            data: task.toObject(),
+            value: task.id,
+            type: notification_model_1.NotificationTypeEnum.TASK_UPDATED,
+            user: req.userId,
+        });
+    }
+    catch (error) {
+        console.log(kleur_1.default.bgBlue(error));
+    }
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "Task successfully updated.",
@@ -193,13 +199,18 @@ const deleteTask = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     if (!task) {
         return next(new app_error_1.default(`No task found with the id ${req.params.id}`, 404));
     }
-    yield (0, notification_service_1.createNotificationService)({
-        name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_DELETED, task.name),
-        data: task.toObject(),
-        value: task.id,
-        type: notification_model_1.NotificationTypeEnum.TASK_DELETED,
-        user: req.userId,
-    });
+    try {
+        yield (0, notification_service_1.createNotificationService)({
+            name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.TASK_DELETED, task.name),
+            data: task.toObject(),
+            value: task.id,
+            type: notification_model_1.NotificationTypeEnum.TASK_DELETED,
+            user: req.userId,
+        });
+    }
+    catch (error) {
+        console.log(kleur_1.default.bgBlue(error));
+    }
     res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
         message: "Task successfully deleted.",
@@ -215,13 +226,18 @@ const clearTasks = (0, catch_errors_1.default)((req, res, next) => __awaiter(voi
     const project = yield project_model_1.default.findById(validProjectId);
     if (!project)
         return next(new app_error_1.default(`No project found with the id ${req.body.project}`, http_status_codes_1.StatusCodes.NOT_FOUND));
-    yield (0, notification_service_1.createNotificationService)({
-        name: `Tasks have been cleared from p`,
-        data: project,
-        value: project.id,
-        type: notification_model_1.NotificationTypeEnum.TASK_CLEARED,
-        user: req.userId,
-    });
+    try {
+        yield (0, notification_service_1.createNotificationService)({
+            name: `Tasks have been cleared from p`,
+            data: project,
+            value: project.id,
+            type: notification_model_1.NotificationTypeEnum.TASK_CLEARED,
+            user: req.userId,
+        });
+    }
+    catch (error) {
+        console.log(kleur_1.default.bgBlue(error));
+    }
     res.status(http_status_codes_1.StatusCodes.NO_CONTENT).json({
         status: "success",
         message: "Tasks successfully cleared.",

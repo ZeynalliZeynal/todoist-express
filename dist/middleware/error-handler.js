@@ -10,7 +10,6 @@ const http_status_codes_1 = require("http-status-codes");
 const cookies_1 = require("../utils/cookies");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const handleZodError = (res, error) => {
-    console.log("zod error occurred");
     const errors = error.issues.map((err) => ({
         path: err.path.join("."),
         message: err.message,

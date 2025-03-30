@@ -9,6 +9,7 @@ import slugify from "slugify";
 import { createNotificationService } from "../service/notification.service";
 import { generateNotificationName } from "../constants/notification.constant";
 import { NotificationTypeEnum } from "../model/notification.model";
+import kleur from "kleur";
 
 const getProjects = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -110,16 +111,20 @@ const deleteProject = catchAsync(
       );
     }
 
-    await createNotificationService({
-      name: generateNotificationName(
-        NotificationTypeEnum.PROJECT_DELETED,
-        project.name,
-      )!,
-      data: project.toObject(),
-      value: project.id,
-      type: NotificationTypeEnum.PROJECT_DELETED,
-      user: req.userId!,
-    });
+    try {
+      await createNotificationService({
+        name: generateNotificationName(
+          NotificationTypeEnum.PROJECT_DELETED,
+          project.name,
+        )!,
+        data: project.toObject(),
+        value: project.id,
+        type: NotificationTypeEnum.PROJECT_DELETED,
+        user: req.userId!,
+      });
+    } catch (error) {
+      console.log(kleur.bgBlue(error as string));
+    }
 
     res.status(StatusCodes.NO_CONTENT).json({
       status: "success",
@@ -162,18 +167,22 @@ const updateProject = catchAsync(
         ),
       );
 
-    await createNotificationService({
-      name: generateNotificationName(
-        NotificationTypeEnum.PROJECT_UPDATED,
-        project.name,
-      )!,
-      data: project.toObject(),
-      value: project.id,
-      type: NotificationTypeEnum.PROJECT_UPDATED,
-      user: req.userId!,
-    });
-
     await project.save();
+
+    try {
+      await createNotificationService({
+        name: generateNotificationName(
+          NotificationTypeEnum.PROJECT_UPDATED,
+          project.name,
+        )!,
+        data: project.toObject(),
+        value: project.id,
+        type: NotificationTypeEnum.PROJECT_UPDATED,
+        user: req.userId!,
+      });
+    } catch (error) {
+      console.log(kleur.bgBlue(error as string));
+    }
 
     res.status(StatusCodes.OK).json({
       status: "success",

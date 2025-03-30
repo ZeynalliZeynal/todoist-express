@@ -10,6 +10,7 @@ import { createNotificationService } from "../service/notification.service";
 import { generateNotificationName } from "../constants/notification.constant";
 import { NotificationTypeEnum } from "../model/notification.model";
 import { z } from "zod";
+import kleur from "kleur";
 
 const getTasks = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -171,19 +172,23 @@ const updateTask = catchAsync(
         ),
       );
 
-    // create a notification
-    await createNotificationService({
-      name: generateNotificationName(
-        NotificationTypeEnum.TASK_UPDATED,
-        task.name,
-      )!,
-      data: task.toObject(),
-      value: task.id,
-      type: NotificationTypeEnum.TASK_UPDATED,
-      user: req.userId!,
-    });
-
     await task.save();
+
+    // create a notification
+    try {
+      await createNotificationService({
+        name: generateNotificationName(
+          NotificationTypeEnum.TASK_UPDATED,
+          task.name,
+        )!,
+        data: task.toObject(),
+        value: task.id,
+        type: NotificationTypeEnum.TASK_UPDATED,
+        user: req.userId!,
+      });
+    } catch (error) {
+      console.log(kleur.bgBlue(error as string));
+    }
 
     res.status(StatusCodes.OK).json({
       status: "success",
@@ -266,16 +271,20 @@ const deleteTask = catchAsync(
       );
     }
 
-    await createNotificationService({
-      name: generateNotificationName(
-        NotificationTypeEnum.TASK_DELETED,
-        task.name,
-      )!,
-      data: task.toObject(),
-      value: task.id,
-      type: NotificationTypeEnum.TASK_DELETED,
-      user: req.userId!,
-    });
+    try {
+      await createNotificationService({
+        name: generateNotificationName(
+          NotificationTypeEnum.TASK_DELETED,
+          task.name,
+        )!,
+        data: task.toObject(),
+        value: task.id,
+        type: NotificationTypeEnum.TASK_DELETED,
+        user: req.userId!,
+      });
+    } catch (error) {
+      console.log(kleur.bgBlue(error as string));
+    }
 
     res.status(StatusCodes.NO_CONTENT).json({
       status: "success",
@@ -303,14 +312,17 @@ const clearTasks = catchAsync(
         ),
       );
 
-    await createNotificationService({
-      name: `Tasks have been cleared from p`,
-      data: project,
-      value: project.id,
-      type: NotificationTypeEnum.TASK_CLEARED,
-      user: req.userId!,
-    });
-
+    try {
+      await createNotificationService({
+        name: `Tasks have been cleared from p`,
+        data: project,
+        value: project.id,
+        type: NotificationTypeEnum.TASK_CLEARED,
+        user: req.userId!,
+      });
+    } catch (error) {
+      console.log(kleur.bgBlue(error as string));
+    }
     res.status(StatusCodes.NO_CONTENT).json({
       status: "success",
       message: "Tasks successfully cleared.",
