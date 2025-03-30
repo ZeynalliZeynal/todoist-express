@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.14.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.14.0...v3.14.1) (2025-03-30)
+
+
+### Bug Fixes
+
+* remove userAgent middleware from profile controller ([70a2fff](https://github.com/ZeynalliZeynal/todoist-server/commit/70a2fff94258bbfb93ba104c3578016a3a6e13fb))
+
 ## [3.14.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.5.1...v3.14.0) (2025-03-29)
 
 
