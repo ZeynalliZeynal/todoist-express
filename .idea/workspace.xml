@@ -6,82 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/project.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/project.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controller/task.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/task.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/middleware/error-handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/error-handler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/constants/bucket-prefixes.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/constants/bucket-prefixes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/constants/env.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/constants/env.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/constants/error-codes.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/constants/error-codes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/constants/notification.constant.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/constants/notification.constant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/constants/response-statues.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/constants/response-statues.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/constants/verificationCodeType.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/constants/verificationCodeType.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/auth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/auth.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/notification-settings.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/notification-settings.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/notification-type.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/notification-type.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/notification.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/notification.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/plan.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/plan.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/profile.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/profile.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/project.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/project.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/session.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/session.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/storage.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/storage.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/task-tag.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/task-tag.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/task.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/task.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/template.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/template.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/controller/user.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/user.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/lib/mongo/mongo.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/lib/mongo/mongo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/lib/mongo/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/lib/mongo/plugins.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/middleware/auth.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/auth.middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/middleware/error-handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/error-handler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/middleware/storage.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/storage.middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/middleware/user-agent.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/user-agent.middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/notification-settings.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/notification-settings.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/notification-type.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/notification-type.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/notification.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/notification.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/otp.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/otp.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/plan-features.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/plan-features.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/plan.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/plan.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/project.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/project.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/session.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/session.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/task-tag.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/task-tag.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/task.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/task.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/template-category.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/template-category.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/template.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/template.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/model/user.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/user.model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/auth.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/auth.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/notification-settings.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/notification-settings.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/notification-type.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/notification-type.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/notification.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/notification.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/plan.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/plan.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/profile.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/profile.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/project.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/project.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/session.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/session.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/storage.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/storage.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/task-tag.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/task-tag.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/task.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/task.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/template-categories.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/template-categories.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/template.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/template.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/user.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/user.router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/schedules/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/schedules/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/schedules/task.schedule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/schedules/task.schedule.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/service/auth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/auth.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/service/notification-settings.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/notification-settings.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/service/notification-type.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/notification-type.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/service/notification.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/notification.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/service/storage.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/storage.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/model/task.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/task.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/utils/api-features.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/utils/api-features.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/utils/api-features.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/api-features.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/app-assert.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/app-assert.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/app-error.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/app-error.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/catch-errors.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/catch-errors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/cookies.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/cookies.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/email-templates.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/email-templates.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/email.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/email.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/generate-name.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/generate-name.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils/jwt.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils/jwt.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/validator/auth.validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/validator/auth.validator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/validator/notification.validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/validator/notification.validator.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,33 +46,33 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "code.cleanup.on.save": "true",
-    "git-widget-placeholder": "main",
-    "ignore_missing_gitignore": "true",
-    "js.last.introduce.type": "CONST",
-    "last_opened_file_path": "C:/Users/asus/Desktop/zeynal/web/projects/todoist/server",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "pnpm",
-    "npm.dev.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier",
-    "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
-    "ts.external.directory.path": "C:\\Users\\asus\\Desktop\\zeynal\\web\\projects\\todoist\\server\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore_missing_gitignore&quot;: &quot;true&quot;,
+    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/asus/Desktop/zeynal/web/projects/todoist/server&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\asus\\Desktop\\zeynal\\web\\projects\\todoist\\server\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mongo"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mongo&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\education\projects\todoist\server\api\controller" />
@@ -284,7 +211,8 @@
       <workItem from="1743182302102" duration="298000" />
       <workItem from="1743182612816" duration="12532000" />
       <workItem from="1743275056722" duration="22000" />
-      <workItem from="1743275223213" duration="2650000" />
+      <workItem from="1743275223213" duration="2794000" />
+      <workItem from="1743318551368" duration="2285000" />
     </task>
     <servers />
   </component>

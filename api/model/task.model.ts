@@ -95,7 +95,7 @@ const schema = new mongoose.Schema<TaskDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
 
 schema.pre("save", function (next) {

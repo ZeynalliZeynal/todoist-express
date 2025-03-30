@@ -80,7 +80,7 @@ class ApiFeatures<
   sort() {
     if (this.queryString.sort)
       this.query = this.query.sort(this.queryString.sort.split(",").join(" "));
-    else this.query = this.query.sort(`-createdAt`);
+    else this.query = this.query.sort(`-updatedAt`);
 
     return this;
   }
