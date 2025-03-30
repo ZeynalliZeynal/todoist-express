@@ -9,6 +9,7 @@ const zod_1 = require("zod");
 const http_status_codes_1 = require("http-status-codes");
 const cookies_1 = require("../utils/cookies");
 const jsonwebtoken_1 = require("jsonwebtoken");
+const kleur_1 = __importDefault(require("kleur"));
 const handleZodError = (res, error) => {
     const errors = error.issues.map((err) => ({
         path: err.path.join("."),
@@ -52,7 +53,7 @@ const handleInvalidSignatureError = (res, error) => res.status(http_status_codes
     message: "Token is invalid.",
 });
 const errorHandler = (err, req, res, next) => {
-    console.log(err, err.name);
+    console.log(kleur_1.default.bgRed(err.name));
     if (req.path === cookies_1.refresh_path)
         (0, cookies_1.clearAuthCookies)(res);
     if (err instanceof zod_1.z.ZodError)

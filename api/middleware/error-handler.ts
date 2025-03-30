@@ -6,6 +6,7 @@ import { MongoServerError } from "mongodb";
 import { clearAuthCookies, refresh_path } from "../utils/cookies";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import ResponseStatues from "../constants/response-statues";
+import kleur from "kleur";
 
 const handleZodError = (res: Response, error: z.ZodError) => {
   const errors = error.issues.map((err) => ({
@@ -68,7 +69,7 @@ type ErrorRequestHandler = (
   next: NextFunction,
 ) => void;
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.log(err, err.name);
+  console.log(kleur.bgRed(err.name));
   if (req.path === refresh_path) clearAuthCookies(res);
 
   if (err instanceof z.ZodError) handleZodError(res, err);

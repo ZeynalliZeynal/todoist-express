@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f4af01a5-f99e-4662-a515-53dcee5660e7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/f4af01a5-f99e-4662-a515-53dcee5660e7.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/router/profile.router.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/router/profile.router.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/router/profile.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/profile.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/middleware/error-handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/error-handler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/model/project.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/project.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/middleware/error-handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/error-handler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/model/project.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/project.model.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,33 +48,33 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore_missing_gitignore&quot;: &quot;true&quot;,
-    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/asus/Desktop/zeynal/web/projects/todoist/server&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier&quot;,
-    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\asus\\Desktop\\zeynal\\web\\projects\\todoist\\server\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "code.cleanup.on.save": "true",
+    "git-widget-placeholder": "main",
+    "ignore_missing_gitignore": "true",
+    "js.last.introduce.type": "CONST",
+    "last_opened_file_path": "C:/Users/asus/Desktop/zeynal/web/tutorials/nestjs/nest-tutorial",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "pnpm",
+    "npm.dev.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\prettier",
+    "rearrange.code.on.save": "true",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "ts.external.directory.path": "C:\\Users\\asus\\Desktop\\zeynal\\web\\projects\\todoist\\server\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mongo&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mongo"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\education\projects\todoist\server\api\controller" />
@@ -211,7 +214,8 @@
       <workItem from="1743182612816" duration="12532000" />
       <workItem from="1743275056722" duration="22000" />
       <workItem from="1743275223213" duration="2794000" />
-      <workItem from="1743318551368" duration="4150000" />
+      <workItem from="1743318551368" duration="4634000" />
+      <workItem from="1743354621530" duration="3437000" />
     </task>
     <servers />
   </component>
