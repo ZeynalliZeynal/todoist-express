@@ -7,6 +7,7 @@ import { clearAuthCookies, refresh_path } from "../utils/cookies";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import ResponseStatues from "../constants/response-statues";
 import kleur from "kleur";
+import { CastError, MongooseError } from "mongoose";
 
 const handleZodError = (res: Response, error: z.ZodError) => {
   const errors = error.issues.map((err) => ({
@@ -19,6 +20,16 @@ const handleZodError = (res: Response, error: z.ZodError) => {
     message: errors.map((err) => `${err.path}: ${err.message}`).join("; "),
   });
 };
+
+const handleCastError = (res: Response, error: CastError) =>
+  res.status(StatusCodes.BAD_REQUEST).json({
+    status: ResponseStatues.FAIL,
+    message: error.message,
+    error: {
+      name: error.name,
+      value: error.value,
+    },
+  });
 
 const handleAppError = (res: Response, error: AppError) =>
   res.status(error.statusCode).json({
@@ -69,7 +80,7 @@ type ErrorRequestHandler = (
   next: NextFunction,
 ) => void;
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.log(kleur.bgRed(err.name));
+  console.log(kleur.bgRed(err.name), err as MongooseError);
   if (req.path === refresh_path) clearAuthCookies(res);
 
   if (err instanceof z.ZodError) handleZodError(res, err);
@@ -86,6 +97,14 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     handleTokenExpiredError(res, err as TokenExpiredError);
   if (err instanceof JsonWebTokenError || err.name === "invalid signature")
     handleInvalidSignatureError(res, err as JsonWebTokenError);
+
+  if (err.name === "CastError") handleCastError(res, err as CastError);
+
+  if (err.name === "MongooseError")
+    res.status(StatusCodes.BAD_REQUEST).json({
+      status: ResponseStatues.FAIL,
+      message: err.message,
+    });
 
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     status: ResponseStatues.ERROR,

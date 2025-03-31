@@ -20,6 +20,14 @@ const handleZodError = (res, error) => {
         message: errors.map((err) => `${err.path}: ${err.message}`).join("; "),
     });
 };
+const handleCastError = (res, error) => res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+    status: "fail" /* ResponseStatues.FAIL */,
+    message: error.message,
+    error: {
+        name: error.name,
+        value: error.value,
+    },
+});
 const handleAppError = (res, error) => res.status(error.statusCode).json({
     status: "fail" /* ResponseStatues.FAIL */,
     message: error.message,
@@ -53,7 +61,7 @@ const handleInvalidSignatureError = (res, error) => res.status(http_status_codes
     message: "Token is invalid.",
 });
 const errorHandler = (err, req, res, next) => {
-    console.log(kleur_1.default.bgRed(err.name));
+    console.log(kleur_1.default.bgRed(err.name), err);
     if (req.path === cookies_1.refresh_path)
         (0, cookies_1.clearAuthCookies)(res);
     if (err instanceof zod_1.z.ZodError)
@@ -68,6 +76,13 @@ const errorHandler = (err, req, res, next) => {
         handleTokenExpiredError(res, err);
     if (err instanceof jsonwebtoken_1.JsonWebTokenError || err.name === "invalid signature")
         handleInvalidSignatureError(res, err);
+    if (err.name === "CastError")
+        handleCastError(res, err);
+    if (err.name === "MongooseError")
+        res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+            status: "fail" /* ResponseStatues.FAIL */,
+            message: err.message,
+        });
     return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: "error" /* ResponseStatues.ERROR */,
         message: "Initial server error",
