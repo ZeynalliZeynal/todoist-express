@@ -18,7 +18,8 @@ const env_1 = require("../constants/env");
 const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ subject, text, to, html }) {
     const transporter = nodemailer_1.default.createTransport({
         host: "smtp-relay.brevo.com",
-        port: 465,
+        port: 587,
+        secure: false,
         auth: {
             user: "7a9d8a001@smtp-brevo.com",
             pass: env_1.brevo_api_key,

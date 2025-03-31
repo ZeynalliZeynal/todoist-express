@@ -11,7 +11,8 @@ interface SendMailParams {
 export const sendMail = async ({ subject, text, to, html }: SendMailParams) => {
   const transporter = nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
-    port: 465,
+    port: 587,
+    secure: false,
     auth: {
       user: "7a9d8a001@smtp-brevo.com",
       pass: brevo_api_key,

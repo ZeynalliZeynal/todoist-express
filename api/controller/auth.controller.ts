@@ -34,7 +34,7 @@ export const signup = catchErrors(async (req, res, next) => {
 
   if (!req.query.token)
     return next(
-      new AppError("Token is param required.", StatusCodes.BAD_REQUEST),
+      new AppError("Token is param required.", StatusCodes.BAD_REQUEST)
     );
 
   const request = signupSchema.parse({
@@ -62,7 +62,7 @@ export const login = catchErrors(async (req, res, next) => {
 
   if (!req.query.token)
     return next(
-      new AppError("Token is param required.", StatusCodes.BAD_REQUEST),
+      new AppError("Token is param required.", StatusCodes.BAD_REQUEST)
     );
 
   const request = loginSchema.parse({
@@ -92,7 +92,7 @@ export const logout = catchErrors(async (req, res, next) => {
 
   if (!payload || !payload.sessionId)
     return next(
-      new AppError("You are not logged in.", StatusCodes.BAD_REQUEST),
+      new AppError("You are not logged in.", StatusCodes.BAD_REQUEST)
     );
 
   await Session.findByIdAndDelete(payload.sessionId);
@@ -100,7 +100,7 @@ export const logout = catchErrors(async (req, res, next) => {
   await User.findByIdAndUpdate(
     payload.userId,
     { verified: false },
-    { runValidators: false },
+    { runValidators: false }
   );
 
   return clearAuthCookies(res).status(StatusCodes.OK).json({
@@ -127,43 +127,39 @@ export const sendLoginVerifyEmailController = catchErrors(
         message:
           "Verification email has been sent. The code will expire after 5 minutes.",
       });
-  },
+  }
 );
 
 export const sendSignupVerifyEmailController = catchErrors(
   async (req, res, next) => {
-    const validEmail = await validate(req.body.email);
+    // const validEmail = await validate(req.body.email);
 
-    let validName;
-    try {
-      validName = z
-        .string()
-        .trim()
-        .regex(/^[A-Za-z\s]+$/, {
-          message: "Name must contain only letters",
-        })
-        .parse(req.body.name);
-    } catch (err) {
-      const message = (err as ZodError).errors?.at(0)?.message;
-      return next(new AppError(message || "", StatusCodes.BAD_REQUEST));
-    }
+    const validName = z
+      .string()
+      .trim()
+      .regex(/^[A-Za-z\s]+$/, {
+        message: "Name must contain only letters",
+      })
+      .parse(req.body.name);
 
-    if (!validEmail.valid)
-      return next(
-        new AppError(
-          validEmail.validators.regex?.reason ||
-            validEmail.validators.typo?.reason ||
-            validEmail.validators.mx?.reason ||
-            validEmail.validators.smtp?.reason ||
-            validEmail.validators.disposable?.reason ||
-            "Email is not valid.",
-          StatusCodes.BAD_REQUEST,
-        ),
-      );
+    const validEmail = z.string().email().trim().parse(req.body.email);
+
+    // if (!validEmail.valid)
+    //   return next(
+    //     new AppError(
+    //       validEmail.validators.regex?.reason ||
+    //         validEmail.validators.typo?.reason ||
+    //         validEmail.validators.mx?.reason ||
+    //         validEmail.validators.smtp?.reason ||
+    //         validEmail.validators.disposable?.reason ||
+    //         "Email is not valid.",
+    //       StatusCodes.BAD_REQUEST
+    //     )
+    //   );
 
     const token = await sendSignupEmailVerification(
-      { name: validName, email: req.body.email },
-      { city: req.location.city, country_name: req.location.country_name },
+      { name: validName, email: validEmail },
+      { city: req.location.city, country_name: req.location.country_name }
     );
 
     return setVerifyCookies({
@@ -176,7 +172,7 @@ export const sendSignupVerifyEmailController = catchErrors(
         message:
           "Verification email has been sent. The code will expire after 5 minutes.",
       });
-  },
+  }
 );
 
 export const refreshToken = catchErrors(
@@ -184,14 +180,15 @@ export const refreshToken = catchErrors(
     const refreshToken = req.cookies.refreshToken;
     appAssert(refreshToken, "Missing refresh token", StatusCodes.UNAUTHORIZED);
 
-    const { newRefreshToken, accessToken } =
-      await refreshUserAccessToken(refreshToken);
+    const { newRefreshToken, accessToken } = await refreshUserAccessToken(
+      refreshToken
+    );
 
     if (newRefreshToken) {
       res.cookie(
         "refreshToken",
         newRefreshToken,
-        getRefreshTokenCookieOptions(),
+        getRefreshTokenCookieOptions()
       );
     }
 
@@ -202,7 +199,7 @@ export const refreshToken = catchErrors(
         status: "success",
         message: "Access token refreshed",
       });
-  },
+  }
 );
 
 export const authorizeTo = (roles: RoleProps) =>
@@ -212,8 +209,8 @@ export const authorizeTo = (roles: RoleProps) =>
       return next(
         new AppError(
           "You do not have permission to perform this action.",
-          StatusCodes.FORBIDDEN,
-        ),
+          StatusCodes.FORBIDDEN
+        )
       );
     }
 

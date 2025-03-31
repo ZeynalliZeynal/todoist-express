@@ -25,7 +25,6 @@ const jwt_1 = require("../utils/jwt");
 const session_model_1 = __importDefault(require("../model/session.model"));
 const app_assert_1 = __importDefault(require("../utils/app-assert"));
 const zod_1 = require("zod");
-const deep_email_validator_1 = __importDefault(require("deep-email-validator"));
 exports.signup = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { otp, plan } = req.body;
     if (!req.query.token)
@@ -86,30 +85,28 @@ exports.sendLoginVerifyEmailController = (0, catch_errors_2.default)((req, res, 
     });
 }));
 exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g;
-    const validEmail = yield (0, deep_email_validator_1.default)(req.body.email);
-    let validName;
-    try {
-        validName = zod_1.z
-            .string()
-            .trim()
-            .regex(/^[A-Za-z\s]+$/, {
-            message: "Name must contain only letters",
-        })
-            .parse(req.body.name);
-    }
-    catch (err) {
-        const message = (_b = (_a = err.errors) === null || _a === void 0 ? void 0 : _a.at(0)) === null || _b === void 0 ? void 0 : _b.message;
-        return next(new app_error_1.default(message || "", http_status_codes_1.StatusCodes.BAD_REQUEST));
-    }
-    if (!validEmail.valid)
-        return next(new app_error_1.default(((_c = validEmail.validators.regex) === null || _c === void 0 ? void 0 : _c.reason) ||
-            ((_d = validEmail.validators.typo) === null || _d === void 0 ? void 0 : _d.reason) ||
-            ((_e = validEmail.validators.mx) === null || _e === void 0 ? void 0 : _e.reason) ||
-            ((_f = validEmail.validators.smtp) === null || _f === void 0 ? void 0 : _f.reason) ||
-            ((_g = validEmail.validators.disposable) === null || _g === void 0 ? void 0 : _g.reason) ||
-            "Email is not valid.", http_status_codes_1.StatusCodes.BAD_REQUEST));
-    const token = yield (0, auth_service_1.sendSignupEmailVerification)({ name: validName, email: req.body.email }, { city: req.location.city, country_name: req.location.country_name });
+    // const validEmail = await validate(req.body.email);
+    const validName = zod_1.z
+        .string()
+        .trim()
+        .regex(/^[A-Za-z\s]+$/, {
+        message: "Name must contain only letters",
+    })
+        .parse(req.body.name);
+    const validEmail = zod_1.z.string().email().trim().parse(req.body.email);
+    // if (!validEmail.valid)
+    //   return next(
+    //     new AppError(
+    //       validEmail.validators.regex?.reason ||
+    //         validEmail.validators.typo?.reason ||
+    //         validEmail.validators.mx?.reason ||
+    //         validEmail.validators.smtp?.reason ||
+    //         validEmail.validators.disposable?.reason ||
+    //         "Email is not valid.",
+    //       StatusCodes.BAD_REQUEST
+    //     )
+    //   );
+    const token = yield (0, auth_service_1.sendSignupEmailVerification)({ name: validName, email: validEmail }, { city: req.location.city, country_name: req.location.country_name });
     return (0, cookies_1.setVerifyCookies)({
         res,
         verifyToken: token,
