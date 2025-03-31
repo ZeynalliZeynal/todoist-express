@@ -76,12 +76,11 @@ const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, 
 });
 exports.createEmailVerificationOTP = createEmailVerificationOTP;
 const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, }) {
-    // ✅ Get user directly, no need for two DB queries
     const existingUser = yield user_model_1.default.findOne({ email });
     if (!existingUser)
         throw new app_error_1.default("Email is incorrect.", http_status_codes_1.StatusCodes.NOT_FOUND);
     const otp = crypto_1.default.randomInt(100000, 999999).toString();
-    const tokenPromise = (0, exports.createEmailVerificationOTP)({
+    const token = yield (0, exports.createEmailVerificationOTP)({
         otp,
         name: existingUser.name,
         email,
@@ -90,19 +89,15 @@ const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, funct
         city: existingUser.location.city,
         country_name: existingUser.location.country_name,
     };
-    // ✅ Send email asynchronously
-    tokenPromise.then((token) => {
-        const url = `${appOrigin}/auth/login/email?token=${token}`;
-        (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
-            otp,
-            url,
-            auth: "log in",
-            username: existingUser.name,
-            location,
-        }))).catch((err) => console.error("Email sending failed:", err));
-    });
-    // ✅ Return token without waiting for email
-    return tokenPromise;
+    const url = `${appOrigin}/auth/login/email?token=${token}`;
+    yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
+        otp,
+        url,
+        auth: "log in",
+        username: existingUser.name,
+        location,
+    })));
+    return token;
 });
 exports.sendLoginEmailVerification = sendLoginEmailVerification;
 const sendSignupEmailVerification = (_a, location_1) => __awaiter(void 0, [_a, location_1], void 0, function* ({ name, email, }, location) {
@@ -116,7 +111,7 @@ const sendSignupEmailVerification = (_a, location_1) => __awaiter(void 0, [_a, l
         name,
     }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
     const url = `${appOrigin}/auth/signup/email?token=${token}`;
-    (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
+    yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
         otp,
         url,
         auth: "sign up",
