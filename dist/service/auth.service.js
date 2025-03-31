@@ -62,69 +62,68 @@ const notification_type_model_1 = __importDefault(require("../model/notification
 const notification_settings_model_1 = __importDefault(require("../model/notification-settings.model"));
 const appOrigin = env_1.node_env === "development" ? env_1.client_dev_origin : env_1.client_prod_origin;
 const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, void 0, function* () {
-    const existingOtp = yield otp_model_1.default.exists({ email: data.email, isUsed: false });
-    if (existingOtp)
+    const existingOtp = yield otp_model_1.default.findOne({ email: data.email, isUsed: false });
+    if (existingOtp) {
         throw new app_error_1.default("Email verification in progress. Please check your inbox and spam folder.", http_status_codes_1.StatusCodes.CONFLICT, "EMAIL_VERIFICATION_CONFLICT" /* ErrorCodes.EMAIL_VERIFICATION_CONFLICT */);
-    const newOtp = yield otp_model_1.default.create({
+    }
+    yield otp_model_1.default.create({
         email: data.email,
         otp: data.otp,
         purpose,
         expiresAt: (0, date_fns_1.addMinutes)(Date.now(), 5),
     });
-    const token = (0, jwt_1.signToken)({ otpId: newOtp._id, name: data.name, email: data.email }, jwt_1.verificationTokenSignOptions);
-    return token;
+    return (0, jwt_1.signToken)({ name: data.name, email: data.email }, jwt_1.verificationTokenSignOptions);
 });
 exports.createEmailVerificationOTP = createEmailVerificationOTP;
 const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, }) {
+    // ✅ Get user directly, no need for two DB queries
     const existingUser = yield user_model_1.default.findOne({ email });
     if (!existingUser)
         throw new app_error_1.default("Email is incorrect.", http_status_codes_1.StatusCodes.NOT_FOUND);
     const otp = crypto_1.default.randomInt(100000, 999999).toString();
-    const token = yield (0, exports.createEmailVerificationOTP)({
+    const tokenPromise = (0, exports.createEmailVerificationOTP)({
         otp,
         name: existingUser.name,
         email,
     }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    const url = `${appOrigin}/auth/login/email?token=${token}`;
-    try {
-        yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
+    const location = {
+        city: existingUser.location.city,
+        country_name: existingUser.location.country_name,
+    };
+    // ✅ Send email asynchronously
+    tokenPromise.then((token) => {
+        const url = `${appOrigin}/auth/login/email?token=${token}`;
+        (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
             otp,
             url,
             auth: "log in",
             username: existingUser.name,
-            location: existingUser.location,
-        })));
-        return token;
-    }
-    catch (err) {
-        throw new app_error_1.default("Error occurred sending an email", http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR);
-    }
+            location,
+        }))).catch((err) => console.error("Email sending failed:", err));
+    });
+    // ✅ Return token without waiting for email
+    return tokenPromise;
 });
 exports.sendLoginEmailVerification = sendLoginEmailVerification;
 const sendSignupEmailVerification = (_a, location_1) => __awaiter(void 0, [_a, location_1], void 0, function* ({ name, email, }, location) {
+    const existingUser = yield user_model_1.default.exists({ email });
+    if (existingUser)
+        throw new app_error_1.default("Email is already in use.", http_status_codes_1.StatusCodes.CONFLICT);
     const otp = crypto_1.default.randomInt(100000, 999999).toString();
     const token = yield (0, exports.createEmailVerificationOTP)({
         email,
         otp,
         name,
     }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    const existingUser = yield user_model_1.default.exists({ email });
-    if (existingUser)
-        throw new app_error_1.default("Email is already in use.", http_status_codes_1.StatusCodes.CONFLICT);
     const url = `${appOrigin}/auth/signup/email?token=${token}`;
-    try {
-        yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
-            otp,
-            url,
-            auth: "sign up",
-            username: name,
-            location,
-        })));
-        return token;
-    }
-    catch (err) {
-        throw new app_error_1.default("Error occurred sending an email", http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR);
-    }
+    (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
+        otp,
+        url,
+        auth: "sign up",
+        username: name,
+        location,
+    })));
+    return token;
 });
 exports.sendSignupEmailVerification = sendSignupEmailVerification;
 const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {

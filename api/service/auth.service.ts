@@ -52,27 +52,27 @@ export const createEmailVerificationOTP = async (
   data: { name: string; email: string; otp: string },
   purpose: OTPPurpose,
 ) => {
-  const existingOtp = await OTP.exists({ email: data.email, isUsed: false });
-  if (existingOtp)
+  const existingOtp = await OTP.findOne({ email: data.email, isUsed: false });
+
+  if (existingOtp) {
     throw new AppError(
       "Email verification in progress. Please check your inbox and spam folder.",
       StatusCodes.CONFLICT,
       ErrorCodes.EMAIL_VERIFICATION_CONFLICT,
     );
+  }
 
-  const newOtp = await OTP.create({
+  await OTP.create({
     email: data.email,
     otp: data.otp,
     purpose,
     expiresAt: addMinutes(Date.now(), 5),
   });
 
-  const token = signToken(
-    { otpId: newOtp._id, name: data.name, email: data.email },
+  return signToken(
+    { name: data.name, email: data.email },
     verificationTokenSignOptions,
   );
-
-  return token;
 };
 
 export const sendLoginEmailVerification = async ({
@@ -80,14 +80,14 @@ export const sendLoginEmailVerification = async ({
 }: {
   email: string;
 }) => {
+  // ✅ Get user directly, no need for two DB queries
   const existingUser = await User.findOne({ email });
 
   if (!existingUser)
     throw new AppError("Email is incorrect.", StatusCodes.NOT_FOUND);
 
   const otp = crypto.randomInt(100000, 999999).toString();
-
-  const token = await createEmailVerificationOTP(
+  const tokenPromise = createEmailVerificationOTP(
     {
       otp,
       name: existingUser.name,
@@ -95,28 +95,32 @@ export const sendLoginEmailVerification = async ({
     },
     OTPPurpose.EMAIL_VERIFICATION,
   );
-  const url = `${appOrigin}/auth/login/email?token=${token}`;
 
-  try {
-    await sendMail({
+  const location = {
+    city: existingUser.location.city,
+    country_name: existingUser.location.country_name,
+  };
+
+  // ✅ Send email asynchronously
+  tokenPromise.then((token) => {
+    const url = `${appOrigin}/auth/login/email?token=${token}`;
+
+    sendMail({
       to: [email],
       ...otpVerificationEmail({
         otp,
         url,
         auth: "log in",
         username: existingUser.name,
-        location: existingUser.location,
+        location,
       }),
-    });
+    }).catch((err) => console.error("Email sending failed:", err));
+  });
 
-    return token;
-  } catch (err) {
-    throw new AppError(
-      "Error occurred sending an email",
-      StatusCodes.INTERNAL_SERVER_ERROR,
-    );
-  }
+  // ✅ Return token without waiting for email
+  return tokenPromise;
 };
+
 export const sendSignupEmailVerification = async (
   {
     name,
@@ -127,6 +131,10 @@ export const sendSignupEmailVerification = async (
   },
   location: UserDocument["location"],
 ) => {
+  const existingUser = await User.exists({ email });
+  if (existingUser)
+    throw new AppError("Email is already in use.", StatusCodes.CONFLICT);
+
   const otp = crypto.randomInt(100000, 999999).toString();
   const token = await createEmailVerificationOTP(
     {
@@ -136,31 +144,21 @@ export const sendSignupEmailVerification = async (
     },
     OTPPurpose.EMAIL_VERIFICATION,
   );
-  const existingUser = await User.exists({ email });
-  if (existingUser)
-    throw new AppError("Email is already in use.", StatusCodes.CONFLICT);
 
   const url = `${appOrigin}/auth/signup/email?token=${token}`;
 
-  try {
-    await sendMail({
-      to: [email],
-      ...otpVerificationEmail({
-        otp,
-        url,
-        auth: "sign up",
-        username: name,
-        location,
-      }),
-    });
+  sendMail({
+    to: [email],
+    ...otpVerificationEmail({
+      otp,
+      url,
+      auth: "sign up",
+      username: name,
+      location,
+    }),
+  });
 
-    return token;
-  } catch (err) {
-    throw new AppError(
-      "Error occurred sending an email",
-      StatusCodes.INTERNAL_SERVER_ERROR,
-    );
-  }
+  return token;
 };
 
 export const createAccount = async (data: CreateAccountParams) => {

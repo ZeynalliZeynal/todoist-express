@@ -11,7 +11,7 @@ import { StatusCodes } from "http-status-codes";
 import { UserDocument } from "../model/user.model";
 
 const taskOverdueSchedule = () => {
-  schedule("* * * * *", async () => {
+  schedule("5 * * * *", async () => {
     try {
       console.log(kleur.yellow("🔄 Running overdue task check..."));
 

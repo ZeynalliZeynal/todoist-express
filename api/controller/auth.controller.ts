@@ -163,7 +163,7 @@ export const sendSignupVerifyEmailController = catchErrors(
 
     const token = await sendSignupEmailVerification(
       { name: validName, email: req.body.email },
-      req.location,
+      { city: req.location.city, country_name: req.location.country_name },
     );
 
     return setVerifyCookies({

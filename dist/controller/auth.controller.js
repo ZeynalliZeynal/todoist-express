@@ -109,7 +109,7 @@ exports.sendSignupVerifyEmailController = (0, catch_errors_2.default)((req, res,
             ((_f = validEmail.validators.smtp) === null || _f === void 0 ? void 0 : _f.reason) ||
             ((_g = validEmail.validators.disposable) === null || _g === void 0 ? void 0 : _g.reason) ||
             "Email is not valid.", http_status_codes_1.StatusCodes.BAD_REQUEST));
-    const token = yield (0, auth_service_1.sendSignupEmailVerification)({ name: validName, email: req.body.email }, req.location);
+    const token = yield (0, auth_service_1.sendSignupEmailVerification)({ name: validName, email: req.body.email }, { city: req.location.city, country_name: req.location.country_name });
     return (0, cookies_1.setVerifyCookies)({
         res,
         verifyToken: token,

@@ -55,7 +55,7 @@ const notification_type_model_1 = __importDefault(require("../model/notification
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const http_status_codes_1 = require("http-status-codes");
 const taskOverdueSchedule = () => {
-    (0, node_cron_1.schedule)("* * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, node_cron_1.schedule)("5 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             console.log(kleur_1.default.yellow("🔄 Running overdue task check..."));
             const now = new Date();
