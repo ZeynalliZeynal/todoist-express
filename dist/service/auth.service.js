@@ -66,13 +66,13 @@ const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, 
     if (existingOtp) {
         throw new app_error_1.default("Email verification in progress. Please check your inbox and spam folder.", http_status_codes_1.StatusCodes.CONFLICT, "EMAIL_VERIFICATION_CONFLICT" /* ErrorCodes.EMAIL_VERIFICATION_CONFLICT */);
     }
-    yield otp_model_1.default.create({
+    const otp = yield otp_model_1.default.create({
         email: data.email,
         otp: data.otp,
         purpose,
         expiresAt: (0, date_fns_1.addMinutes)(Date.now(), 5),
     });
-    return (0, jwt_1.signToken)({ name: data.name, email: data.email }, jwt_1.verificationTokenSignOptions);
+    return (0, jwt_1.signToken)({ name: data.name, email: data.email, otpId: otp._id }, jwt_1.verificationTokenSignOptions);
 });
 exports.createEmailVerificationOTP = createEmailVerificationOTP;
 const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, }) {
@@ -236,6 +236,7 @@ const verifyOTP = (otp, token, purpose) => __awaiter(void 0, void 0, void 0, fun
     });
     if (!payload)
         throw new app_error_1.default("Token is invalid or expired.", http_status_codes_1.StatusCodes.UNAUTHORIZED);
+    console.log(payload);
     const existingOtp = yield otp_model_1.default.findById({
         _id: payload.otpId,
         email: payload.email,

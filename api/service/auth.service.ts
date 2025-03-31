@@ -62,7 +62,7 @@ export const createEmailVerificationOTP = async (
     );
   }
 
-  await OTP.create({
+  const otp = await OTP.create({
     email: data.email,
     otp: data.otp,
     purpose,
@@ -70,7 +70,7 @@ export const createEmailVerificationOTP = async (
   });
 
   return signToken(
-    { name: data.name, email: data.email },
+    { name: data.name, email: data.email, otpId: otp._id },
     verificationTokenSignOptions
   );
 };
@@ -327,6 +327,7 @@ export const verifyOTP = async (
       StatusCodes.UNAUTHORIZED
     );
 
+  console.log(payload);
   const existingOtp = await OTP.findById({
     _id: payload.otpId,
     email: payload.email,
