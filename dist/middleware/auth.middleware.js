@@ -28,7 +28,7 @@ exports.authenticate = (0, catch_errors_1.default)((req, res, next) => __awaiter
     if (error || !payload)
         return next(new app_error_1.default("Invalid or expired token. Try to log in again.", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     const currentSession = yield session_model_1.default.findById(payload.sessionId);
-    const currentUser = yield user_model_1.default.findById(payload.userId).select("+role -__v");
+    const currentUser = yield user_model_1.default.findById(payload.userId).select("+role -__v +verified");
     if (!currentUser)
         return next(new app_error_1.default("Token is no longer belong to this user. Please log in again", http_status_codes_1.StatusCodes.UNAUTHORIZED));
     if (!currentSession)

@@ -99,7 +99,7 @@ export const logout = catchErrors(async (req, res, next) => {
 
   await User.findByIdAndUpdate(
     payload.userId,
-    { verified: false },
+    { verified: { $ne: false } },
     { runValidators: false },
   );
 

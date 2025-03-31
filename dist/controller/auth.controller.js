@@ -64,7 +64,7 @@ exports.logout = (0, catch_errors_2.default)((req, res, next) => __awaiter(void 
     if (!payload || !payload.sessionId)
         return next(new app_error_1.default("You are not logged in.", http_status_codes_1.StatusCodes.BAD_REQUEST));
     yield session_model_1.default.findByIdAndDelete(payload.sessionId);
-    yield user_model_1.default.findByIdAndUpdate(payload.userId, { verified: false }, { runValidators: false });
+    yield user_model_1.default.findByIdAndUpdate(payload.userId, { verified: { $ne: false } }, { runValidators: false });
     return (0, cookies_1.clearAuthCookies)(res).status(http_status_codes_1.StatusCodes.OK).json({
         status: "success",
         message: "Logout successful",

@@ -29,6 +29,10 @@ import { getUserAgent } from "./middleware/user-agent.middleware";
 import notificationRouter from "./router/notification.router";
 import notificationTypeRouter from "./router/notification-type.router";
 import notificationSettingsRouter from "./router/notification-settings.router";
+import permissionRouter from "./router/permission.router";
+import projectMemberRouter from "./router/project-member.router";
+import membershipTypeRouter from "./router/membership-type.router";
+import memberRouter from "./router/member.router";
 
 const API_PREFIX = "/api/v1/";
 
@@ -54,7 +58,7 @@ if (node_env === "production") app.use("/api/auth", limiter);
 app.use(
   express.json({
     limit: "10mb",
-  })
+  }),
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -64,10 +68,10 @@ app.use(
       node_env === "development"
         ? client_dev_origin
         : node_env === "production"
-        ? client_prod_origin
-        : "*",
+          ? client_prod_origin
+          : "*",
     credentials: true,
-  })
+  }),
 );
 
 app.use(cookieParser());
@@ -88,19 +92,29 @@ app.get("/", (req, res) => {
   });
 });
 
+// admin routes
+app.use(API_PREFIX + "admin/permissions", permissionRouter);
+app.use(API_PREFIX + "admin/notification-types", notificationTypeRouter);
+app.use(API_PREFIX + "admin/users", userRouter);
+app.use(API_PREFIX + "membership-types", membershipTypeRouter);
+
+// root routes
+app.use(API_PREFIX + "members", memberRouter);
+
 app.use(API_PREFIX + "tasks", taskRouter);
 app.use(API_PREFIX + "task-tags", taskTagRouter);
+
 app.use(API_PREFIX + "projects", projectRouter);
+app.use(API_PREFIX + "project-members", projectMemberRouter);
+
 app.use(API_PREFIX + "templates", templateRouter);
 app.use(API_PREFIX + "template-categories", templateCategoriesRouter);
 app.use(API_PREFIX + "auth", authRouter);
-app.use(API_PREFIX + "users", userRouter);
 app.use(API_PREFIX + "profile", profileRouter);
 app.use(API_PREFIX + "profile/sessions", sessionRouter);
 app.use(API_PREFIX + "plans", planRouter);
 app.use(API_PREFIX + "storage", storageRouter);
 app.use(API_PREFIX + "notifications", notificationRouter);
-app.use(API_PREFIX + "notification-types", notificationTypeRouter);
 app.use(API_PREFIX + "notification-settings", notificationSettingsRouter);
 
 app.use(
@@ -115,11 +129,11 @@ app.use(
         userAgent: req.userAgent,
       },
     });
-  }
+  },
 );
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
-  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND))
+  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
 );
 
 app.use(errorHandler);

@@ -27,7 +27,20 @@ const schema = new mongoose_1.default.Schema({
         required: true,
         index: true,
     },
-    members: {},
+    members: [
+        {
+            member: {
+                type: mongoose_1.default.Schema.Types.ObjectId,
+                ref: "ProjectMember",
+            },
+            permissions: [
+                {
+                    type: mongoose_1.default.Schema.Types.ObjectId,
+                    ref: "Permission",
+                },
+            ],
+        },
+    ],
     slug: {
         type: String,
         index: true,

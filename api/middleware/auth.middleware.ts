@@ -30,7 +30,7 @@ export const authenticate: RequestHandler = catchErrors(
     const currentSession = await Session.findById(payload.sessionId);
 
     const currentUser = await User.findById(payload.userId).select(
-      "+role -__v",
+      "+role -__v +verified",
     );
 
     if (!currentUser)

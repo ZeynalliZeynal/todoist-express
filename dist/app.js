@@ -39,6 +39,10 @@ const user_agent_middleware_1 = require("./middleware/user-agent.middleware");
 const notification_router_1 = __importDefault(require("./router/notification.router"));
 const notification_type_router_1 = __importDefault(require("./router/notification-type.router"));
 const notification_settings_router_1 = __importDefault(require("./router/notification-settings.router"));
+const permission_router_1 = __importDefault(require("./router/permission.router"));
+const project_member_router_1 = __importDefault(require("./router/project-member.router"));
+const membership_type_router_1 = __importDefault(require("./router/membership-type.router"));
+const member_router_1 = __importDefault(require("./router/member.router"));
 const API_PREFIX = "/api/v1/";
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
@@ -82,19 +86,25 @@ app.get("/", (req, res) => {
         },
     });
 });
+// admin routes
+app.use(API_PREFIX + "admin/permissions", permission_router_1.default);
+app.use(API_PREFIX + "admin/notification-types", notification_type_router_1.default);
+app.use(API_PREFIX + "admin/users", user_router_1.default);
+app.use(API_PREFIX + "membership-types", membership_type_router_1.default);
+// root routes
+app.use(API_PREFIX + "members", member_router_1.default);
 app.use(API_PREFIX + "tasks", task_router_1.default);
 app.use(API_PREFIX + "task-tags", task_tag_router_1.default);
 app.use(API_PREFIX + "projects", project_router_1.default);
+app.use(API_PREFIX + "project-members", project_member_router_1.default);
 app.use(API_PREFIX + "templates", template_router_1.default);
 app.use(API_PREFIX + "template-categories", template_categories_router_1.default);
 app.use(API_PREFIX + "auth", auth_router_1.default);
-app.use(API_PREFIX + "users", user_router_1.default);
 app.use(API_PREFIX + "profile", profile_router_1.default);
 app.use(API_PREFIX + "profile/sessions", session_router_1.default);
 app.use(API_PREFIX + "plans", plan_router_1.default);
 app.use(API_PREFIX + "storage", storage_router_1.default);
 app.use(API_PREFIX + "notifications", notification_router_1.default);
-app.use(API_PREFIX + "notification-types", notification_type_router_1.default);
 app.use(API_PREFIX + "notification-settings", notification_settings_router_1.default);
 app.use(API_PREFIX + "ping", user_agent_middleware_1.getUserAgent, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(http_status_codes_1.StatusCodes.OK).json({

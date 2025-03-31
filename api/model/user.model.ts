@@ -27,7 +27,7 @@ export interface UserDocument extends mongoose.Document {
 
   comparePasswords(
     candidatePassword: string,
-    userPassword: string
+    userPassword: string,
   ): Promise<boolean>;
 
   isPasswordChangedAfter(JWTTimestamp?: number): boolean;
@@ -87,8 +87,8 @@ const schema = new mongoose.Schema<UserDocument>(
     photo: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    verifiedAt: Date,
-    verified: Boolean,
+    verifiedAt: { type: Date, select: false },
+    verified: { type: Boolean, select: false },
     verificationToken: String,
     location: {
       type: Object,
@@ -113,7 +113,7 @@ const schema = new mongoose.Schema<UserDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
 
 schema.virtual("tasks", {
@@ -159,7 +159,7 @@ schema.method(
   "comparePasswords",
   async function (candidatePassword: string, userPassword: string) {
     return await bcrypt.compare(candidatePassword, userPassword);
-  }
+  },
 );
 
 // schema.method("isPasswordChangedAfter", function (JWTTimestamp) {
@@ -196,7 +196,7 @@ schema.method(
 // });
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {
-  this.select("-__v");
+  this.select("-__v -createdAt -updatedAt");
   next();
 });
 

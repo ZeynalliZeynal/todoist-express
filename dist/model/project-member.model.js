@@ -12,26 +12,30 @@ exports.PROJECT_MEMBER_STATUSES = [
     "rejected",
 ];
 const schema = new mongoose_1.default.Schema({
-    user: {
+    member: {
         type: mongoose_1.default.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Member",
         required: true,
     },
-    role: {
-        type: String,
-        enum: exports.PROJECT_MEMBER_ROLES,
-        default: "member",
-    },
-    joinedAt: {
-        type: Date,
-        default: Date.now,
-    },
-    leftAt: Date,
-    permissions: [
+    projects: [
         {
-            type: mongoose_1.default.Schema.Types.ObjectId,
-            ref: "Permission",
-            required: true,
+            project: {
+                type: mongoose_1.default.Schema.Types.ObjectId,
+                ref: "Project",
+                required: true,
+                unique: [true, "This user is already member to this project."],
+            },
+            joinedAt: Date,
+            role: {
+                type: String,
+                enum: exports.PROJECT_MEMBER_ROLES,
+                default: "member",
+            },
+            status: {
+                type: String,
+                enum: exports.PROJECT_MEMBER_STATUSES,
+                default: "pending",
+            },
         },
     ],
 }, {

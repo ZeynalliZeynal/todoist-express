@@ -11,38 +11,42 @@ type ProjectMemberRole = (typeof PROJECT_MEMBER_ROLES)[number];
 type ProjectMemberStatus = (typeof PROJECT_MEMBER_STATUSES)[number];
 
 export interface ProjectMemberDocument extends mongoose.Document {
-  joinedAt: Date;
-  leftAt: Date;
+  projects: {
+    project: mongoose.Types.ObjectId;
+    status: ProjectMemberStatus;
+    role: ProjectMemberRole;
+    joinedAt: Date;
+  }[];
 
-  role: ProjectMemberRole;
-  status: ProjectMemberStatus;
-
-  permissions: mongoose.Types.ObjectId[];
-  user: mongoose.Types.ObjectId;
+  member: mongoose.Types.ObjectId;
 }
 
 const schema = new mongoose.Schema<ProjectMemberDocument>(
   {
-    user: {
+    member: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Member",
       required: true,
     },
-    role: {
-      type: String,
-      enum: PROJECT_MEMBER_ROLES,
-      default: "member",
-    },
-    joinedAt: {
-      type: Date,
-      default: Date.now,
-    },
-    leftAt: Date,
-    permissions: [
+    projects: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Permission",
-        required: true,
+        project: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Project",
+          required: true,
+          unique: [true, "This user is already member to this project."],
+        },
+        joinedAt: Date,
+        role: {
+          type: String,
+          enum: PROJECT_MEMBER_ROLES,
+          default: "member",
+        },
+        status: {
+          type: String,
+          enum: PROJECT_MEMBER_STATUSES,
+          default: "pending",
+        },
       },
     ],
   },

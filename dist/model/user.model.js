@@ -65,8 +65,8 @@ const schema = new mongoose_1.default.Schema({
     photo: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    verifiedAt: Date,
-    verified: Boolean,
+    verifiedAt: { type: Date, select: false },
+    verified: { type: Boolean, select: false },
     verificationToken: String,
     location: {
         type: Object,
@@ -160,7 +160,7 @@ schema.method("comparePasswords", function (candidatePassword, userPassword) {
 //   return verificationToken;
 // });
 schema.pre(/^find/, function (next) {
-    this.select("-__v");
+    this.select("-__v -createdAt -updatedAt");
     next();
 });
 exports.default = mongoose_1.default.model("User", schema);
