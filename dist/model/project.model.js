@@ -27,7 +27,6 @@ const schema = new mongoose_1.default.Schema({
         required: true,
         index: true,
     },
-    members: {},
     slug: {
         type: String,
         index: true,

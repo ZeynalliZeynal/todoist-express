@@ -8,7 +8,6 @@ export interface ProjectDocument extends mongoose.Document {
   favorite: Boolean;
   slug: string;
 
-  members: mongoose.Types.ObjectId[];
   user: mongoose.Types.ObjectId;
 }
 
@@ -31,11 +30,10 @@ const schema = new mongoose.Schema<ProjectDocument>(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", 
       required: true,
       index: true,
     },
-    members: {},
     slug: {
       type: String,
       index: true,
