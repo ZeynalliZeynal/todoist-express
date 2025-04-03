@@ -16,7 +16,7 @@ const schema = new mongoose_1.default.Schema({
         index: true,
         required: true,
     },
-    active: {
+    activated: {
         type: Boolean,
         default: true,
     },

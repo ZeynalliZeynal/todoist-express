@@ -10,7 +10,7 @@ export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 
 export interface MemberDocument extends mongoose.Document {
   user: mongoose.Types.ObjectId;
-  active: boolean;
+  activated: boolean;
   memberships: [
     {
       entity: mongoose.Types.ObjectId;
@@ -19,7 +19,7 @@ export interface MemberDocument extends mongoose.Document {
       role: MemberRole;
       invited: boolean;
       permissions: mongoose.Types.ObjectId[];
-    },
+    }
   ];
 }
 
@@ -32,7 +32,7 @@ const schema = new mongoose.Schema<MemberDocument>(
       index: true,
       required: true,
     },
-    active: {
+    activated: {
       type: Boolean,
       default: true,
     },
@@ -73,7 +73,7 @@ const schema = new mongoose.Schema<MemberDocument>(
       virtuals: true,
     },
     timestamps: true,
-  },
+  }
 );
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {

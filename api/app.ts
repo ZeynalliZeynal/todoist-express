@@ -1,34 +1,52 @@
-import express, { NextFunction, Request, Response } from "express";
-import morgan from "morgan";
-import taskRouter from "./router/task.router";
-import templateRouter from "./router/template.router";
-import AppError from "./utils/app-error";
-import { errorHandler } from "./middleware/error-handler";
-import authRouter from "./router/auth.router";
-import userRouter from "./router/user.router";
-import rateLimit from "express-rate-limit";
-import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
-import hpp from "hpp";
+// Core and third-party modules
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import express, { NextFunction, Request, Response } from "express";
+import helmet from "helmet";
+import hpp from "hpp";
+import mongoSanitize from "express-mongo-sanitize";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
+
+// Constants
 import {
   client_dev_origin,
   client_prod_origin,
   node_env,
 } from "./constants/env";
-import cookieParser from "cookie-parser";
-import { StatusCodes } from "http-status-codes";
-import profileRouter from "./router/profile.router";
-import sessionRouter from "./router/session.router";
-import planRouter from "./router/plan.router";
-import templateCategoriesRouter from "./router/template-categories.router";
-import projectRouter from "./router/project.router";
-import storageRouter from "./router/storage.router";
-import taskTagRouter from "./router/task-tag.router";
+import ResponseStatues from "./constants/response-statues";
+
+// Controllers and middleware
+import { authorizeTo } from "./controller/auth.controller";
+import { authenticate } from "./middleware/auth.middleware";
+import { errorHandler } from "./middleware/error-handler";
 import { getUserAgent } from "./middleware/user-agent.middleware";
+
+// Models
+import MemberModel from "./model/member.model";
+import UserModel from "./model/user.model";
+
+// Routers
+import authRouter from "./router/auth.router";
+import memberRouter from "./router/member.router";
 import notificationRouter from "./router/notification.router";
-import notificationTypeRouter from "./router/notification-type.router";
 import notificationSettingsRouter from "./router/notification-settings.router";
+import notificationTypeRouter from "./router/notification-type.router";
+import planRouter from "./router/plan.router";
+import profileRouter from "./router/profile.router";
+import projectRouter from "./router/project.router";
+import sessionRouter from "./router/session.router";
+import storageRouter from "./router/storage.router";
+import taskRouter from "./router/task.router";
+import taskTagRouter from "./router/task-tag.router";
+import templateCategoriesRouter from "./router/template-categories.router";
+import templateRouter from "./router/template.router";
+import userRouter from "./router/user.router";
+
+// Utilities
+import AppError from "./utils/app-error";
+import catchErrors from "./utils/catch-errors";
+import { StatusCodes } from "http-status-codes";
 
 const API_PREFIX = "/api/v1/";
 
@@ -102,6 +120,26 @@ app.use(API_PREFIX + "storage", storageRouter);
 app.use(API_PREFIX + "notifications", notificationRouter);
 app.use(API_PREFIX + "notification-types", notificationTypeRouter);
 app.use(API_PREFIX + "notification-settings", notificationSettingsRouter);
+app.use(API_PREFIX + "members", memberRouter);
+
+app.post(
+  API_PREFIX + "update",
+  authenticate,
+  authorizeTo(["admin"]),
+  catchErrors(async (req, res, next) => {
+    // const users = await UserModel.find();
+    // users.forEach(async (user) => {
+    //   await MemberModel.create({
+    //     user: user._id,
+    //   });
+    // });
+
+    res.status(StatusCodes.OK).json({
+      status: ResponseStatues.SUCCESS,
+      message: "No update found",
+    });
+  })
+);
 
 app.use(
   API_PREFIX + "ping",
