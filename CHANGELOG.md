@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.15.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.14.1...v3.15.0) (2025-04-03)
+
+
+### Features
+
+* add invite member feature ([242ba99](https://github.com/ZeynalliZeynal/todoist-server/commit/242ba996f9f0534bd444c9e5252944d05afdec87))
+
+
+### Bug Fixes
+
+* add another handler in error-handler to handle CastError and duplicate value error from mongoose ([5f1f434](https://github.com/ZeynalliZeynal/todoist-server/commit/5f1f434667ce67accf9af1a05ecd288d731b7807))
+* otpId is not set in payload ([39a998d](https://github.com/ZeynalliZeynal/todoist-server/commit/39a998da7934723ecf82fbdfe449319f9dd5de42))
+
 ### [3.14.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.14.0...v3.14.1) (2025-03-30)
 
 
