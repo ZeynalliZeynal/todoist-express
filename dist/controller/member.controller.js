@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.inviteMember = exports.getMember = exports.getMembers = void 0;
+exports.rejectMembershipInvitation = exports.approveMembershipInvitation = exports.inviteMembers = exports.getMember = exports.getMembers = exports.getMemberships = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const member_model_1 = __importStar(require("../model/member.model"));
 const http_status_codes_1 = require("http-status-codes");
@@ -53,12 +53,23 @@ const zod_1 = require("zod");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const project_model_1 = __importDefault(require("../model/project.model"));
+exports.getMemberships = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const memberships = yield member_model_1.default.find({
+        user: req.userId,
+    });
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success" /* ResponseStatues.SUCCESS */,
+        data: {
+            memberships,
+        },
+    });
+}));
 exports.getMembers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const members = yield member_model_1.default.find({
         activated: true,
     })
         .populate("user", "name email avatar")
-        .select("-memberships");
+        .select("-memberships.permissions");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         message: "Members fetched successfully",
@@ -87,32 +98,73 @@ exports.getMember = (0, catch_errors_1.default)((req, res, next) => __awaiter(vo
         },
     });
 }));
-exports.inviteMember = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const validId = zod_1.z.string().parse(req.params.id);
+exports.inviteMembers = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = zod_1.z
         .object({
         entity: zod_1.z.string(),
         entityType: zod_1.z.enum(member_model_1.MEMBER_ENTITY_TYPES),
+        members: zod_1.z.array(zod_1.z.string()).min(1, "At least one member required"),
     })
         .strict()
         .parse(req.body);
     let entity;
     if (validData.entityType === "project")
         entity = yield project_model_1.default.findById(validData.entity);
-    if (!entity)
+    if (!entity) {
         return next(new app_error_1.default("An entity id must be provided", http_status_codes_1.StatusCodes.BAD_REQUEST));
-    const member = yield member_model_1.default.findByIdAndUpdate(validId, {
+    }
+    const membersToUpdate = yield member_model_1.default.find({
+        _id: { $in: validData.members },
         memberships: {
-            $push: {
-                entity,
+            $not: {
+                $elemMatch: {
+                    entity: validData.entity,
+                    entityType: validData.entityType,
+                },
+            },
+        },
+    });
+    if (membersToUpdate.length === 0) {
+        return next(new app_error_1.default("All selected users are already invited, rejected, or approved this invitation.", http_status_codes_1.StatusCodes.CONFLICT));
+    }
+    const memberIds = membersToUpdate.map((member) => member._id);
+    const result = yield member_model_1.default.updateMany({ _id: { $in: memberIds } }, {
+        $push: {
+            memberships: {
+                invited: true,
+                entity: validData.entity,
                 entityType: validData.entityType,
             },
         },
-    }, { new: true }).populate("user", "name email avatar");
-    if (!member)
-        return next(new app_error_1.default("No member found with this id", http_status_codes_1.StatusCodes.NOT_FOUND));
+    });
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
-        message: `Invitation request has been sent to ${member.user.email}`,
+        message: `Invitation request has been sent to ${result.modifiedCount} user(s)`,
+    });
+}));
+exports.approveMembershipInvitation = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const validEntityId = zod_1.z.string().parse(req.params.id);
+    const memberships = yield member_model_1.default.findOneAndUpdate({ user: req.userId, "memberships.entity": validEntityId }, { $set: { "memberships.$.status": "approved" } }, { new: true });
+    if (!memberships)
+        return next(new app_error_1.default("No membership found with this entity", http_status_codes_1.StatusCodes.NOT_FOUND));
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success" /* ResponseStatues.SUCCESS */,
+        message: `You are now a member to an entity`,
+        data: {
+            memberships,
+        },
+    });
+}));
+exports.rejectMembershipInvitation = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const validEntityId = zod_1.z.string().parse(req.params.id);
+    const memberships = yield member_model_1.default.findOneAndUpdate({ user: req.userId, "memberships.entity": validEntityId }, { $set: { "memberships.$.status": "rejected" } }, { new: true });
+    if (!memberships)
+        return next(new app_error_1.default("No membership found with this entity", http_status_codes_1.StatusCodes.NOT_FOUND));
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success" /* ResponseStatues.SUCCESS */,
+        message: `You rejected to be member of this entity`,
+        data: {
+            memberships,
+        },
     });
 }));

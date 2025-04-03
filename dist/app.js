@@ -28,6 +28,7 @@ const auth_controller_1 = require("./controller/auth.controller");
 const auth_middleware_1 = require("./middleware/auth.middleware");
 const error_handler_1 = require("./middleware/error-handler");
 const user_agent_middleware_1 = require("./middleware/user-agent.middleware");
+// Models
 // Routers
 const auth_router_1 = __importDefault(require("./router/auth.router"));
 const member_router_1 = __importDefault(require("./router/member.router"));

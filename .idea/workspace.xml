@@ -6,6 +6,22 @@
   <component name="ChangeListManager">
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controller/member.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/member.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controller/storage.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/storage.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/middleware/user-agent.middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/user-agent.middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/model/member.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/model/member.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/router/member.router.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/router/member.router.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/service/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/service/storage.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/storage.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/controller/member.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/member.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/middleware/user-agent.middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/middleware/user-agent.middleware.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/model/member.model.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/model/member.model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/member.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/member.router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/service/auth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/auth.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,7 +229,9 @@
       <workItem from="1743354621530" duration="3437000" />
       <workItem from="1743427353838" duration="448000" />
       <workItem from="1743437585386" duration="4000" />
-      <workItem from="1743622504972" duration="3949000" />
+      <workItem from="1743622504972" duration="4443000" />
+      <workItem from="1743706968841" duration="287000" />
+      <workItem from="1743707262143" duration="5147000" />
     </task>
     <servers />
   </component>

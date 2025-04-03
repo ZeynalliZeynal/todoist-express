@@ -23,8 +23,6 @@ import { errorHandler } from "./middleware/error-handler";
 import { getUserAgent } from "./middleware/user-agent.middleware";
 
 // Models
-import MemberModel from "./model/member.model";
-import UserModel from "./model/user.model";
 
 // Routers
 import authRouter from "./router/auth.router";
@@ -72,7 +70,7 @@ if (node_env === "production") app.use("/api/auth", limiter);
 app.use(
   express.json({
     limit: "10mb",
-  })
+  }),
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -82,10 +80,10 @@ app.use(
       node_env === "development"
         ? client_dev_origin
         : node_env === "production"
-        ? client_prod_origin
-        : "*",
+          ? client_prod_origin
+          : "*",
     credentials: true,
-  })
+  }),
 );
 
 app.use(cookieParser());
@@ -138,7 +136,7 @@ app.post(
       status: ResponseStatues.SUCCESS,
       message: "No update found",
     });
-  })
+  }),
 );
 
 app.use(
@@ -153,11 +151,11 @@ app.use(
         userAgent: req.userAgent,
       },
     });
-  }
+  },
 );
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
-  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND))
+  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
 );
 
 app.use(errorHandler);

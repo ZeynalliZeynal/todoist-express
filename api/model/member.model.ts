@@ -19,7 +19,7 @@ export interface MemberDocument extends mongoose.Document {
       role: MemberRole;
       invited: boolean;
       permissions: mongoose.Types.ObjectId[];
-    }
+    },
   ];
 }
 
@@ -73,7 +73,7 @@ const schema = new mongoose.Schema<MemberDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {

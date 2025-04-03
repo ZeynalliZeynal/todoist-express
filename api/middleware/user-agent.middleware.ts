@@ -6,7 +6,9 @@ import DeviceDetector from "device-detector-js";
 
 export const getUserAgent: RequestHandler = catchErrors(
   async (req, res, next) => {
-    const ip = requestIp.getClientIp(req);
+    const ip =
+      (req.headers["x-forwarded-for"] as string)?.split(",")[0] ||
+      requestIp.getClientIp(req);
     const deviceDetector = new DeviceDetector();
     const userAgent = deviceDetector.parse(req.headers["user-agent"] || "");
 
@@ -22,5 +24,5 @@ export const getUserAgent: RequestHandler = catchErrors(
     req.location = location || "unknown";
     req.userAgent = userAgent;
     next();
-  }
+  },
 );

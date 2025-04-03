@@ -18,7 +18,9 @@ const request_ip_1 = __importDefault(require("request-ip"));
 const axios_1 = __importDefault(require("axios"));
 const device_detector_js_1 = __importDefault(require("device-detector-js"));
 exports.getUserAgent = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const ip = request_ip_1.default.getClientIp(req);
+    var _a;
+    const ip = ((_a = req.headers["x-forwarded-for"]) === null || _a === void 0 ? void 0 : _a.split(",")[0]) ||
+        request_ip_1.default.getClientIp(req);
     const deviceDetector = new device_detector_js_1.default();
     const userAgent = deviceDetector.parse(req.headers["user-agent"] || "");
     let location;
