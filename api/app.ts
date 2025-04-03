@@ -23,7 +23,6 @@ import { errorHandler } from "./middleware/error-handler";
 import { getUserAgent } from "./middleware/user-agent.middleware";
 
 // Models
-
 // Routers
 import authRouter from "./router/auth.router";
 import memberRouter from "./router/member.router";
@@ -45,6 +44,7 @@ import userRouter from "./router/user.router";
 import AppError from "./utils/app-error";
 import catchErrors from "./utils/catch-errors";
 import { StatusCodes } from "http-status-codes";
+import projectMemberRouter from "./router/project-member.router";
 
 const API_PREFIX = "/api/v1/";
 
@@ -119,6 +119,7 @@ app.use(API_PREFIX + "notifications", notificationRouter);
 app.use(API_PREFIX + "notification-types", notificationTypeRouter);
 app.use(API_PREFIX + "notification-settings", notificationSettingsRouter);
 app.use(API_PREFIX + "members", memberRouter);
+app.use(API_PREFIX + "project-members", projectMemberRouter);
 
 app.post(
   API_PREFIX + "update",

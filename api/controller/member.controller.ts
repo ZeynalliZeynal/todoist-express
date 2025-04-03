@@ -5,7 +5,6 @@ import ResponseStatues from "../constants/response-statues";
 import { z } from "zod";
 import UserModel from "../model/user.model";
 import AppError from "../utils/app-error";
-import ProjectModel from "../model/project.model";
 
 export const getMemberships = catchErrors(async (req, res, next) => {
   const memberships = await MemberModel.find({
@@ -73,16 +72,6 @@ export const inviteMembers = catchErrors(async (req, res, next) => {
     .strict()
     .parse(req.body);
 
-  let entity;
-  if (validData.entityType === "project")
-    entity = await ProjectModel.findById(validData.entity);
-
-  if (!entity) {
-    return next(
-      new AppError("An entity id must be provided", StatusCodes.BAD_REQUEST),
-    );
-  }
-
   const membersToUpdate = await MemberModel.find({
     _id: { $in: validData.members },
     memberships: {
@@ -125,12 +114,68 @@ export const inviteMembers = catchErrors(async (req, res, next) => {
   });
 });
 
+export const requestToJoinAsMember = catchErrors(async (req, res, next) => {
+  const validData = z
+    .object({
+      entity: z.string(),
+      entityType: z.enum(MEMBER_ENTITY_TYPES),
+    })
+    .strict()
+    .parse(req.body);
+
+  const existingMembership = await MemberModel.findOne({
+    user: req.userId,
+    memberships: {
+      $elemMatch: {
+        entity: validData.entity,
+        entityType: validData.entityType,
+      },
+    },
+  });
+
+  if (existingMembership) {
+    return next(
+      new AppError(
+        "You have already requested to join this entity.",
+        StatusCodes.CONFLICT,
+      ),
+    );
+  }
+  const result = await MemberModel.findOneAndUpdate(
+    { user: req.userId },
+    {
+      $push: {
+        memberships: {
+          entity: validData.entity,
+          entityType: validData.entityType,
+          status: "pending",
+          invited: false,
+        },
+      },
+    },
+    { new: true, upsert: true },
+  );
+
+  res.status(StatusCodes.OK).json({
+    status: ResponseStatues.SUCCESS,
+    message: `Invitation request has been sent.`,
+    data: {
+      memberships: result,
+    },
+  });
+});
+
 export const approveMembershipInvitation = catchErrors(
   async (req, res, next) => {
     const validEntityId = z.string().parse(req.params.id);
 
     const memberships = await MemberModel.findOneAndUpdate(
-      { user: req.userId, "memberships.entity": validEntityId },
+      {
+        user: req.userId,
+        "memberships.entity": validEntityId,
+        "memberships.status": "pending",
+        "memberships.invited": true,
+      },
       { $set: { "memberships.$.status": "approved" } },
       { new: true },
     );
@@ -158,7 +203,12 @@ export const rejectMembershipInvitation = catchErrors(
     const validEntityId = z.string().parse(req.params.id);
 
     const memberships = await MemberModel.findOneAndUpdate(
-      { user: req.userId, "memberships.entity": validEntityId },
+      {
+        user: req.userId,
+        "memberships.entity": validEntityId,
+        "memberships.status": "pending",
+        "memberships.invited": true,
+      },
       { $set: { "memberships.$.status": "rejected" } },
       { new: true },
     );

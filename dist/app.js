@@ -49,6 +49,7 @@ const user_router_1 = __importDefault(require("./router/user.router"));
 const app_error_1 = __importDefault(require("./utils/app-error"));
 const catch_errors_1 = __importDefault(require("./utils/catch-errors"));
 const http_status_codes_1 = require("http-status-codes");
+const project_member_router_1 = __importDefault(require("./router/project-member.router"));
 const API_PREFIX = "/api/v1/";
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
@@ -107,6 +108,7 @@ app.use(API_PREFIX + "notifications", notification_router_1.default);
 app.use(API_PREFIX + "notification-types", notification_type_router_1.default);
 app.use(API_PREFIX + "notification-settings", notification_settings_router_1.default);
 app.use(API_PREFIX + "members", member_router_1.default);
+app.use(API_PREFIX + "project-members", project_member_router_1.default);
 app.post(API_PREFIX + "update", auth_middleware_1.authenticate, (0, auth_controller_1.authorizeTo)(["admin"]), (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // const users = await UserModel.find();
     // users.forEach(async (user) => {

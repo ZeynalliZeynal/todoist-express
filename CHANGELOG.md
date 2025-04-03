@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.18.0
+
+### Minor Changes
+
+- Request to join to others' entities. Approve or reject project member requests
+
 ## 3.17.0
 
 ### Minor Changes
