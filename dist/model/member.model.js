@@ -16,6 +16,10 @@ const schema = new mongoose_1.default.Schema({
         index: true,
         required: true,
     },
+    description: {
+        type: String,
+        trim: true,
+    },
     activated: {
         type: Boolean,
         default: true,

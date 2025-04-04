@@ -27,7 +27,6 @@ import Plan from "../model/plan.model";
 import ErrorCodes from "../constants/error-codes";
 import NotificationTypeModel from "../model/notification-type.model";
 import NotificationSettingsModel from "../model/notification-settings.model";
-import MemberModel from "../model/member.model";
 
 export interface CreateAccountParams {
   otp: string;
@@ -184,10 +183,6 @@ export const createAccount = async (data: CreateAccountParams) => {
       location: data.location,
       role: admin_email === email ? "admin" : "user",
       plan: plan._id,
-    });
-
-    await MemberModel.create({
-      user: user._id,
     });
 
     const notificationTypes = await NotificationTypeModel.find();

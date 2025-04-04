@@ -71,7 +71,10 @@ const schema = new mongoose.Schema<TaskDocument>(
         const now = new Date();
         const hoursLeftToday = differenceInHours(endOfDay(now), now);
         const daysToAdd = hoursLeftToday > 12 ? 1 : 2;
-        return fromZonedTime(startOfDay(addDays(now, daysToAdd)), TIMEZONE);
+
+        const localTime = startOfDay(addDays(now, daysToAdd));
+
+        return fromZonedTime(localTime, TIMEZONE);
       },
     },
     user: {

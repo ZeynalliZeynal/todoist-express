@@ -60,7 +60,6 @@ const crypto_1 = __importDefault(require("crypto"));
 const plan_model_1 = __importDefault(require("../model/plan.model"));
 const notification_type_model_1 = __importDefault(require("../model/notification-type.model"));
 const notification_settings_model_1 = __importDefault(require("../model/notification-settings.model"));
-const member_model_1 = __importDefault(require("../model/member.model"));
 const appOrigin = env_1.node_env === "development" ? env_1.client_dev_origin : env_1.client_prod_origin;
 const createEmailVerificationOTP = (data, purpose) => __awaiter(void 0, void 0, void 0, function* () {
     const existingOtp = yield otp_model_1.default.findOne({ email: data.email, isUsed: false });
@@ -142,9 +141,6 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
             location: data.location,
             role: env_1.admin_email === email ? "admin" : "user",
             plan: plan._id,
-        });
-        yield member_model_1.default.create({
-            user: user._id,
         });
         const notificationTypes = yield notification_type_model_1.default.find();
         yield notification_settings_model_1.default.create({

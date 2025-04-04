@@ -11,6 +11,7 @@ export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 export interface MemberDocument extends mongoose.Document {
   user: mongoose.Types.ObjectId;
   activated: boolean;
+  description?: string;
   memberships: [
     {
       entity: mongoose.Types.ObjectId;
@@ -31,6 +32,10 @@ const schema = new mongoose.Schema<MemberDocument>(
       unique: true,
       index: true,
       required: true,
+    },
+    description: {
+      type: String,
+      trim: true,
     },
     activated: {
       type: Boolean,

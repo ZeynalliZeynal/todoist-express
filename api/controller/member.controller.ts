@@ -26,7 +26,7 @@ export const getMembers = catchErrors(async (req, res) => {
     activated: true,
   })
     .populate("user", "name email avatar")
-    .select("-memberships.permissions");
+    .select("-memberships.permissions -activated");
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,
@@ -49,7 +49,7 @@ export const getMember = catchErrors(async (req, res, next) => {
 
   if (!user)
     return next(
-      new AppError("No member found with this email", StatusCodes.NOT_FOUND)
+      new AppError("No member found with this email", StatusCodes.NOT_FOUND),
     );
 
   const member = await MemberModel.findOne({
@@ -60,6 +60,30 @@ export const getMember = catchErrors(async (req, res, next) => {
     status: ResponseStatues.SUCCESS,
     data: {
       member,
+    },
+  });
+});
+
+export const createMembershipProfile = catchErrors(async (req, res, next) => {
+  const existing = await MemberModel.exists({
+    user: req.userId,
+  });
+
+  if (existing)
+    return next(
+      new AppError(
+        "You have already a membership profile",
+        StatusCodes.CONFLICT,
+      ),
+    );
+
+  const profile = await MemberModel.create({ user: req.userId });
+
+  res.status(StatusCodes.CREATED).json({
+    status: ResponseStatues.SUCCESS,
+    message: "Your membership profile has been created.",
+    data: {
+      profile,
     },
   });
 });
@@ -91,8 +115,8 @@ export const inviteMembers = catchErrors(async (req, res, next) => {
     return next(
       new AppError(
         "All selected users are already invited, rejected, or approved this invitation.",
-        StatusCodes.CONFLICT
-      )
+        StatusCodes.CONFLICT,
+      ),
     );
   }
 
@@ -108,7 +132,7 @@ export const inviteMembers = catchErrors(async (req, res, next) => {
           entityType: validData.entityType,
         },
       },
-    }
+    },
   );
 
   res.status(StatusCodes.OK).json({
@@ -136,8 +160,8 @@ export const requestToJoinAsMember = catchErrors(async (req, res, next) => {
       return next(
         new AppError(
           "You cannot join to a project you own.",
-          StatusCodes.CONFLICT
-        )
+          StatusCodes.CONFLICT,
+        ),
       );
   }
 
@@ -155,8 +179,8 @@ export const requestToJoinAsMember = catchErrors(async (req, res, next) => {
     return next(
       new AppError(
         "You have already requested to join this entity.",
-        StatusCodes.CONFLICT
-      )
+        StatusCodes.CONFLICT,
+      ),
     );
   }
   const result = await MemberModel.findOneAndUpdate(
@@ -171,7 +195,7 @@ export const requestToJoinAsMember = catchErrors(async (req, res, next) => {
         },
       },
     },
-    { new: true, upsert: true }
+    { new: true, upsert: true },
   );
 
   res.status(StatusCodes.OK).json({
@@ -195,15 +219,15 @@ export const approveMembershipInvitation = catchErrors(
         "memberships.invited": true,
       },
       { $set: { "memberships.$.status": "approved" } },
-      { new: true }
+      { new: true },
     );
 
     if (!memberships)
       return next(
         new AppError(
           "No membership found with this entity",
-          StatusCodes.NOT_FOUND
-        )
+          StatusCodes.NOT_FOUND,
+        ),
       );
 
     res.status(StatusCodes.OK).json({
@@ -213,7 +237,7 @@ export const approveMembershipInvitation = catchErrors(
         memberships,
       },
     });
-  }
+  },
 );
 
 export const rejectMembershipInvitation = catchErrors(
@@ -228,15 +252,15 @@ export const rejectMembershipInvitation = catchErrors(
         "memberships.invited": true,
       },
       { $set: { "memberships.$.status": "rejected" } },
-      { new: true }
+      { new: true },
     );
 
     if (!memberships)
       return next(
         new AppError(
           "No membership found with this entity",
-          StatusCodes.NOT_FOUND
-        )
+          StatusCodes.NOT_FOUND,
+        ),
       );
 
     res.status(StatusCodes.OK).json({
@@ -246,5 +270,5 @@ export const rejectMembershipInvitation = catchErrors(
         memberships,
       },
     });
-  }
+  },
 );

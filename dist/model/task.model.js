@@ -53,7 +53,8 @@ const schema = new mongoose_1.default.Schema({
             const now = new Date();
             const hoursLeftToday = (0, date_fns_1.differenceInHours)((0, date_fns_1.endOfDay)(now), now);
             const daysToAdd = hoursLeftToday > 12 ? 1 : 2;
-            return (0, date_fns_tz_1.fromZonedTime)((0, date_fns_1.startOfDay)((0, date_fns_1.addDays)(now, daysToAdd)), TIMEZONE);
+            const localTime = (0, date_fns_1.startOfDay)((0, date_fns_1.addDays)(now, daysToAdd));
+            return (0, date_fns_tz_1.fromZonedTime)(localTime, TIMEZONE);
         },
     },
     user: {

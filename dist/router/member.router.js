@@ -12,6 +12,7 @@ router.route("/memberships").get(auth_middleware_1.authenticate, member_controll
 router.route("/:email").get(auth_middleware_1.authenticate, member_controller_1.getMember);
 router.route("/invite").post(auth_middleware_1.authenticate, member_controller_1.inviteMembers);
 router.route("/request").post(auth_middleware_1.authenticate, member_controller_1.requestToJoinAsMember);
+router.route("/create").post(auth_middleware_1.authenticate, member_controller_1.createMembershipProfile);
 router.route("/:id/approve").post(auth_middleware_1.authenticate, member_controller_1.approveMembershipInvitation);
 router.route("/:id/reject").post(auth_middleware_1.authenticate, member_controller_1.rejectMembershipInvitation);
 exports.default = router;

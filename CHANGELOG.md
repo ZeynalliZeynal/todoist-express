@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.20.0
+
+### Minor Changes
+
+- Allow to create membership profile manually
+
 ## 3.19.0
 
 ### Minor Changes

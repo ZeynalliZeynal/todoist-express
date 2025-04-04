@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.rejectMembershipInvitation = exports.approveMembershipInvitation = exports.requestToJoinAsMember = exports.inviteMembers = exports.getMember = exports.getMembers = exports.getMemberships = void 0;
+exports.rejectMembershipInvitation = exports.approveMembershipInvitation = exports.requestToJoinAsMember = exports.inviteMembers = exports.createMembershipProfile = exports.getMember = exports.getMembers = exports.getMemberships = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const member_model_1 = __importStar(require("../model/member.model"));
 const http_status_codes_1 = require("http-status-codes");
@@ -70,7 +70,7 @@ exports.getMembers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0,
         activated: true,
     })
         .populate("user", "name email avatar")
-        .select("-memberships.permissions");
+        .select("-memberships.permissions -activated");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         message: "Members fetched successfully",
@@ -96,6 +96,21 @@ exports.getMember = (0, catch_errors_1.default)((req, res, next) => __awaiter(vo
         status: "success" /* ResponseStatues.SUCCESS */,
         data: {
             member,
+        },
+    });
+}));
+exports.createMembershipProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const existing = yield member_model_1.default.exists({
+        user: req.userId,
+    });
+    if (existing)
+        return next(new app_error_1.default("You have already a membership profile", http_status_codes_1.StatusCodes.CONFLICT));
+    const profile = yield member_model_1.default.create({ user: req.userId });
+    res.status(http_status_codes_1.StatusCodes.CREATED).json({
+        status: "success" /* ResponseStatues.SUCCESS */,
+        message: "Your membership profile has been created.",
+        data: {
+            profile,
         },
     });
 }));

@@ -2,6 +2,7 @@ import express from "express";
 import { authenticate } from "../middleware/auth.middleware";
 import {
   approveMembershipInvitation,
+  createMembershipProfile,
   getMember,
   getMembers,
   getMemberships,
@@ -20,6 +21,8 @@ router.route("/:email").get(authenticate, getMember);
 
 router.route("/invite").post(authenticate, inviteMembers);
 router.route("/request").post(authenticate, requestToJoinAsMember);
+
+router.route("/create").post(authenticate, createMembershipProfile);
 
 router.route("/:id/approve").post(authenticate, approveMembershipInvitation);
 router.route("/:id/reject").post(authenticate, rejectMembershipInvitation);

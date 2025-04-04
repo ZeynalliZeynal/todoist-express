@@ -12,18 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const env_1 = require("../../constants/env");
+exports.connectToSocket = void 0;
+const socket_io_1 = require("socket.io");
+const env_1 = require("./constants/env");
 const kleur_1 = __importDefault(require("kleur"));
-const database = env_1.database_uri.replace("<db_password>", env_1.database_password);
-const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+const index_1 = require("./index");
+const connectToSocket = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield mongoose_1.default.connect(database);
-        console.log(kleur_1.default.bgGreen("Successfully connected to database"));
+        const io = new socket_io_1.Server(index_1.appServer, {
+            cors: {
+                origin: env_1.node_env === "development" ? env_1.client_dev_origin : env_1.client_prod_origin,
+                methods: ["GET", "POST"],
+            },
+        });
+        io.on("connection", (socket) => {
+            console.log(kleur_1.default.bgYellow(`Connected to socket at ${new Date(socket.handshake.time).toLocaleString()}`));
+        });
     }
-    catch (error) {
-        console.log("Could not connect to database", error);
-        process.exit(1);
+    catch (err) {
+        console.log(err);
     }
 });
-exports.default = connectToDatabase;
+exports.connectToSocket = connectToSocket;

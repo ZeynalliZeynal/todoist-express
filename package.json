@@ -1,6 +1,6 @@
 {
   "name": "todoist-server",
-  "version": "3.19.0",
+  "version": "3.20.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -56,6 +56,7 @@
     "resend": "^4.0.1",
     "sib-api-v3-sdk": "^8.5.0",
     "slugify": "^1.6.6",
+    "socket.io": "^4.8.1",
     "useragent": "^2.3.0",
     "validator": "^13.12.0",
     "zod": "^3.23.8"
