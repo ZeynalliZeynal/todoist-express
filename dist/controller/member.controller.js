@@ -69,7 +69,7 @@ exports.getMembers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0,
         user: { $ne: req.userId },
         activated: true,
     })
-        .populate("user", "name email avatar location")
+        .populate("user", "name email avatar location online lastOnline")
         .populate("memberships.entity")
         .select("-memberships.permissions -activated");
     res.status(http_status_codes_1.StatusCodes.OK).json({

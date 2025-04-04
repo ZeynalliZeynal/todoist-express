@@ -25,7 +25,7 @@ export const getMembers = catchErrors(async (req, res) => {
     user: { $ne: req.userId },
     activated: true,
   })
-    .populate("user", "name email avatar location")
+    .populate("user", "name email avatar location online lastOnline")
     .populate("memberships.entity")
     .select("-memberships.permissions -activated");
 
