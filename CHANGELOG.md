@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.21.0
+
+### Minor Changes
+
+- Add socket connection to update user's presence
+
 ## 3.20.0
 
 ### Minor Changes

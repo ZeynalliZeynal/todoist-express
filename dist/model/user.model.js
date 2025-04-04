@@ -32,6 +32,11 @@ const schema = new mongoose_1.default.Schema({
         lowercase: true,
         validate: [validator_1.default.isEmail, "Your email is not a valid"],
     },
+    online: {
+        type: Boolean,
+        default: false,
+    },
+    lastOnline: Date,
     avatar: {
         type: String,
         default: function () {

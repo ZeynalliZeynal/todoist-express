@@ -23,11 +23,15 @@ export interface UserDocument extends mongoose.Document {
   verificationToken?: string;
   avatar: string;
   location?: any;
+
+  online: boolean;
+  lastOnline?: Date;
+
   plan: mongoose.Types.ObjectId;
 
   comparePasswords(
     candidatePassword: string,
-    userPassword: string
+    userPassword: string,
   ): Promise<boolean>;
 
   isPasswordChangedAfter(JWTTimestamp?: number): boolean;
@@ -54,6 +58,11 @@ const schema = new mongoose.Schema<UserDocument>(
       lowercase: true,
       validate: [validator.isEmail, "Your email is not a valid"],
     },
+    online: {
+      type: Boolean,
+      default: false,
+    },
+    lastOnline: Date,
     avatar: {
       type: String,
       default: function (this: { name: string }) {
@@ -113,7 +122,7 @@ const schema = new mongoose.Schema<UserDocument>(
       virtuals: true,
     },
     timestamps: true,
-  }
+  },
 );
 
 schema.virtual("tasks", {
@@ -159,7 +168,7 @@ schema.method(
   "comparePasswords",
   async function (candidatePassword: string, userPassword: string) {
     return await bcrypt.compare(candidatePassword, userPassword);
-  }
+  },
 );
 
 // schema.method("isPasswordChangedAfter", function (JWTTimestamp) {

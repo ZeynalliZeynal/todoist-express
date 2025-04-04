@@ -25,7 +25,8 @@ export const getMembers = catchErrors(async (req, res) => {
     user: { $ne: req.userId },
     activated: true,
   })
-    .populate("user", "name email avatar")
+    .populate("user", "name email avatar location")
+    .populate("memberships.entity")
     .select("-memberships.permissions -activated");
 
   res.status(StatusCodes.OK).json({
@@ -54,7 +55,9 @@ export const getMember = catchErrors(async (req, res, next) => {
 
   const member = await MemberModel.findOne({
     user: user._id,
-  });
+  })
+    .populate("user", "name email avatar location")
+    .select("-memberships.permissions -activated");
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,

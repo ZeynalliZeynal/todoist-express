@@ -69,7 +69,8 @@ exports.getMembers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0,
         user: { $ne: req.userId },
         activated: true,
     })
-        .populate("user", "name email avatar")
+        .populate("user", "name email avatar location")
+        .populate("memberships.entity")
         .select("-memberships.permissions -activated");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
@@ -91,7 +92,9 @@ exports.getMember = (0, catch_errors_1.default)((req, res, next) => __awaiter(vo
         return next(new app_error_1.default("No member found with this email", http_status_codes_1.StatusCodes.NOT_FOUND));
     const member = yield member_model_1.default.findOne({
         user: user._id,
-    });
+    })
+        .populate("user", "name email avatar location")
+        .select("-memberships.permissions -activated");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         data: {
