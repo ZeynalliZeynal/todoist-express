@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.19.0
+
+### Minor Changes
+
+- Fix invitation and requesting to join as member. dont send invitation or dont join if you are the owner
+
 ## 3.18.0
 
 ### Minor Changes

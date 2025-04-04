@@ -52,6 +52,7 @@ const http_status_codes_1 = require("http-status-codes");
 const zod_1 = require("zod");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
+const project_model_1 = __importDefault(require("../model/project.model"));
 exports.getMemberships = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const memberships = yield member_model_1.default.find({
         user: req.userId,
@@ -65,6 +66,7 @@ exports.getMemberships = (0, catch_errors_1.default)((req, res, next) => __await
 }));
 exports.getMembers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const members = yield member_model_1.default.find({
+        user: { $ne: req.userId },
         activated: true,
     })
         .populate("user", "name email avatar")
@@ -108,6 +110,7 @@ exports.inviteMembers = (0, catch_errors_1.default)((req, res, next) => __awaite
         .parse(req.body);
     const membersToUpdate = yield member_model_1.default.find({
         _id: { $in: validData.members },
+        user: { $ne: req.userId },
         memberships: {
             $not: {
                 $elemMatch: {
@@ -143,6 +146,14 @@ exports.requestToJoinAsMember = (0, catch_errors_1.default)((req, res, next) => 
     })
         .strict()
         .parse(req.body);
+    if (validData.entityType === "project") {
+        const projects = yield project_model_1.default.find({
+            user: req.userId,
+        });
+        const projectIds = projects.map((project) => { var _a; return (_a = project._id) === null || _a === void 0 ? void 0 : _a.toString(); });
+        if (projectIds.includes(validData.entity))
+            return next(new app_error_1.default("You cannot join to a project you own.", http_status_codes_1.StatusCodes.CONFLICT));
+    }
     const existingMembership = yield member_model_1.default.findOne({
         user: req.userId,
         memberships: {
