@@ -1,5 +1,14 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [3.22.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.15.0...v3.22.0) (2025-04-04)
+
+
+### Features
+
+* integrate websocket to track user presence ([5a12e3d](https://github.com/ZeynalliZeynal/todoist-server/commit/5a12e3ddc1fed5abbce717be3f69d1ab82d8578e))
+
 ## 3.21.0
 
 ### Minor Changes
