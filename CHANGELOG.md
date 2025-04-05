@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.23.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.22.0...v3.23.0) (2025-04-05)
+
+
+### Features
+
+* add inviteMember controller to add one member at a time ([f95c167](https://github.com/ZeynalliZeynal/todoist-server/commit/f95c167bfa056b4e01d3aea5fc1a39d2bb745f7f))
+
 ## [3.22.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.15.0...v3.22.0) (2025-04-04)
 
 
