@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.24.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.23.0...v3.24.0) (2025-04-05)
+
+
+### Features
+
+* send and get feedbacks. ([eee31b6](https://github.com/ZeynalliZeynal/todoist-server/commit/eee31b6329f17165eb0c3e9e63c9ed2165f5b521))
+
 ## [3.23.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.22.0...v3.23.0) (2025-04-05)
 
 
