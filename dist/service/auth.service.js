@@ -89,7 +89,7 @@ const sendLoginEmailVerification = (_a) => __awaiter(void 0, [_a], void 0, funct
         city: existingUser.location.city,
         country_name: existingUser.location.country_name,
     };
-    const url = `${appOrigin}/auth/login/email?token=${token}`;
+    const url = `${appOrigin}/auth/login?token=${token}`;
     yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
         otp,
         url,
@@ -110,7 +110,7 @@ const sendSignupEmailVerification = (_a, location_1) => __awaiter(void 0, [_a, l
         otp,
         name,
     }, otp_model_1.OTPPurpose.EMAIL_VERIFICATION);
-    const url = `${appOrigin}/auth/signup/email?token=${token}`;
+    const url = `${appOrigin}/auth/signup?token=${token}`;
     yield (0, email_1.sendMail)(Object.assign({ to: [email] }, (0, email_templates_1.otpVerificationEmail)({
         otp,
         url,

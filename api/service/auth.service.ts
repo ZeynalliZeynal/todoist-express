@@ -100,7 +100,7 @@ export const sendLoginEmailVerification = async ({
     country_name: existingUser.location.country_name,
   };
 
-  const url = `${appOrigin}/auth/login/email?token=${token}`;
+  const url = `${appOrigin}/auth/login?token=${token}`;
 
   await sendMail({
     to: [email],
@@ -140,7 +140,7 @@ export const sendSignupEmailVerification = async (
     OTPPurpose.EMAIL_VERIFICATION,
   );
 
-  const url = `${appOrigin}/auth/signup/email?token=${token}`;
+  const url = `${appOrigin}/auth/signup?token=${token}`;
 
   await sendMail({
     to: [email],
