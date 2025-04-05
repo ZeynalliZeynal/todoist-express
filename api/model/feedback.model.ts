@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import { extractTextFromHtml } from "../utils/html.utils";
+import AppError from "../utils/app-error";
+import { StatusCodes } from "http-status-codes";
 
 export interface FeedbackDocument extends mongoose.Document {
   content: string;
@@ -44,5 +47,24 @@ const schema = new mongoose.Schema<FeedbackDocument>(
     },
   }
 );
+
+// schema.pre("save", async function (next) {
+//   const doc = this as FeedbackDocument;
+
+//   const plainText = extractTextFromHtml(doc.content);
+
+//   if (plainText.length < 10) {
+//     return next(
+//       new mongoose.Error.ValidationError(
+//         new AppError(
+//           `Content must be at least 10 characters long.`,
+//           StatusCodes.BAD_REQUEST
+//         )
+//       )
+//     );
+//   }
+
+//   next();
+// });
 
 export default mongoose.model<FeedbackDocument>("Feedback", schema);

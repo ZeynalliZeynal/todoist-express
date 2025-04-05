@@ -20,6 +20,8 @@ const zod_1 = require("zod");
 const email_1 = require("../utils/email");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const env_1 = require("../constants/env");
+const html_utils_1 = require("../utils/html.utils");
+const app_error_1 = __importDefault(require("../utils/app-error"));
 exports.getFeedbacks = (0, catch_errors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const feedbacks = yield feedback_model_1.default.find({ user: req.userId })
         .populate("user")
@@ -31,7 +33,7 @@ exports.getFeedbacks = (0, catch_errors_1.default)((req, res) => __awaiter(void 
         },
     });
 }));
-exports.sendFeedback = (0, catch_errors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.sendFeedback = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const validData = zod_1.z
         .object({
         content: zod_1.z
@@ -41,6 +43,9 @@ exports.sendFeedback = (0, catch_errors_1.default)((req, res) => __awaiter(void 
         page: zod_1.z.string().optional(),
     })
         .parse(req.body);
+    const plainText = (0, html_utils_1.extractTextFromHtml)(validData.content);
+    if (plainText.length < 10)
+        return next(new app_error_1.default(`Content must be at least 10 characters long.`, http_status_codes_1.StatusCodes.BAD_REQUEST));
     yield feedback_model_1.default.create(Object.assign(Object.assign({}, validData), { user: req.userId }));
     const user = yield user_model_1.default.findById(req.userId).select("name email");
     yield (0, email_1.sendMail)({

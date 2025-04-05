@@ -5,6 +5,8 @@ import { z } from "zod";
 import { sendMail } from "../utils/email";
 import UserModel from "../model/user.model";
 import { admin_email } from "../constants/env";
+import { extractTextFromHtml } from "../utils/html.utils";
+import AppError from "../utils/app-error";
 
 export const getFeedbacks = catchErrors(async (req, res) => {
   const feedbacks = await FeedbackModel.find({ user: req.userId })
@@ -19,7 +21,7 @@ export const getFeedbacks = catchErrors(async (req, res) => {
   });
 });
 
-export const sendFeedback = catchErrors(async (req, res) => {
+export const sendFeedback = catchErrors(async (req, res, next) => {
   const validData = z
     .object({
       content: z
@@ -29,6 +31,16 @@ export const sendFeedback = catchErrors(async (req, res) => {
       page: z.string().optional(),
     })
     .parse(req.body);
+
+  const plainText = extractTextFromHtml(validData.content);
+
+  if (plainText.length < 10)
+    return next(
+      new AppError(
+        `Content must be at least 10 characters long.`,
+        StatusCodes.BAD_REQUEST
+      )
+    );
 
   await FeedbackModel.create({
     ...validData,

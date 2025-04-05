@@ -38,4 +38,19 @@ const schema = new mongoose_1.default.Schema({
         },
     },
 });
+// schema.pre("save", async function (next) {
+//   const doc = this as FeedbackDocument;
+//   const plainText = extractTextFromHtml(doc.content);
+//   if (plainText.length < 10) {
+//     return next(
+//       new mongoose.Error.ValidationError(
+//         new AppError(
+//           `Content must be at least 10 characters long.`,
+//           StatusCodes.BAD_REQUEST
+//         )
+//       )
+//     );
+//   }
+//   next();
+// });
 exports.default = mongoose_1.default.model("Feedback", schema);
