@@ -14,7 +14,6 @@ const generate_name_1 = require("../utils/generate-name");
 const client_s3_1 = require("@aws-sdk/client-s3");
 const env_1 = require("../constants/env");
 const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
-const date_fns_1 = require("date-fns");
 const s3 = new client_s3_1.S3Client({
     credentials: {
         accessKeyId: env_1.s3_access_key,
@@ -40,9 +39,7 @@ const uploadFileService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ b
         Bucket: env_1.s3_bucket_name,
         Key: `${prefix}/${filename}`,
     });
-    const fileUrl = yield (0, s3_request_presigner_1.getSignedUrl)(s3, getCommand, {
-        expiresIn: Math.floor((0, date_fns_1.addYears)(new Date(), 1).getTime() / 1000),
-    });
+    const fileUrl = yield (0, s3_request_presigner_1.getSignedUrl)(s3, getCommand);
     yield s3.send(putCommand);
     return fileUrl;
 });

@@ -22,38 +22,39 @@ export const connectToSocket = async () => {
 
     io.on("connection", (socket) => {
       const userId = socket.handshake.query.userId as string;
+      onlineUsers.set(userId, socket.id);
+
+      socket.emit("onlineUsers", Array.from(onlineUsers.keys()));
 
       if (userId) {
-        onlineUsers.set(userId, socket.id);
-        const user = UserModel.findByIdAndUpdate(
+        UserModel.findByIdAndUpdate(
           userId,
           {
             online: true,
             lastOnline: null,
           },
           { new: true },
-        );
-        io.emit("user:status:change", { userId, online: true });
-        user.then((data) =>
-          console.log(kleur.green(`🟢 ${data?.email} is online`)),
-        );
+        ).then((user) => {
+          io.emit("user:status:change", { userId, online: true });
+          console.log(kleur.green(`🟢 ${user?.email} is online`));
+        });
       }
 
       socket.on("disconnect", () => {
         if (userId) {
-          onlineUsers.delete(userId);
-          const user = UserModel.findByIdAndUpdate(
+          UserModel.findByIdAndUpdate(
             userId,
             {
               online: false,
               lastOnline: new Date(),
             },
             { new: true },
-          );
-          io.emit("user:status:change", { userId, online: false });
-          user.then((data) =>
-            console.log(kleur.red(`🔴 ${data?.email} is offline`)),
-          );
+          ).then((user) => {
+            onlineUsers.delete(userId);
+            console.log(kleur.red(`🔴 ${user?.email} is offline`));
+            socket.emit("onlineUsers", Array.from(onlineUsers.keys()));
+            io.emit("user:status:change", { userId, online: false });
+          });
         }
       });
     });

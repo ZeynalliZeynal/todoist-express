@@ -3,19 +3,19 @@ import MemberModel, { MEMBER_ENTITY_TYPES } from "../model/member.model";
 import { StatusCodes } from "http-status-codes";
 import ResponseStatues from "../constants/response-statues";
 import { z } from "zod";
-import UserModel from "../model/user.model";
+import UserModel, { UserDocument } from "../model/user.model";
 import AppError from "../utils/app-error";
 import ProjectModel from "../model/project.model";
 
-export const getMemberships = catchErrors(async (req, res, next) => {
-  const memberships = await MemberModel.find({
+export const getMembershipsProfile = catchErrors(async (req, res, next) => {
+  const profile = await MemberModel.findOne({
     user: req.userId,
-  });
+  }).populate("user", "name email avatar location online");
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,
     data: {
-      memberships,
+      profile,
     },
   });
 });
@@ -88,6 +88,69 @@ export const createMembershipProfile = catchErrors(async (req, res, next) => {
     data: {
       profile,
     },
+  });
+});
+
+export const inviteMember = catchErrors(async (req, res, next) => {
+  const validMemberId = z.string().parse(req.params.id);
+  const validData = z
+    .object({
+      entity: z.string(),
+      entityType: z.enum(MEMBER_ENTITY_TYPES),
+    })
+    .strict()
+    .parse(req.body);
+
+  const existingMember = await MemberModel.exists({
+    _id: validMemberId,
+    user: { $ne: req.userId },
+    memberships: {
+      $elemMatch: {
+        entity: validData.entity,
+        entityType: validData.entityType,
+      },
+    },
+  });
+
+  if (existingMember)
+    return next(
+      new AppError(
+        "This member has already been invited here",
+        StatusCodes.CONFLICT,
+      ),
+    );
+
+  const memberToInvite = await MemberModel.findOne({
+    _id: validMemberId,
+    user: { $ne: req.userId },
+    memberships: {
+      $not: {
+        $elemMatch: {
+          entity: validData.entity,
+          entityType: validData.entityType,
+        },
+      },
+    },
+  });
+
+  if (!memberToInvite)
+    return next(
+      new AppError("No member found with this id", StatusCodes.NOT_FOUND),
+    );
+
+  const result = await MemberModel.findByIdAndUpdate(memberToInvite._id, {
+    $push: {
+      memberships: {
+        invited: true,
+        entity: validData.entity,
+        entityType: validData.entityType,
+      },
+    },
+  }).populate("user", "name email avatar online lastOnline");
+
+  res.status(StatusCodes.OK).json({
+    status: ResponseStatues.SUCCESS,
+    message: `Invitation request has been sent to ${(result?.user as unknown as UserDocument).email}`,
   });
 });
 

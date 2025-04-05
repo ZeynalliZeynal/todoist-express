@@ -80,7 +80,7 @@ type ErrorRequestHandler = (
   next: NextFunction,
 ) => void;
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.log(kleur.bgRed(err.name), err as MongooseError);
+  console.log(kleur.bgRed(err.name), err);
   if (req.path === refresh_path) clearAuthCookies(res);
 
   if (err instanceof z.ZodError) handleZodError(res, err);

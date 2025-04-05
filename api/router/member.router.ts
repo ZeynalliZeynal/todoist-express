@@ -5,7 +5,8 @@ import {
   createMembershipProfile,
   getMember,
   getMembers,
-  getMemberships,
+  getMembershipsProfile,
+  inviteMember,
   inviteMembers,
   rejectMembershipInvitation,
   requestToJoinAsMember,
@@ -15,11 +16,12 @@ const router = express.Router();
 
 router.route("/").get(authenticate, getMembers);
 
-router.route("/memberships").get(authenticate, getMemberships);
+router.route("/profile").get(authenticate, getMembershipsProfile);
 
 router.route("/:email").get(authenticate, getMember);
 
 router.route("/invite").post(authenticate, inviteMembers);
+router.route("/:id/invite").post(authenticate, inviteMember);
 router.route("/request").post(authenticate, requestToJoinAsMember);
 
 router.route("/create").post(authenticate, createMembershipProfile);

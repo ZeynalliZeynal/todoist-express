@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.rejectMembershipInvitation = exports.approveMembershipInvitation = exports.requestToJoinAsMember = exports.inviteMembers = exports.createMembershipProfile = exports.getMember = exports.getMembers = exports.getMemberships = void 0;
+exports.rejectMembershipInvitation = exports.approveMembershipInvitation = exports.requestToJoinAsMember = exports.inviteMembers = exports.inviteMember = exports.createMembershipProfile = exports.getMember = exports.getMembers = exports.getMembershipsProfile = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const member_model_1 = __importStar(require("../model/member.model"));
 const http_status_codes_1 = require("http-status-codes");
@@ -53,14 +53,14 @@ const zod_1 = require("zod");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const project_model_1 = __importDefault(require("../model/project.model"));
-exports.getMemberships = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const memberships = yield member_model_1.default.find({
+exports.getMembershipsProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const profile = yield member_model_1.default.findOne({
         user: req.userId,
-    });
+    }).populate("user", "name email avatar location online");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         data: {
-            memberships,
+            profile,
         },
     });
 }));
@@ -115,6 +115,55 @@ exports.createMembershipProfile = (0, catch_errors_1.default)((req, res, next) =
         data: {
             profile,
         },
+    });
+}));
+exports.inviteMember = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const validMemberId = zod_1.z.string().parse(req.params.id);
+    const validData = zod_1.z
+        .object({
+        entity: zod_1.z.string(),
+        entityType: zod_1.z.enum(member_model_1.MEMBER_ENTITY_TYPES),
+    })
+        .strict()
+        .parse(req.body);
+    const existingMember = yield member_model_1.default.exists({
+        _id: validMemberId,
+        user: { $ne: req.userId },
+        memberships: {
+            $elemMatch: {
+                entity: validData.entity,
+                entityType: validData.entityType,
+            },
+        },
+    });
+    if (existingMember)
+        return next(new app_error_1.default("This member has already been invited here", http_status_codes_1.StatusCodes.CONFLICT));
+    const memberToInvite = yield member_model_1.default.findOne({
+        _id: validMemberId,
+        user: { $ne: req.userId },
+        memberships: {
+            $not: {
+                $elemMatch: {
+                    entity: validData.entity,
+                    entityType: validData.entityType,
+                },
+            },
+        },
+    });
+    if (!memberToInvite)
+        return next(new app_error_1.default("No member found with this id", http_status_codes_1.StatusCodes.NOT_FOUND));
+    const result = yield member_model_1.default.findByIdAndUpdate(memberToInvite._id, {
+        $push: {
+            memberships: {
+                invited: true,
+                entity: validData.entity,
+                entityType: validData.entityType,
+            },
+        },
+    }).populate("user", "name email avatar online lastOnline");
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success" /* ResponseStatues.SUCCESS */,
+        message: `Invitation request has been sent to ${(result === null || result === void 0 ? void 0 : result.user).email}`,
     });
 }));
 exports.inviteMembers = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

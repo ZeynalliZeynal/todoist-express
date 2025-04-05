@@ -7,9 +7,14 @@
     <list default="true" id="6c96583f-d9f9-4d65-90ea-d52df6356be6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/controller/member.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/controller/member.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/middleware/error-handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/middleware/error-handler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/router/member.router.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/router/member.router.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/service/storage.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/storage.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/socket.ts" beforeDir="false" afterPath="$PROJECT_DIR$/api/socket.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/controller/member.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/controller/member.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/router/member.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/router/member.router.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/service/storage.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/service/storage.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/socket.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -221,7 +226,8 @@
       <workItem from="1743706968841" duration="287000" />
       <workItem from="1743707262143" duration="7396000" />
       <workItem from="1743791881266" duration="1348000" />
-      <workItem from="1743793372284" duration="12799000" />
+      <workItem from="1743793372284" duration="13160000" />
+      <workItem from="1743833715585" duration="10678000" />
     </task>
     <servers />
   </component>

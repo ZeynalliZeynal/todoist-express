@@ -12,7 +12,6 @@ import {
   s3_secret_key,
 } from "../constants/env";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { addYears } from "date-fns";
 
 const s3 = new S3Client({
   credentials: {
@@ -53,9 +52,7 @@ export const uploadFileService = async ({
     Key: `${prefix}/${filename}`,
   });
 
-  const fileUrl = await getSignedUrl(s3, getCommand, {
-    expiresIn: Math.floor(addYears(new Date(), 1).getTime() / 1000),
-  });
+  const fileUrl = await getSignedUrl(s3, getCommand);
 
   await s3.send(putCommand);
   return fileUrl;

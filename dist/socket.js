@@ -29,24 +29,28 @@ const connectToSocket = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         io.on("connection", (socket) => {
             const userId = socket.handshake.query.userId;
+            onlineUsers.set(userId, socket.id);
+            socket.emit("onlineUsers", Array.from(onlineUsers.keys()));
             if (userId) {
-                onlineUsers.set(userId, socket.id);
-                const user = user_model_1.default.findByIdAndUpdate(userId, {
+                user_model_1.default.findByIdAndUpdate(userId, {
                     online: true,
                     lastOnline: null,
-                }, { new: true });
-                io.emit("user:status:change", { userId, online: true });
-                user.then((data) => console.log(kleur_1.default.green(`🟢 ${data === null || data === void 0 ? void 0 : data.email} is online`)));
+                }, { new: true }).then((user) => {
+                    io.emit("user:status:change", { userId, online: true });
+                    console.log(kleur_1.default.green(`🟢 ${user === null || user === void 0 ? void 0 : user.email} is online`));
+                });
             }
             socket.on("disconnect", () => {
                 if (userId) {
-                    onlineUsers.delete(userId);
-                    const user = user_model_1.default.findByIdAndUpdate(userId, {
+                    user_model_1.default.findByIdAndUpdate(userId, {
                         online: false,
                         lastOnline: new Date(),
-                    }, { new: true });
-                    io.emit("user:status:change", { userId, online: false });
-                    user.then((data) => console.log(kleur_1.default.red(`🔴 ${data === null || data === void 0 ? void 0 : data.email} is offline`)));
+                    }, { new: true }).then((user) => {
+                        onlineUsers.delete(userId);
+                        console.log(kleur_1.default.red(`🔴 ${user === null || user === void 0 ? void 0 : user.email} is offline`));
+                        socket.emit("onlineUsers", Array.from(onlineUsers.keys()));
+                        io.emit("user:status:change", { userId, online: false });
+                    });
                 }
             });
         });
