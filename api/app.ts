@@ -22,7 +22,6 @@ import { authenticate } from "./middleware/auth.middleware";
 import { errorHandler } from "./middleware/error-handler";
 import { getUserAgent } from "./middleware/user-agent.middleware";
 
-// Models
 // Routers
 import authRouter from "./router/auth.router";
 import memberRouter from "./router/member.router";
@@ -39,12 +38,13 @@ import taskTagRouter from "./router/task-tag.router";
 import templateCategoriesRouter from "./router/template-categories.router";
 import templateRouter from "./router/template.router";
 import userRouter from "./router/user.router";
+import projectMemberRouter from "./router/project-member.router";
+import feedbackRouter from "./router/feedback.router";
 
 // Utilities
 import AppError from "./utils/app-error";
 import catchErrors from "./utils/catch-errors";
 import { StatusCodes } from "http-status-codes";
-import projectMemberRouter from "./router/project-member.router";
 
 const API_PREFIX = "/api/v1/";
 
@@ -70,7 +70,7 @@ if (node_env === "production") app.use("/api/auth", limiter);
 app.use(
   express.json({
     limit: "10mb",
-  }),
+  })
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -80,10 +80,10 @@ app.use(
       node_env === "development"
         ? client_dev_origin
         : node_env === "production"
-          ? client_prod_origin
-          : "*",
+        ? client_prod_origin
+        : "*",
     credentials: true,
-  }),
+  })
 );
 
 app.use(cookieParser());
@@ -120,6 +120,7 @@ app.use(API_PREFIX + "notification-types", notificationTypeRouter);
 app.use(API_PREFIX + "notification-settings", notificationSettingsRouter);
 app.use(API_PREFIX + "members", memberRouter);
 app.use(API_PREFIX + "project-members", projectMemberRouter);
+app.use(API_PREFIX + "feedbacks", feedbackRouter);
 
 app.post(
   API_PREFIX + "update",
@@ -137,7 +138,7 @@ app.post(
       status: ResponseStatues.SUCCESS,
       message: "No update found",
     });
-  }),
+  })
 );
 
 app.use(
@@ -152,11 +153,11 @@ app.use(
         userAgent: req.userAgent,
       },
     });
-  },
+  }
 );
 
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
-  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND)),
+  next(new AppError(`${req.originalUrl} not found`, StatusCodes.NOT_FOUND))
 );
 
 app.use(errorHandler);

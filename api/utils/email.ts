@@ -3,12 +3,19 @@ import { brevo_api_key, email_sender } from "../constants/env";
 
 interface SendMailParams {
   to: string[];
+  from?: string;
   subject: string;
   text: string;
   html: string;
 }
 
-export const sendMail = async ({ subject, text, to, html }: SendMailParams) => {
+export const sendMail = async ({
+  subject,
+  text,
+  to,
+  html,
+  from,
+}: SendMailParams) => {
   const transporter = nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
     port: 587,
@@ -20,7 +27,7 @@ export const sendMail = async ({ subject, text, to, html }: SendMailParams) => {
   });
 
   await transporter.sendMail({
-    from: email_sender,
+    from: from || email_sender,
     to: [...to],
     subject,
     text,
