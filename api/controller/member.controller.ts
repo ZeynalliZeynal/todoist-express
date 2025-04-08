@@ -22,6 +22,11 @@ export const getMembershipsProfile = catchErrors(async (req, res, next) => {
 
 export const getMembers = catchErrors(async (req, res) => {
   const members = await MemberModel.find({
+    memberships: {
+      $elemMatch: {
+        $or: [{ status: "pending" }, { entity: { $exists: false } }],
+      },
+    },
     user: { $ne: req.userId },
     activated: true,
   })
@@ -95,7 +100,7 @@ export const inviteMember = catchErrors(async (req, res, next) => {
   const validMemberId = z.string().parse(req.params.id);
   const validData = z
     .object({
-      entity: z.string(),
+      entity: z.record(z.any()),
       entityType: z.enum(MEMBER_ENTITY_TYPES),
     })
     .strict()

@@ -28,6 +28,7 @@ const connectToSocket = () => __awaiter(void 0, void 0, void 0, function* () {
             },
         });
         io.on("connection", (socket) => {
+            console.log(kleur_1.default.bgBlue("Connected to Socket"));
             const userId = socket.handshake.query.userId;
             onlineUsers.set(userId, socket.id);
             socket.emit("onlineUsers", Array.from(onlineUsers.keys()));

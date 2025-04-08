@@ -21,6 +21,7 @@ export const connectToSocket = async () => {
     });
 
     io.on("connection", (socket) => {
+      console.log(kleur.bgBlue("Connected to Socket"));
       const userId = socket.handshake.query.userId as string;
       onlineUsers.set(userId, socket.id);
 

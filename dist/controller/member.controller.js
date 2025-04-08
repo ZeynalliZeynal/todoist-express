@@ -66,6 +66,11 @@ exports.getMembershipsProfile = (0, catch_errors_1.default)((req, res, next) => 
 }));
 exports.getMembers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const members = yield member_model_1.default.find({
+        memberships: {
+            $elemMatch: {
+                $or: [{ status: "pending" }, { entity: { $exists: false } }],
+            },
+        },
         user: { $ne: req.userId },
         activated: true,
     })
@@ -121,7 +126,7 @@ exports.inviteMember = (0, catch_errors_1.default)((req, res, next) => __awaiter
     const validMemberId = zod_1.z.string().parse(req.params.id);
     const validData = zod_1.z
         .object({
-        entity: zod_1.z.string(),
+        entity: zod_1.z.record(zod_1.z.any()),
         entityType: zod_1.z.enum(member_model_1.MEMBER_ENTITY_TYPES),
     })
         .strict()
