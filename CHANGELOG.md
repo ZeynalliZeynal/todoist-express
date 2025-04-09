@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.26.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.25.2...v3.26.0) (2025-04-09)
+
+
+### Features
+
+* activating and deactivating membership status ([7e46c2d](https://github.com/ZeynalliZeynal/todoist-server/commit/7e46c2d9af647526cc42e5263af90d0a088a4a14))
+
 ### [3.25.2](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.25.1...v3.25.2) (2025-04-09)
 
 
