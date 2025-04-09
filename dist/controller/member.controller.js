@@ -66,13 +66,16 @@ exports.getMembershipsProfile = (0, catch_errors_1.default)((req, res, next) => 
 }));
 exports.getMembers = (0, catch_errors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const members = yield member_model_1.default.find({
-        memberships: {
-            $elemMatch: {
-                $or: [{ status: "pending" }, { entity: { $exists: false } }],
+        $and: [
+            {
+                $or: [
+                    { "memberships.status": "pending" },
+                    { "memberships.entity": { $exists: false } },
+                ],
             },
-        },
-        user: { $ne: req.userId },
-        activated: true,
+            { user: { $ne: req.userId } },
+            { activated: true },
+        ],
     })
         .populate("user", "name email avatar location online lastOnline")
         .populate("memberships.entity")

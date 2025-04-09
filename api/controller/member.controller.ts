@@ -22,13 +22,16 @@ export const getMembershipsProfile = catchErrors(async (req, res, next) => {
 
 export const getMembers = catchErrors(async (req, res) => {
   const members = await MemberModel.find({
-    memberships: {
-      $elemMatch: {
-        $or: [{ status: "pending" }, { entity: { $exists: false } }],
+    $and: [
+      {
+        $or: [
+          { "memberships.status": "pending" },
+          { "memberships.entity": { $exists: false } },
+        ],
       },
-    },
-    user: { $ne: req.userId },
-    activated: true,
+      { user: { $ne: req.userId } },
+      { activated: true },
+    ],
   })
     .populate("user", "name email avatar location online lastOnline")
     .populate("memberships.entity")
@@ -55,7 +58,7 @@ export const getMember = catchErrors(async (req, res, next) => {
 
   if (!user)
     return next(
-      new AppError("No member found with this email", StatusCodes.NOT_FOUND),
+      new AppError("No member found with this email", StatusCodes.NOT_FOUND)
     );
 
   const member = await MemberModel.findOne({
@@ -81,8 +84,8 @@ export const createMembershipProfile = catchErrors(async (req, res, next) => {
     return next(
       new AppError(
         "You have already a membership profile",
-        StatusCodes.CONFLICT,
-      ),
+        StatusCodes.CONFLICT
+      )
     );
 
   const profile = await MemberModel.create({ user: req.userId });
@@ -121,8 +124,8 @@ export const inviteMember = catchErrors(async (req, res, next) => {
     return next(
       new AppError(
         "This member has already been invited here",
-        StatusCodes.CONFLICT,
-      ),
+        StatusCodes.CONFLICT
+      )
     );
 
   const memberToInvite = await MemberModel.findOne({
@@ -140,7 +143,7 @@ export const inviteMember = catchErrors(async (req, res, next) => {
 
   if (!memberToInvite)
     return next(
-      new AppError("No member found with this id", StatusCodes.NOT_FOUND),
+      new AppError("No member found with this id", StatusCodes.NOT_FOUND)
     );
 
   const result = await MemberModel.findByIdAndUpdate(memberToInvite._id, {
@@ -155,7 +158,9 @@ export const inviteMember = catchErrors(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,
-    message: `Invitation request has been sent to ${(result?.user as unknown as UserDocument).email}`,
+    message: `Invitation request has been sent to ${
+      (result?.user as unknown as UserDocument).email
+    }`,
   });
 });
 
@@ -186,8 +191,8 @@ export const inviteMembers = catchErrors(async (req, res, next) => {
     return next(
       new AppError(
         "All selected users are already invited, rejected, or approved this invitation.",
-        StatusCodes.CONFLICT,
-      ),
+        StatusCodes.CONFLICT
+      )
     );
   }
 
@@ -203,7 +208,7 @@ export const inviteMembers = catchErrors(async (req, res, next) => {
           entityType: validData.entityType,
         },
       },
-    },
+    }
   );
 
   res.status(StatusCodes.OK).json({
@@ -231,8 +236,8 @@ export const requestToJoinAsMember = catchErrors(async (req, res, next) => {
       return next(
         new AppError(
           "You cannot join to a project you own.",
-          StatusCodes.CONFLICT,
-        ),
+          StatusCodes.CONFLICT
+        )
       );
   }
 
@@ -250,8 +255,8 @@ export const requestToJoinAsMember = catchErrors(async (req, res, next) => {
     return next(
       new AppError(
         "You have already requested to join this entity.",
-        StatusCodes.CONFLICT,
-      ),
+        StatusCodes.CONFLICT
+      )
     );
   }
   const result = await MemberModel.findOneAndUpdate(
@@ -266,7 +271,7 @@ export const requestToJoinAsMember = catchErrors(async (req, res, next) => {
         },
       },
     },
-    { new: true, upsert: true },
+    { new: true, upsert: true }
   );
 
   res.status(StatusCodes.OK).json({
@@ -290,15 +295,15 @@ export const approveMembershipInvitation = catchErrors(
         "memberships.invited": true,
       },
       { $set: { "memberships.$.status": "approved" } },
-      { new: true },
+      { new: true }
     );
 
     if (!memberships)
       return next(
         new AppError(
           "No membership found with this entity",
-          StatusCodes.NOT_FOUND,
-        ),
+          StatusCodes.NOT_FOUND
+        )
       );
 
     res.status(StatusCodes.OK).json({
@@ -308,7 +313,7 @@ export const approveMembershipInvitation = catchErrors(
         memberships,
       },
     });
-  },
+  }
 );
 
 export const rejectMembershipInvitation = catchErrors(
@@ -323,15 +328,15 @@ export const rejectMembershipInvitation = catchErrors(
         "memberships.invited": true,
       },
       { $set: { "memberships.$.status": "rejected" } },
-      { new: true },
+      { new: true }
     );
 
     if (!memberships)
       return next(
         new AppError(
           "No membership found with this entity",
-          StatusCodes.NOT_FOUND,
-        ),
+          StatusCodes.NOT_FOUND
+        )
       );
 
     res.status(StatusCodes.OK).json({
@@ -341,5 +346,5 @@ export const rejectMembershipInvitation = catchErrors(
         memberships,
       },
     });
-  },
+  }
 );
