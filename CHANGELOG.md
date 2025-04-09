@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.25.1](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.25.0...v3.25.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* return  not invited and status of pending users from members ([16f75b4](https://github.com/ZeynalliZeynal/todoist-server/commit/16f75b4b73d42bf87158713397162bb1563bd974))
+
 ## [3.25.0](https://github.com/ZeynalliZeynal/todoist-server/compare/v3.24.1...v3.25.0) (2025-04-06)
 
 
