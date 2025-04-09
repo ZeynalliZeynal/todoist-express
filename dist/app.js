@@ -93,6 +93,7 @@ app.get("/", (req, res) => {
         },
     });
 });
+app.use(API_PREFIX + "admin/notification-types", notification_type_router_1.default);
 app.use(API_PREFIX + "tasks", task_router_1.default);
 app.use(API_PREFIX + "task-tags", task_tag_router_1.default);
 app.use(API_PREFIX + "projects", project_router_1.default);
@@ -105,7 +106,6 @@ app.use(API_PREFIX + "profile/sessions", session_router_1.default);
 app.use(API_PREFIX + "plans", plan_router_1.default);
 app.use(API_PREFIX + "storage", storage_router_1.default);
 app.use(API_PREFIX + "notifications", notification_router_1.default);
-app.use(API_PREFIX + "notification-types", notification_type_router_1.default);
 app.use(API_PREFIX + "notification-settings", notification_settings_router_1.default);
 app.use(API_PREFIX + "members", member_router_1.default);
 app.use(API_PREFIX + "project-members", project_member_router_1.default);

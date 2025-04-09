@@ -6,6 +6,11 @@ import { z } from "zod";
 import UserModel, { UserDocument } from "../model/user.model";
 import AppError from "../utils/app-error";
 import ProjectModel from "../model/project.model";
+import NotificationModel, {
+  NotificationTypeEnum,
+} from "../model/notification.model";
+import NotificationTypeModel from "../model/notification-type.model";
+import { generateNotificationName } from "../constants/notification.constant";
 
 export const getMembershipsProfile = catchErrors(async (req, res, next) => {
   const profile = await MemberModel.findOne({
@@ -19,6 +24,39 @@ export const getMembershipsProfile = catchErrors(async (req, res, next) => {
     },
   });
 });
+
+export const activateMembershipsProfile = catchErrors(
+  async (req, res, next) => {
+    const profile = await MemberModel.findOneAndUpdate(
+      { user: req.userId },
+      { activated: true },
+      { new: true }
+    ).populate("user", "name email avatar location online");
+
+    res.status(StatusCodes.OK).json({
+      status: ResponseStatues.SUCCESS,
+      data: {
+        profile,
+      },
+    });
+  }
+);
+export const deactivateMembershipsProfile = catchErrors(
+  async (req, res, next) => {
+    const profile = await MemberModel.findOneAndUpdate(
+      { user: req.userId },
+      { activated: false },
+      { new: true }
+    ).populate("user", "name email avatar location online");
+
+    res.status(StatusCodes.OK).json({
+      status: ResponseStatues.SUCCESS,
+      data: {
+        profile,
+      },
+    });
+  }
+);
 
 export const getMembers = catchErrors(async (req, res) => {
   const members = await MemberModel.find({
@@ -109,16 +147,18 @@ export const inviteMember = catchErrors(async (req, res, next) => {
     .strict()
     .parse(req.body);
 
-  const existingMember = await MemberModel.exists({
-    _id: validMemberId,
-    user: { $ne: req.userId },
-    memberships: {
-      $elemMatch: {
-        entity: validData.entity,
-        entityType: validData.entityType,
+  const [existingMember] = await Promise.all([
+    MemberModel.exists({
+      _id: validMemberId,
+      user: { $ne: req.userId },
+      memberships: {
+        $elemMatch: {
+          entity: validData.entity,
+          entityType: validData.entityType,
+        },
       },
-    },
-  });
+    }),
+  ]);
 
   if (existingMember)
     return next(
@@ -128,33 +168,51 @@ export const inviteMember = catchErrors(async (req, res, next) => {
       )
     );
 
-  const memberToInvite = await MemberModel.findOne({
-    _id: validMemberId,
-    user: { $ne: req.userId },
-    memberships: {
-      $not: {
-        $elemMatch: {
-          entity: validData.entity,
-          entityType: validData.entityType,
+  const [memberToInvite, notificationType] = await Promise.all([
+    MemberModel.findOne({
+      _id: validMemberId,
+      user: { $ne: req.userId },
+      memberships: {
+        $not: {
+          $elemMatch: {
+            entity: validData.entity,
+            entityType: validData.entityType,
+          },
         },
       },
-    },
-  });
+    }),
+    NotificationTypeModel.findOne({
+      name: NotificationTypeEnum.MEMBER_INVITATION,
+    }),
+  ]);
 
   if (!memberToInvite)
     return next(
       new AppError("No member found with this id", StatusCodes.NOT_FOUND)
     );
 
-  const result = await MemberModel.findByIdAndUpdate(memberToInvite._id, {
-    $push: {
-      memberships: {
-        invited: true,
-        entity: validData.entity,
-        entityType: validData.entityType,
+  const [result] = await Promise.all([
+    MemberModel.findByIdAndUpdate(memberToInvite._id, {
+      $push: {
+        memberships: {
+          invited: true,
+          entity: validData.entity,
+          entityType: validData.entityType,
+        },
       },
-    },
-  }).populate("user", "name email avatar online lastOnline");
+    }).populate("user", "name email avatar online lastOnline"),
+    NotificationModel.create({
+      name: generateNotificationName(
+        NotificationTypeEnum.MEMBER_INVITATION,
+        validData.entity.name
+      ),
+      description: "You got a new invitation!",
+      data: validData.entity,
+      value: validData.entity._id,
+      user: memberToInvite.user._id,
+      type: notificationType?._id,
+    }),
+  ]);
 
   res.status(StatusCodes.OK).json({
     status: ResponseStatues.SUCCESS,

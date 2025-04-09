@@ -25,6 +25,10 @@ export enum NotificationTypeEnum {
 
   PROJECT_DELETED = "project/deleted",
   PROJECT_UPDATED = "project/updated",
+
+  MEMBER_INVITATION = "member/invitation",
+  MEMBER_INVITATION_APPROVED = "member/invitation/approved",
+  MEMBER_INVITATION_REJECTED = "member/invitation/rejected",
 }
 
 type NotificationType = (typeof NOTIFICATION_TYPES)[number];
@@ -98,7 +102,7 @@ const schema = new mongoose.Schema<NotificationDocument>(
       virtuals: true,
     },
     timestamps: true,
-  },
+  }
 );
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {

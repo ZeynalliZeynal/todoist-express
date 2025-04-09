@@ -45,7 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.rejectMembershipInvitation = exports.approveMembershipInvitation = exports.requestToJoinAsMember = exports.inviteMembers = exports.inviteMember = exports.createMembershipProfile = exports.getMember = exports.getMembers = exports.getMembershipsProfile = void 0;
+exports.rejectMembershipInvitation = exports.approveMembershipInvitation = exports.requestToJoinAsMember = exports.inviteMembers = exports.inviteMember = exports.createMembershipProfile = exports.getMember = exports.getMembers = exports.deactivateMembershipsProfile = exports.activateMembershipsProfile = exports.getMembershipsProfile = void 0;
 const catch_errors_1 = __importDefault(require("../utils/catch-errors"));
 const member_model_1 = __importStar(require("../model/member.model"));
 const http_status_codes_1 = require("http-status-codes");
@@ -53,10 +53,31 @@ const zod_1 = require("zod");
 const user_model_1 = __importDefault(require("../model/user.model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const project_model_1 = __importDefault(require("../model/project.model"));
+const notification_model_1 = __importStar(require("../model/notification.model"));
+const notification_type_model_1 = __importDefault(require("../model/notification-type.model"));
+const notification_constant_1 = require("../constants/notification.constant");
 exports.getMembershipsProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const profile = yield member_model_1.default.findOne({
         user: req.userId,
     }).populate("user", "name email avatar location online");
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success" /* ResponseStatues.SUCCESS */,
+        data: {
+            profile,
+        },
+    });
+}));
+exports.activateMembershipsProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const profile = yield member_model_1.default.findOneAndUpdate({ user: req.userId }, { activated: true }, { new: true }).populate("user", "name email avatar location online");
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: "success" /* ResponseStatues.SUCCESS */,
+        data: {
+            profile,
+        },
+    });
+}));
+exports.deactivateMembershipsProfile = (0, catch_errors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const profile = yield member_model_1.default.findOneAndUpdate({ user: req.userId }, { activated: false }, { new: true }).populate("user", "name email avatar location online");
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         data: {
@@ -134,41 +155,58 @@ exports.inviteMember = (0, catch_errors_1.default)((req, res, next) => __awaiter
     })
         .strict()
         .parse(req.body);
-    const existingMember = yield member_model_1.default.exists({
-        _id: validMemberId,
-        user: { $ne: req.userId },
-        memberships: {
-            $elemMatch: {
-                entity: validData.entity,
-                entityType: validData.entityType,
-            },
-        },
-    });
-    if (existingMember)
-        return next(new app_error_1.default("This member has already been invited here", http_status_codes_1.StatusCodes.CONFLICT));
-    const memberToInvite = yield member_model_1.default.findOne({
-        _id: validMemberId,
-        user: { $ne: req.userId },
-        memberships: {
-            $not: {
+    const [existingMember] = yield Promise.all([
+        member_model_1.default.exists({
+            _id: validMemberId,
+            user: { $ne: req.userId },
+            memberships: {
                 $elemMatch: {
                     entity: validData.entity,
                     entityType: validData.entityType,
                 },
             },
-        },
-    });
+        }),
+    ]);
+    if (existingMember)
+        return next(new app_error_1.default("This member has already been invited here", http_status_codes_1.StatusCodes.CONFLICT));
+    const [memberToInvite, notificationType] = yield Promise.all([
+        member_model_1.default.findOne({
+            _id: validMemberId,
+            user: { $ne: req.userId },
+            memberships: {
+                $not: {
+                    $elemMatch: {
+                        entity: validData.entity,
+                        entityType: validData.entityType,
+                    },
+                },
+            },
+        }),
+        notification_type_model_1.default.findOne({
+            name: notification_model_1.NotificationTypeEnum.MEMBER_INVITATION,
+        }),
+    ]);
     if (!memberToInvite)
         return next(new app_error_1.default("No member found with this id", http_status_codes_1.StatusCodes.NOT_FOUND));
-    const result = yield member_model_1.default.findByIdAndUpdate(memberToInvite._id, {
-        $push: {
-            memberships: {
-                invited: true,
-                entity: validData.entity,
-                entityType: validData.entityType,
+    const [result] = yield Promise.all([
+        member_model_1.default.findByIdAndUpdate(memberToInvite._id, {
+            $push: {
+                memberships: {
+                    invited: true,
+                    entity: validData.entity,
+                    entityType: validData.entityType,
+                },
             },
-        },
-    }).populate("user", "name email avatar online lastOnline");
+        }).populate("user", "name email avatar online lastOnline"),
+        notification_model_1.default.create({
+            name: (0, notification_constant_1.generateNotificationName)(notification_model_1.NotificationTypeEnum.MEMBER_INVITATION, validData.entity.name),
+            description: "You got a new invitation!",
+            data: validData.entity,
+            value: validData.entity._id,
+            user: memberToInvite.user._id,
+            type: notificationType === null || notificationType === void 0 ? void 0 : notificationType._id,
+        }),
+    ]);
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: "success" /* ResponseStatues.SUCCESS */,
         message: `Invitation request has been sent to ${(result === null || result === void 0 ? void 0 : result.user).email}`,

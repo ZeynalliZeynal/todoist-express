@@ -104,6 +104,7 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use(API_PREFIX + "admin/notification-types", notificationTypeRouter);
 app.use(API_PREFIX + "tasks", taskRouter);
 app.use(API_PREFIX + "task-tags", taskTagRouter);
 app.use(API_PREFIX + "projects", projectRouter);
@@ -116,7 +117,6 @@ app.use(API_PREFIX + "profile/sessions", sessionRouter);
 app.use(API_PREFIX + "plans", planRouter);
 app.use(API_PREFIX + "storage", storageRouter);
 app.use(API_PREFIX + "notifications", notificationRouter);
-app.use(API_PREFIX + "notification-types", notificationTypeRouter);
 app.use(API_PREFIX + "notification-settings", notificationSettingsRouter);
 app.use(API_PREFIX + "members", memberRouter);
 app.use(API_PREFIX + "project-members", projectMemberRouter);

@@ -28,6 +28,9 @@ var NotificationTypeEnum;
     NotificationTypeEnum["TASK_CLEARED"] = "task/cleared";
     NotificationTypeEnum["PROJECT_DELETED"] = "project/deleted";
     NotificationTypeEnum["PROJECT_UPDATED"] = "project/updated";
+    NotificationTypeEnum["MEMBER_INVITATION"] = "member/invitation";
+    NotificationTypeEnum["MEMBER_INVITATION_APPROVED"] = "member/invitation/approved";
+    NotificationTypeEnum["MEMBER_INVITATION_REJECTED"] = "member/invitation/rejected";
 })(NotificationTypeEnum || (exports.NotificationTypeEnum = NotificationTypeEnum = {}));
 const schema = new mongoose_1.default.Schema({
     name: {

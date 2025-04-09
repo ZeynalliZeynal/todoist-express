@@ -2,7 +2,7 @@ import { NotificationTypeEnum } from "../model/notification.model";
 
 export const generateNotificationName = (
   type: NotificationTypeEnum,
-  value: string | string[],
+  value: string | string[]
 ) => {
   if (!type || !value) throw new Error("Type or value is not specified");
 
@@ -25,10 +25,17 @@ export const generateNotificationName = (
         return `The project "${value}" has been deleted`;
       case NotificationTypeEnum.PROJECT_UPDATED:
         return `The project "${value}" has been updated`;
+
+      case NotificationTypeEnum.MEMBER_INVITATION:
+        return `You are invited to a member of "${value}"`;
     }
   } else if (typeof value === "object")
     switch (type) {
       case NotificationTypeEnum.TASK_ASSIGNED:
         return `The task "${value[0]}" has been assigned to ${value[1]}`;
+      case NotificationTypeEnum.MEMBER_INVITATION_APPROVED:
+        return `${value[0]} approved your invitation to "${value[1]}"`;
+      case NotificationTypeEnum.MEMBER_INVITATION_REJECTED:
+        return `${value[0]} rejected your invitation to "${value[1]}"`;
     }
 };

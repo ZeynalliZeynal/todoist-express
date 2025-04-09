@@ -14,13 +14,13 @@ export interface MemberDocument extends mongoose.Document {
   description?: string;
   memberships: [
     {
-      entity: mongoose.Types.ObjectId;
+      entity: object;
       entityType: MemberEntityType;
       status: MemberStatus;
       role: MemberRole;
       invited: boolean;
       permissions: mongoose.Types.ObjectId[];
-    },
+    }
   ];
 }
 
@@ -44,7 +44,7 @@ const schema = new mongoose.Schema<MemberDocument>(
     memberships: [
       {
         entity: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Object,
           required: true,
         },
         entityType: {
@@ -78,7 +78,7 @@ const schema = new mongoose.Schema<MemberDocument>(
       virtuals: true,
     },
     timestamps: true,
-  },
+  }
 );
 
 schema.pre(/^find/, function (this: Query<any, any>, next) {

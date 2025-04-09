@@ -1,8 +1,10 @@
 import express from "express";
 import { authenticate } from "../middleware/auth.middleware";
 import {
+  activateMembershipsProfile,
   approveMembershipInvitation,
   createMembershipProfile,
+  deactivateMembershipsProfile,
   getMember,
   getMembers,
   getMembershipsProfile,
@@ -17,6 +19,12 @@ const router = express.Router();
 router.route("/").get(authenticate, getMembers);
 
 router.route("/profile").get(authenticate, getMembershipsProfile);
+router
+  .route("/profile/activate")
+  .post(authenticate, activateMembershipsProfile);
+router
+  .route("/profile/deactivate")
+  .post(authenticate, deactivateMembershipsProfile);
 
 router.route("/:email").get(authenticate, getMember);
 

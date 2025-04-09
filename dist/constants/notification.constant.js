@@ -23,12 +23,18 @@ const generateNotificationName = (type, value) => {
                 return `The project "${value}" has been deleted`;
             case notification_model_1.NotificationTypeEnum.PROJECT_UPDATED:
                 return `The project "${value}" has been updated`;
+            case notification_model_1.NotificationTypeEnum.MEMBER_INVITATION:
+                return `You are invited to a member of "${value}"`;
         }
     }
     else if (typeof value === "object")
         switch (type) {
             case notification_model_1.NotificationTypeEnum.TASK_ASSIGNED:
                 return `The task "${value[0]}" has been assigned to ${value[1]}`;
+            case notification_model_1.NotificationTypeEnum.MEMBER_INVITATION_APPROVED:
+                return `${value[0]} approved your invitation to "${value[1]}"`;
+            case notification_model_1.NotificationTypeEnum.MEMBER_INVITATION_REJECTED:
+                return `${value[0]} rejected your invitation to "${value[1]}"`;
         }
 };
 exports.generateNotificationName = generateNotificationName;

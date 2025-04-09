@@ -27,7 +27,7 @@ const schema = new mongoose_1.default.Schema({
     memberships: [
         {
             entity: {
-                type: mongoose_1.default.Schema.Types.ObjectId,
+                type: Object,
                 required: true,
             },
             entityType: {

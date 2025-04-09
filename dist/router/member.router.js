@@ -9,6 +9,12 @@ const member_controller_1 = require("../controller/member.controller");
 const router = express_1.default.Router();
 router.route("/").get(auth_middleware_1.authenticate, member_controller_1.getMembers);
 router.route("/profile").get(auth_middleware_1.authenticate, member_controller_1.getMembershipsProfile);
+router
+    .route("/profile/activate")
+    .post(auth_middleware_1.authenticate, member_controller_1.activateMembershipsProfile);
+router
+    .route("/profile/deactivate")
+    .post(auth_middleware_1.authenticate, member_controller_1.deactivateMembershipsProfile);
 router.route("/:email").get(auth_middleware_1.authenticate, member_controller_1.getMember);
 router.route("/invite").post(auth_middleware_1.authenticate, member_controller_1.inviteMembers);
 router.route("/:id/invite").post(auth_middleware_1.authenticate, member_controller_1.inviteMember);
